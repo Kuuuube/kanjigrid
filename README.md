@@ -14,6 +14,8 @@ Kanji Grid for Anki 23.10+ with ui improvements and bug fixes.
 
 5. Click `OK`
 
+6. Restart Anki
+
 ## Usage
 
 1. On the top menu, go to `Tools` > `Generate Kanji Grid`
