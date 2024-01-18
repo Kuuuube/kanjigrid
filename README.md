@@ -10,7 +10,7 @@ Kanji Grid for Anki 23.10+ with ui improvements and bug fixes.
 
 3. Click `Get Add-ons...`
 
-4. Input ``
+4. Input `1610304449`
 
 5. Click `OK`
 
