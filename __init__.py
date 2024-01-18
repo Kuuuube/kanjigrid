@@ -383,6 +383,7 @@ class KanjiGrid:
                         field_names.append(field_dict['name'])
             field.clear()
             field.addItems(field_names)
+        field.setEditable(True)
         deckcb.currentTextChanged.connect(update_fields_dropdown)
         update_fields_dropdown(mw.col.decks.get(config.did)['name'])
         fl.addWidget(field)
