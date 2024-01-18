@@ -32,7 +32,17 @@ Kanji Grid for Anki 23.10+ with ui improvements and bug fixes.
 
 ## Improvements
 
-- Field selector now uses a dropdown instead of a text box.
+- Field selector now uses a dropdown/text box combo instead of a text box.
+
+- All decks can be searched at once by selecting `*` in the deck dropdown.
+
+- Key and key label are now centered.
+
+- Kanji grid and header line now fill the entire window width.
+
+- Background color is no longer hardcoded and will adapt to your Anki theme.
+
+- Default window size is larger to better fit modern display resolutions.
 
 ## Bug Fixes
 
