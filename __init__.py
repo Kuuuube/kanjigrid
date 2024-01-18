@@ -183,7 +183,7 @@ class KanjiGrid:
         else:
             cols = config.thin
         self.html  = "<!doctype html><html><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>"
-        self.html += "<style type=\"text/css\">body{background-color:#FFF;}table{margin-left:auto;margin-right:auto;}.maintable{width:85%;}td{text-align:center;vertical-align:top;}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
+        self.html += "<style type=\"text/css\">table{margin-left:auto;margin-right:auto;}.maintable{width:85%;}td{text-align:center;vertical-align:top;}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
         self.html += "</head>\n"
         self.html += "<body>\n"
         self.html += "<span style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</span><br>\n" % deckname
