@@ -377,7 +377,8 @@ class KanjiGrid:
             field_names = []
             for item in mw.col.models.all_names_and_ids():
                 model_id_name = str(item).replace("id: ", "").replace("name: ", "").replace("\"", "").split("\n")
-                model_name = model_id_name[1]
+                # Anki backend will return incorrectly escaped strings that need to be stripped of `\`. However, `"`, `*`, and `_` should not be stripped
+                model_name = model_id_name[1].replace("\\", "").replace("*", "\\*").replace("_", "\\_").replace("\"", "\\\"")
                 if len(mw.col.find_cards("\"note:" + model_name + "\" " + "\"deck:" + deckname + "\"")) > 0:
                     model_id = model_id_name[0]
                     for field_dict in mw.col.models.get(model_id)['flds']:
