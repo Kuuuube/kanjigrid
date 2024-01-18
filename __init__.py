@@ -174,7 +174,10 @@ class KanjiGrid:
 
             return tile
 
-        deckname = mw.col.decks.name(config.did).rsplit('::', 1)[-1]
+        deckname = "*"
+        if config.did != "*":
+            deckname = mw.col.decks.name(config.did).rsplit('::', 1)[-1]
+
         if saveMode:
             cols = config.wide
         else:
@@ -308,8 +311,11 @@ class KanjiGrid:
 
     def kanjigrid(self, config):
         dids = [config.did]
-        for _, id_ in mw.col.decks.children(config.did):
-            dids.append(id_)
+        if config.did == "*":
+            dids = mw.col.decks.all_ids()
+        for deck_id in dids:
+            for _, id_ in mw.col.decks.children(int(deck_id)):
+                dids.append(id_)
         self.timepoint("Decks selected")
         cids = mw.col.db.list("select id from cards where did in %s or odid in %s" % (ids2str(dids), ids2str(dids)))
         self.timepoint("Cards selected")
@@ -357,11 +363,15 @@ class KanjiGrid:
         vl = QVBoxLayout()
         fl = QHBoxLayout()
         deckcb = QComboBox()
+        deckcb.addItem("*") # * = all decks
         deckcb.addItems(sorted(mw.col.decks.allNames()))
         deckcb.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         fl.addWidget(QLabel("Deck: "))
         deckcb.setCurrentText(mw.col.decks.get(config.did)['name'])
         def change_did(deckname):
+            if deckname == "*":
+                config.did = "*"
+                return
             config.did = mw.col.decks.byName(deckname)['id']
         deckcb.currentTextChanged.connect(change_did)
         fl.addWidget(deckcb)
@@ -374,6 +384,8 @@ class KanjiGrid:
         field = QComboBox()
         field.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         def update_fields_dropdown(deckname):
+            if deckname != "*":
+                deckname = mw.col.decks.get(config.did)['name']
             field_names = []
             for item in mw.col.models.all_names_and_ids():
                 model_id_name = str(item).replace("id: ", "").replace("name: ", "").replace("\"", "").split("\n")
@@ -390,7 +402,7 @@ class KanjiGrid:
             field.addItems(field_names)
         field.setEditable(True)
         deckcb.currentTextChanged.connect(update_fields_dropdown)
-        update_fields_dropdown(mw.col.decks.get(config.did)['name'])
+        update_fields_dropdown(config.did)
         fl.addWidget(field)
         il.addLayout(fl)
         stint = QSpinBox()
