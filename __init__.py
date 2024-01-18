@@ -369,6 +369,7 @@ class KanjiGrid:
         vl.addWidget(frm)
         il = QVBoxLayout()
         fl = QHBoxLayout()
+        il.addWidget(QLabel("Field: "))
         field = QComboBox()
         field.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         def update_fields_dropdown(deckname):
