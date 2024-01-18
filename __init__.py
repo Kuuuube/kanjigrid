@@ -183,7 +183,7 @@ class KanjiGrid:
         else:
             cols = config.thin
         self.html  = "<!doctype html><html><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>"
-        self.html += "<style type=\"text/css\">table{margin-left:auto;margin-right:auto;}.maintable{width:85%;}td{text-align:center;vertical-align:top;}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
+        self.html += "<style type=\"text/css\">body{text-align:center;}.table{width:100%;}.maintable{width:100%;}td{text-align:center;vertical-align:top;}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
         self.html += "</head>\n"
         self.html += "<body>\n"
         self.html += "<span style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</span><br>\n" % deckname
@@ -193,7 +193,7 @@ class KanjiGrid:
         for c in [n/6.0 for n in range(6+1)]:
             self.html += "<span class=\"key\" style=\"background-color: %s;\">&nbsp;</span>" % hsvrgbstr(c/2)
         self.html += "&nbsp;Strong</p></div>\n"
-        self.html += "<div style=\"clear: both;\"><br><hr style=\"border-style: dashed;border-color: #666;width: 60%;\"><br></div>\n"
+        self.html += "<div style=\"clear: both;\"><br><hr style=\"border-style: dashed;border-color: #666;width: 100%;\"><br></div>\n"
         self.html += "<div style=\"text-align: center;\">\n"
         if config.groupby >= len(SortOrder):
             groups = data.groups[config.groupby - len(SortOrder)]
@@ -214,7 +214,7 @@ class KanjiGrid:
                 t = len(groups.data[i][1])
                 gc += n
                 if config.unseen:
-                    table += "<details><summary>Missing kanji</summary><table style=\"max-width:75%;\"><tr>\n"
+                    table += "<details><summary>Missing kanji</summary><table><tr>\n"
                     count = -1
                     for char in [c for c in groups.data[i][1] if c not in kanji]:
                         count += 1
