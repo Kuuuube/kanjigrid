@@ -104,7 +104,7 @@ class KanjiGridWebView(AnkiWebView):
         self.save_png = ()
 
         size = self._page.contentsSize().toSize()
-        image = QImage(size, QImage.Format_ARGB32)
+        image = QImage(size, QImage.Format.Format_ARGB32)
         painter = QPainter(image)
         self.render(painter)
         painter.end()
@@ -281,7 +281,7 @@ class KanjiGrid:
         return 0
 
     def savehtml(self, config):
-        fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.DesktopLocation)[0], "Web Page (*.html *.htm)")[0]
+        fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "Web Page (*.html *.htm)")[0]
         if fileName != "":
             mw.progress.start(immediate=True)
             if ".htm" not in fileName:
@@ -294,7 +294,7 @@ class KanjiGrid:
             showInfo("Page saved to %s!" % os.path.abspath(fileOut.name))
 
     def savepng(self):
-        fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.DesktopLocation)[0], "Portable Network Graphics (*.png)")[0]
+        fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "Portable Network Graphics (*.png)")[0]
         if fileName != "":
             mw.progress.start(immediate=True)
             if ".png" not in fileName:
