@@ -37,3 +37,5 @@ Kanji Grid for Anki 23.10+ with ui improvements and bug fixes.
 ## Bug Fixes
 
 - `Save HTML` and `Save Image` now properly function.
+
+- Fields with spaces in their name are now properly searchable
