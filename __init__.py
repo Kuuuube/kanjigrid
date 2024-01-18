@@ -339,7 +339,7 @@ class KanjiGrid:
             if card.nid not in notes.keys():
                 keys = card.note().keys()
                 unitKey = set()
-                matches = operator.eq if config.literal else operator.contains
+                matches = operator.eq
                 for keyword in config.pattern:
                     for key in keys:
                         if matches(key.lower(), keyword):
@@ -387,13 +387,22 @@ class KanjiGrid:
         vl.addWidget(frm)
         il = QVBoxLayout()
         fl = QHBoxLayout()
-        field = QLineEdit()
-        field.setPlaceholderText("e.g. \"kanji\" or \"sentence-kanji\" (default: \"%s\")" % config.pattern)
-        il.addWidget(QLabel("Pattern or Field names to search for (case insensitive):"))
+        field = QComboBox()
+        field.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        def update_fields_dropdown(deckname):
+            field_names = []
+            for item in mw.col.models.all_names_and_ids():
+                model_id_name = str(item).replace("id: ", "").replace("name: ", "").replace("\"", "").split("\n")
+                model_name = model_id_name[1]
+                if len(mw.col.find_cards("\"note:" + model_name + "\" " + "\"deck:" + deckname + "\"")) > 0:
+                    model_id = model_id_name[0]
+                    for field_dict in mw.col.models.get(model_id)['flds']:
+                        field_names.append(field_dict['name'])
+            field.clear()
+            field.addItems(field_names)
+        deckcb.currentTextChanged.connect(update_fields_dropdown)
+        update_fields_dropdown(mw.col.decks.get(config.did)['name'])
         fl.addWidget(field)
-        liter = QCheckBox("Match exactly")
-        liter.setChecked(config.literal)
-        fl.addWidget(liter)
         il.addLayout(fl)
         stint = QSpinBox()
         stint.setRange(1, 65536)
@@ -434,8 +443,6 @@ class KanjiGrid:
         swin.setLayout(vl)
         swin.setTabOrder(gen, cls)
         swin.setTabOrder(cls, field)
-        swin.setTabOrder(field, liter)
-        swin.setTabOrder(liter, stint)
         swin.setTabOrder(stint, ttcol)
         swin.setTabOrder(ttcol, wtcol)
         swin.setTabOrder(wtcol, groupby)
@@ -444,10 +451,8 @@ class KanjiGrid:
         swin.resize(500, 400)
         if swin.exec():
             mw.progress.start(immediate=True)
-            if len(field.text().strip()) != 0:
-                config.pattern = field.text().lower()
+            config.pattern = field.currentText().lower()
             config.pattern = config.pattern.split()
-            config.literal = liter.isChecked()
             config.interval = stint.value()
             config.thin = ttcol.value()
             config.wide = wtcol.value()
