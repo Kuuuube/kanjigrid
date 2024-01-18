@@ -280,7 +280,7 @@ class KanjiGrid:
         bb = QPushButton("Close", clicked=self.win.reject)
         hl.addWidget(bb)
         self.win.setLayout(vl)
-        self.win.resize(500, 400)
+        self.win.resize(1000, 800)
         self.timepoint("Window complete")
         return 0
 
