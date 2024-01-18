@@ -11,6 +11,7 @@ import time
 import types
 import unicodedata
 import urllib.parse
+import shlex
 from functools import reduce
 
 from anki.utils import ids2str
@@ -380,7 +381,10 @@ class KanjiGrid:
                 if len(mw.col.find_cards("\"note:" + model_name + "\" " + "\"deck:" + deckname + "\"")) > 0:
                     model_id = model_id_name[0]
                     for field_dict in mw.col.models.get(model_id)['flds']:
-                        field_names.append(field_dict['name'])
+                        field_dict_name = field_dict['name']
+                        if len(field_dict_name.split()) > 1:
+                            field_dict_name = "\"" + field_dict_name + "\""
+                        field_names.append(field_dict_name)
             field.clear()
             field.addItems(field_names)
         field.setEditable(True)
@@ -436,7 +440,7 @@ class KanjiGrid:
         if swin.exec():
             mw.progress.start(immediate=True)
             config.pattern = field.currentText().lower()
-            config.pattern = config.pattern.split()
+            config.pattern = shlex.split(config.pattern)
             config.interval = stint.value()
             config.thin = ttcol.value()
             config.wide = wtcol.value()
