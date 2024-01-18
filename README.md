@@ -22,7 +22,9 @@ Kanji Grid for Anki 23.10+ with ui improvements and bug fixes.
 
 2. Select the deck to generate from with the `Deck` dropdown.
 
-3. Select the card field to check for kanji with the `Field` dropdown.
+3. Select the card field to check for kanji with the `Field` dropdown or type in multiple fields to check.
+
+    Use the following format for searching multiple fields: `kanji sentence-kanji "field with spaces"`
 
 4. Optionally, edit any of the other settings to your liking.
 
