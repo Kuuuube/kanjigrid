@@ -24,24 +24,6 @@ from aqt.qt import (Qt, QAction, QStandardPaths,
 
 from . import data
 
-# FIXME: changing the defaults using addons ui requires restarting anki to take effect
-# TODO: config window based on the widget from KanjiGrid.setup
-#       (s/Settings/Defaults/; s/Generate/Save/; s/default: .*//)
-
-_css = "body { background: #ccc url(/img/noise.png); }" + \
-    ".info-wrapper { height: auto; width: 500px; margin: 4em auto; padding: 0 0 2em 0; position: relative; }" + \
-    ".info { max-height: 120px; height: auto; padding: .5em 0; border-bottom: solid 1px #fff; border-radius: 0 0 1em 1em;" + \
-    "	overflow: hidden; position: relative; transition: 1s; } p { margin: 1em; }" + \
-    ".info:after, .aftershadow { bottom: 0; width: 100%; height: 3em; border-radius: 0 0 1em 1em; position: absolute;" + \
-    "	background: linear-gradient(rgba(192,192,192,0), #ccc); content: ''; }" + \
-    ".aftershadow { filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00cccccc, endColorstr=#ffcccccc); }" + \
-    ".info-wrapper input[type=checkbox] { display: none; } .info-wrapper label { left: 50%; bottom: 1.5em; width: 9em;" + \
-    "	height: 1.25em; margin:  0 0 0 -4.5em; border-bottom: solid 1px #fff; border-radius: 0 0 1em 1em; overflow: hidden;" + \
-    "	position: absolute; font: 700 .67em/1.25em Arial; text-align: center; text-shadow: 0 1px 0 #fff; cursor: pointer; }" + \
-    ".info-wrapper label .more { margin: -.1em 0 .35em; transition: 1s; } .info-wrapper .switch { width: 4em; display: inline-block; }" + \
-    ".info-wrapper input[type=checkbox]:checked ~ .info { max-height: 15em; } .info-wrapper input[type=checkbox]:checked + label .more { margin-top: -1.65em; }"
-
-
 class TestedUnit:
     def __init__(self, value):
         self.idx = 0
@@ -469,6 +451,4 @@ if __name__ != "__main__":
         mw.kanjigrid = KanjiGrid(mw)
 else:
     print("This is an addon for the Anki spaced repetition learning system and cannot be run directly.")
-    print("Please download Anki from <http://ankisrs.net/>")
-
-# vim:expandtab:
+    print("Please download Anki from <https://apps.ankiweb.net/>")
