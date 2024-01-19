@@ -54,6 +54,8 @@ Kanji Grid for Anki 23.10+ with ui improvements and bug fixes.
 
 - Fixed divide by zero error when no kanji are found and a kanji grouping is selected
 
+- Fixed JLPT kanji lists missing some characters
+
 ## Info
 
 [Github Repository](https://github.com/Kuuuube/kanjigrid)
