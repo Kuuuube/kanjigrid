@@ -46,6 +46,8 @@ Kanji Grid for Anki 23.10+ with ui improvements and bug fixes.
 
 - Chinese character groupings can be selected
 
+- Added Basic Kanji Book (BKB) V1 & V2 grouping
+
 ## Bug Fixes
 
 - `Save HTML` and `Save Image` now properly function
