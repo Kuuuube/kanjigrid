@@ -50,6 +50,10 @@ Kanji Grid for Anki 23.10+ with ui improvements and bug fixes.
 
 - Added option to export Kanji Grid as JSON.
 
+- Kanji are rendered in a dynamic grid that will adapt to window size instead of a static table.
+
+- Automatically set language tag based on grouping and manual language tag setting.
+
 ## Bug Fixes
 
 - `Save HTML` and `Save Image` now properly function.
