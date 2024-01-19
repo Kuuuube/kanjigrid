@@ -441,7 +441,7 @@ class KanjiGrid:
         swin.setTabOrder(cls, field)
         swin.setTabOrder(stint, groupby)
         swin.setTabOrder(groupby, shnew)
-        swin.resize(500, 400)
+        swin.resize(500, swin.height())
         if swin.exec():
             mw.progress.start(immediate=True)
             config.pattern = field.currentText().lower()
