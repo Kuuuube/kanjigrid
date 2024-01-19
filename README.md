@@ -44,8 +44,12 @@ Kanji Grid for Anki 23.10+ with ui improvements and bug fixes.
 
 - Default window size is larger to better fit modern display resolutions.
 
+- Chinese character groupings can be selected
+
 ## Bug Fixes
 
 - `Save HTML` and `Save Image` now properly function.
 
 - Fields with spaces in their name are now properly searchable.
+
+- Fixed divide by zero error when no kanji are found and a kanji grouping is selected
