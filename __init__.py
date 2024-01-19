@@ -182,7 +182,7 @@ class KanjiGrid:
             cols = config.wide
         else:
             cols = config.thin
-        self.html  = "<!doctype html><html><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>"
+        self.html  = "<!doctype html><html lang=\"ja\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>"
         self.html += "<style type=\"text/css\">body{text-align:center;}.table{width:100%;}.maintable{width:100%;}td{text-align:center;vertical-align:top;}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
         self.html += "</head>\n"
         self.html += "<body>\n"
