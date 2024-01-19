@@ -53,3 +53,9 @@ Kanji Grid for Anki 23.10+ with ui improvements and bug fixes.
 - Fields with spaces in their name are now properly searchable
 
 - Fixed divide by zero error when no kanji are found and a kanji grouping is selected
+
+## Info
+
+[Github Repository](https://github.com/Kuuuube/kanjigrid)
+
+[Report Issues Here](https://github.com/Kuuuube/kanjigrid/issues)
