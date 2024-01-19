@@ -179,7 +179,7 @@ class KanjiGrid:
         if config.did != "*":
             deckname = mw.col.decks.name(config.did).rsplit('::', 1)[-1]
 
-        self.html  = "<!doctype html><html lang=\"ja\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>"
+        self.html  = "<!doctype html><html lang=\"%s\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>" % config.lang
         self.html += "<style type=\"text/css\">body{text-align:center;}.grid-container{display:grid;grid-gap:2px;grid-template-columns:repeat(auto-fit,minmax(23px, 1fr));}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
         self.html += "</head>\n"
         self.html += "<body>\n"
@@ -426,6 +426,16 @@ class KanjiGrid:
         groupby.setCurrentIndex(config.groupby)
         il.addWidget(QLabel("Group by:"))
         il.addWidget(groupby)
+        pagelang = QComboBox()
+        pagelang.addItems(["ja", "zh","zh-Hans", "zh-Hant", "ko", "vi"])
+        def update_pagelang_dropdown():
+            index = groupby.currentIndex() - 4
+            if index > 0:
+                pagelang.setCurrentText(data.groups[groupby.currentIndex() - 4].lang)
+        groupby.currentTextChanged.connect(update_pagelang_dropdown)
+        pagelang.setCurrentText(config.lang)
+        il.addWidget(QLabel("Language:"))
+        il.addWidget(pagelang)
         shnew = QCheckBox("Show units not yet seen")
         shnew.setChecked(config.unseen)
         il.addWidget(shnew)
@@ -448,6 +458,7 @@ class KanjiGrid:
             config.pattern = shlex.split(config.pattern)
             config.interval = stint.value()
             config.groupby = groupby.currentIndex()
+            config.lang = pagelang.currentText()
             config.unseen = shnew.isChecked()
             self.makegrid(config)
             mw.progress.finish()
