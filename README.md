@@ -48,6 +48,8 @@ Kanji Grid for Anki 23.10+ with ui improvements and bug fixes.
 
 - Added Basic Kanji Book (BKB) V1 & V2 grouping
 
+- Added option to export Kanji Grid as JSON
+
 ## Bug Fixes
 
 - `Save HTML` and `Save Image` now properly function
