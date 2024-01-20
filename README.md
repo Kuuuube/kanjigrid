@@ -2,7 +2,7 @@
 
 Kanji Grid for Anki 23.10+ with ui improvements and bug fixes.
 
-![](kanji_grid_banner.png)
+![](https://raw.githubusercontent.com/Kuuuube/kanjigrid/master/kanji_grid_banner.png)
 
 ## Installation
 
