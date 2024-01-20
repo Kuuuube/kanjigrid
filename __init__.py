@@ -183,14 +183,14 @@ class KanjiGrid:
         self.html += "<style type=\"text/css\">body{text-align:center;}.grid-container{display:grid;grid-gap:2px;grid-template-columns:repeat(auto-fit,minmax(23px, 1fr));}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
         self.html += "</head>\n"
         self.html += "<body>\n"
-        self.html += "<span style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</span><br>\n" % deckname
-        self.html += "<div style=\"margin-bottom: 24pt;padding: 20pt;\"><p style=\"text-align: center\">Key:</p>"
+        self.html += "<div style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</div>\n" % deckname
+        self.html += "<p style=\"text-align: center\">Key</p>"
         self.html += "<p style=\"text-align: center\">Weak&nbsp;"
 	# keycolors = (hsvrgbstr(n/6.0) for n in range(6+1))
         for c in [n/6.0 for n in range(6+1)]:
             self.html += "<span class=\"key\" style=\"background-color: %s;\">&nbsp;</span>" % hsvrgbstr(c/2)
         self.html += "&nbsp;Strong</p></div>\n"
-        self.html += "<div style=\"clear: both;\"><br><hr style=\"border-style: dashed;border-color: #666;width: 100%;\"><br></div>\n"
+        self.html += "<hr style=\"border-style: dashed;border-color: #666;width: 100%;\">\n"
         self.html += "<div style=\"text-align: center;\">\n"
         if config.groupby >= len(SortOrder):
             groups = data.groups[config.groupby - len(SortOrder)]
