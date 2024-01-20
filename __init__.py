@@ -394,7 +394,7 @@ class KanjiGrid:
         def update_fields_dropdown(deckname):
             if deckname != "*":
                 deckname = mw.col.decks.get(config.did)['name']
-            new_text = ""
+            new_text = set()
             field_names = []
             for item in mw.col.models.all_names_and_ids():
                 model_id_name = str(item).replace("id: ", "").replace("name: ", "").replace("\"", "").split("\n")
@@ -409,15 +409,14 @@ class KanjiGrid:
                             field_dict_name = "\"" + field_dict_name + "\""
                         field_names.append(field_dict_name)
 
-                    if deckname == "*" and len(model_fields) > 0:
+                    if len(model_fields) > 0:
                         first_field_name = model_fields[0]['name']
-                        if len(field_dict_name.split()) > 1:
+                        if len(first_field_name.split()) > 1:
                             first_field_name = "\"" + first_field_name + "\""
-                        new_text += first_field_name + " "
+                        new_text.add(first_field_name)
             field.clear()
             field.addItems(field_names)
-            if deckname == "*":
-                field.setCurrentText(new_text)
+            field.setCurrentText(" ".join(new_text))
         field.setEditable(True)
         deckcb.currentTextChanged.connect(update_fields_dropdown)
         update_fields_dropdown(config.did)
