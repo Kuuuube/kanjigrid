@@ -56,6 +56,8 @@ Kanji Grid for Anki 23.10+ with ui improvements and bug fixes.
 
 - Automatically set language tag based on grouping and manual language tag setting.
 
+- `Save Image` saves the entire page instead of only the visible portion.
+
 ## Bug Fixes
 
 - `Save HTML` and `Save Image` now properly function.
