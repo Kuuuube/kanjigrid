@@ -19,10 +19,9 @@ from anki.utils import ids2str
 from aqt import mw
 from aqt.utils import showInfo, showCritical
 from aqt.webview import AnkiWebView
-from aqt.qt import (Qt, QAction, QStandardPaths,
-                    QImage, QPainter, QSize, QEvent, QSizePolicy,
-                    QFileDialog, QDialog, QHBoxLayout, QVBoxLayout, QGroupBox,
-                    QLineEdit, QLabel, QCheckBox, QSpinBox, QComboBox, QPushButton)
+from aqt.qt import (Qt, QAction, QStandardPaths, QSizePolicy, QFileDialog,
+                    QDialog, QHBoxLayout, QVBoxLayout, QGroupBox, QLabel,
+                    QCheckBox, QSpinBox, QComboBox, QPushButton, QTimer)
 
 from . import data
 
@@ -93,31 +92,6 @@ def hsvrgbstr(h, s=0.8, v=0.9):
 class KanjiGridWebView(AnkiWebView):
     def __init__(self, parent=None):
         super().__init__()
-        # Saved images are empty if the background is transparent; AnkiWebView
-        # sets bg color to transparent by default
-        self._page.setBackgroundColor(Qt.GlobalColor.white)
-        self.save_png = ()
-
-    def eventFilter(self, obj, evt):
-        if not(evt.type() == QEvent.Type.Paint and self.save_png):
-            return super().eventFilter(obj, evt)
-
-        filename, oldsize = self.save_png
-        self.save_png = ()
-
-        size = self._page.contentsSize().toSize()
-        image = QImage(size, QImage.Format.Format_ARGB32)
-        painter = QPainter(image)
-        self.render(painter)
-        painter.end()
-        success = image.save(filename, "png")
-        self.resize(oldsize)
-        mw.progress.finish()
-        if success:
-            showInfo("Image saved to %s!" % os.path.abspath(filename))
-        else:
-            showCritical("Failed to save the image.")
-        return super().eventFilter(obj, evt)
 
 
 class SortOrder(enum.Enum):
@@ -291,14 +265,20 @@ class KanjiGrid:
     def savepng(self):
         fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "Portable Network Graphics (*.png)")[0]
         if fileName != "":
-            mw.progress.start(immediate=True)
             if ".png" not in fileName:
                 fileName += ".png"
 
             oldsize = self.wv.size()
+            def grabpage():
+                success = self.wv.grab().save(fileName, b"PNG")
+                self.wv.resize(oldsize)
+                if success:
+                    showInfo("Image saved to %s!" % os.path.abspath(fileName))
+                else:
+                    showCritical("Failed to save the image.")
+
             self.wv.resize(self.wv.page().contentsSize().toSize())
-            # the file will be saved after the page gets redrawn (KanjiGridWebView.eventFilter)
-            self.wv.save_png = (fileName, oldsize)
+            QTimer.singleShot(1000, grabpage) #non blocking 1 second wait for redraw
 
     def savejson(self, config, units):
         fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "JSON (*.json)")[0]
