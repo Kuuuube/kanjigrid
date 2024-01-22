@@ -279,6 +279,7 @@ class KanjiGrid:
 
             self.wv.resize(self.wv.page().contentsSize().toSize())
             QTimer.singleShot(1000, grabpage) #non blocking 1 second wait for redraw
+            #nothing can come after QTimer or it will become blocking and cause grabpage() to fail
 
     def savejson(self, config, units):
         fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "JSON (*.json)")[0]
