@@ -238,7 +238,7 @@ class KanjiGrid:
         vl.addLayout(hl)
         sh = QPushButton("Save HTML", clicked=lambda: self.savehtml(config))
         hl.addWidget(sh)
-        sp = QPushButton("Save Image", clicked=self.savepng)
+        sp = QPushButton("Save Image", clicked=lambda: self.savepng(config))
         hl.addWidget(sp)
         sj = QPushButton("Save JSON", clicked=lambda: self.savejson(config, units))
         hl.addWidget(sj)
@@ -262,7 +262,7 @@ class KanjiGrid:
             mw.progress.finish()
             showInfo("Page saved to %s!" % os.path.abspath(fileOut.name))
 
-    def savepng(self):
+    def savepng(self, config):
         fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "Portable Network Graphics (*.png)")[0]
         if fileName != "":
             if ".png" not in fileName:
@@ -271,13 +271,17 @@ class KanjiGrid:
             oldsize = self.wv.size()
             def grabpage():
                 success = self.wv.grab().save(fileName, b"PNG")
+                self.wv.page().setZoomFactor(1)
                 self.wv.resize(oldsize)
                 if success:
                     showInfo("Image saved to %s!" % os.path.abspath(fileName))
                 else:
                     showCritical("Failed to save the image.")
-
-            self.wv.resize(self.wv.page().contentsSize().toSize())
+            content_size = self.wv.page().contentsSize().toSize()
+            self.wv.page().setZoomFactor(config.saveimagequality)
+            content_size.setWidth(content_size.width() * config.saveimagequality)
+            content_size.setHeight(content_size.height() * config.saveimagequality)
+            self.wv.resize(content_size)
             QTimer.singleShot(1000, grabpage) #non blocking 1 second wait for redraw
             #nothing can come after QTimer or it will become blocking and cause grabpage() to fail
 
