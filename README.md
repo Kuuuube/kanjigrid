@@ -58,7 +58,7 @@ Kanji Grid for Anki 23.10+ with ui improvements and bug fixes.
 
 - `Save Image` saves the entire page instead of only the visible portion.
 
-- `Save Image` saves images at 5x the shown quality by default. Configurable in `config.json`.
+- `Save Image` saves images at 5x the displayed quality by default. Configurable in `config.json`.
 
 ## Bug Fixes
 
