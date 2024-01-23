@@ -1,1 +1,1 @@
-{"defaults": {"pattern": "kanji", "literal": false, "interval": 180, "groupby": 0, "lang": "ja", "unseen": true, "tooltips": true, "kanjionly": true, "saveimagequality": 5}}
+{"defaults": {"pattern": "kanji", "literal": false, "interval": 180, "groupby": 0, "lang": "ja", "unseen": true, "tooltips": true, "kanjionly": true, "saveimagequality": 5, "saveimagedelay": 500}}

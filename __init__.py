@@ -277,12 +277,18 @@ class KanjiGrid:
                     showInfo("Image saved to %s!" % os.path.abspath(fileName))
                 else:
                     showCritical("Failed to save the image.")
+            def second_pass_resize():
+                self.wv.resize(self.wv.page().contentsSize().toSize())
+                QTimer.singleShot(config.saveimagedelay, grabpage) #1s non blocking call to let redraw occur
             content_size = self.wv.page().contentsSize().toSize()
-            self.wv.page().setZoomFactor(config.saveimagequality)
             content_size.setWidth(content_size.width() * config.saveimagequality)
             content_size.setHeight(content_size.height() * config.saveimagequality)
             self.wv.resize(content_size)
-            QTimer.singleShot(1000, grabpage) #non blocking 1 second wait for redraw
+            if config.saveimagequality != 1:
+                self.wv.page().setZoomFactor(config.saveimagequality)
+                QTimer.singleShot(config.saveimagedelay, second_pass_resize) #1s non blocking call to let redraw occur
+            else:
+                QTimer.singleShot(config.saveimagedelay, grabpage) #1s non blocking call to let redraw occur
             #nothing can come after QTimer or it will become blocking and cause grabpage() to fail
 
     def savejson(self, config, units):
