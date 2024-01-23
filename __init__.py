@@ -263,33 +263,33 @@ class KanjiGrid:
             showInfo("Page saved to %s!" % os.path.abspath(fileOut.name))
 
     def savepng(self, config):
+        oldsize = self.wv.size()
+
+        content_size = self.wv.page().contentsSize().toSize()
+        content_size.setWidth(content_size.width() * config.saveimagequality)
+        content_size.setHeight(content_size.height() * config.saveimagequality)
+        self.wv.resize(content_size)
+
+        if config.saveimagequality != 1:
+            self.wv.page().setZoomFactor(config.saveimagequality)
+
+        def resize_to_content():
+            self.wv.resize(self.wv.page().contentsSize().toSize())
+        QTimer.singleShot(config.saveimagedelay, resize_to_content)
+
         fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "Portable Network Graphics (*.png)")[0]
         if fileName != "":
             if ".png" not in fileName:
                 fileName += ".png"
 
-            oldsize = self.wv.size()
-            def grabpage():
-                success = self.wv.grab().save(fileName, b"PNG")
-                self.wv.page().setZoomFactor(1)
-                self.wv.resize(oldsize)
-                if success:
-                    showInfo("Image saved to %s!" % os.path.abspath(fileName))
-                else:
-                    showCritical("Failed to save the image.")
-            def second_pass_resize():
-                self.wv.resize(self.wv.page().contentsSize().toSize())
-                QTimer.singleShot(config.saveimagedelay, grabpage) #1s non blocking call to let redraw occur
-            content_size = self.wv.page().contentsSize().toSize()
-            content_size.setWidth(content_size.width() * config.saveimagequality)
-            content_size.setHeight(content_size.height() * config.saveimagequality)
-            self.wv.resize(content_size)
-            if config.saveimagequality != 1:
-                self.wv.page().setZoomFactor(config.saveimagequality)
-                QTimer.singleShot(config.saveimagedelay, second_pass_resize) #1s non blocking call to let redraw occur
+            success = self.wv.grab().save(fileName, b"PNG")
+            if success:
+                showInfo("Image saved to %s!" % os.path.abspath(fileName))
             else:
-                QTimer.singleShot(config.saveimagedelay, grabpage) #1s non blocking call to let redraw occur
-            #nothing can come after QTimer or it will become blocking and cause grabpage() to fail
+                showCritical("Failed to save the image.")
+
+        self.wv.page().setZoomFactor(1)
+        self.wv.resize(oldsize)
 
     def savejson(self, config, units):
         fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "JSON (*.json)")[0]
