@@ -1,6 +1,6 @@
 # Kanji Grid Kuuube
 
-Kanji Grid for Anki 23.10+ with ui improvements and bug fixes.
+Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 ![](https://raw.githubusercontent.com/Kuuuube/kanjigrid/master/kanji_grid_banner.png)
 
