@@ -21,7 +21,8 @@ from aqt.utils import showInfo, showCritical
 from aqt.webview import AnkiWebView
 from aqt.qt import (Qt, QAction, QStandardPaths, QSizePolicy, QFileDialog,
                     QDialog, QHBoxLayout, QVBoxLayout, QGroupBox, QLabel,
-                    QCheckBox, QSpinBox, QComboBox, QPushButton, QTimer)
+                    QCheckBox, QSpinBox, QComboBox, QPushButton, QTimer,
+                    QPageLayout, QPageSize, QMarginsF)
 
 from . import data
 
@@ -292,6 +293,24 @@ class KanjiGrid:
 
         self.wv.page().setZoomFactor(1)
         self.wv.resize(oldsize)
+
+    def savepdf(self):
+        fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "PDF (*.pdf)")[0]
+        if fileName != "":
+            mw.progress.start(immediate=True)
+            if ".pdf" not in fileName:
+                fileName += ".pdf"
+
+            def finish():
+                mw.progress.finish()
+                showInfo("PDF saved to %s!" % os.path.abspath(fileName))
+                self.wv.pdfPrintingFinished.disconnect()
+
+            self.wv.pdfPrintingFinished.connect(finish)
+            page_size = self.wv.page().contentsSize()
+            page_size.setWidth(page_size.width() * 0.75) #`pixels * 0.75 = points` with default dpi used by printToPdf or QPageSize
+            page_size.setHeight(page_size.height() * 0.75)
+            self.wv.printToPdf(fileName, QPageLayout(QPageSize(QPageSize(page_size, QPageSize.Unit.Point, None, QPageSize.SizeMatchPolicy.ExactMatch)), QPageLayout.Orientation.Portrait, QMarginsF()))
 
     def savejson(self, config, units):
         fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "JSON (*.json)")[0]
