@@ -269,16 +269,19 @@ class KanjiGrid:
         oldsize = self.wv.size()
 
         content_size = self.wv.page().contentsSize().toSize()
-        content_size.setWidth(content_size.width() * config.saveimagequality)
+        content_size.setWidth(self.wv.size().width() * config.saveimagequality) #width does not need to change to content size
         content_size.setHeight(content_size.height() * config.saveimagequality)
         self.wv.resize(content_size)
 
         if config.saveimagequality != 1:
             self.wv.page().setZoomFactor(config.saveimagequality)
 
-        def resize_to_content():
-            self.wv.resize(self.wv.page().contentsSize().toSize())
-        QTimer.singleShot(config.saveimagedelay, resize_to_content)
+            def resize_to_content():
+                content_size = self.wv.page().contentsSize().toSize()
+                content_size.setWidth(self.wv.size().width()) #width does not need to change to content size
+                content_size.setHeight(content_size.height())
+                self.wv.resize(content_size)
+            QTimer.singleShot(config.saveimagedelay, resize_to_content)
 
         fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "Portable Network Graphics (*.png)")[0]
         if fileName != "":
