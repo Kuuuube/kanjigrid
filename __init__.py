@@ -89,6 +89,19 @@ def hsvrgbstr(h, s=0.8, v=0.9):
     if i == 4: return "#%0.2X%0.2X%0.2X" % (_256(t), _256(p), _256(v))
     if i == 5: return "#%0.2X%0.2X%0.2X" % (_256(v), _256(p), _256(q))
 
+def get_font_css(config):
+    if config.lang == "ja":
+        return config.jafontcss
+    if config.lang ==  "zh":
+        return config.zhfontcss
+    if config.lang ==  "zh-Hans":
+        return config.zhhansfontcss
+    if config.lang ==  "zh-Hant":
+        return config.zhhantfontcss
+    if config.lang ==  "ko":
+        return config.kofontcss
+    if config.lang ==  "vi":
+        return config.vifontcss
 
 class KanjiGridWebView(AnkiWebView):
     def __init__(self, parent=None):
@@ -155,7 +168,7 @@ class KanjiGrid:
             deckname = mw.col.decks.name(config.did).rsplit('::', 1)[-1]
 
         self.html  = "<!doctype html><html lang=\"%s\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>" % config.lang
-        self.html += "<style type=\"text/css\">body{text-align:center;}.grid-container{display:grid;grid-gap:2px;grid-template-columns:repeat(auto-fit,minmax(23px, 1fr));}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
+        self.html += "<style type=\"text/css\">body{text-align:center;}.grid-container{display:grid;grid-gap:2px;grid-template-columns:repeat(auto-fit,minmax(23px, 1fr));" + get_font_css(config) + "}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
         self.html += "</head>\n"
         self.html += "<body>\n"
         self.html += "<div style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</div>\n" % deckname
