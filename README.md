@@ -50,7 +50,7 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 - Added Basic Kanji Book (BKB) V1 & V2 grouping.
 
-- Added option to export Kanji Grid as JSON.
+- Added option to save Kanji Grid as JSON.
 
 - Kanji are rendered in a dynamic grid that will adapt to window size instead of a static table.
 
@@ -58,7 +58,11 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 - `Save Image` saves the entire page instead of only the visible portion.
 
-- `Save Image` saves images at 5x the displayed quality by default. Configurable in `config.json`.
+- `Save Image` can optionally save at up to 5x the displayed quality. Configurable in `config.json` with the `saveimagequality` setting.
+
+    WARNING: On extremely large kanji grids this can cause anki to crash. Consider exporting as a PDF for higher quality instead if that is an issue.
+
+- Added option to save Kanji Grid as PDF.
 
 ## Bug Fixes
 
