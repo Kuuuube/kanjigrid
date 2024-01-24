@@ -1,1 +1,20 @@
-{"defaults": {"pattern": "kanji", "literal": false, "interval": 180, "groupby": 0, "lang": "ja", "unseen": true, "tooltips": true, "kanjionly": true, "saveimagequality": 1, "saveimagedelay": 1000, "jafontcss":"font-family: \"ヒラギノ角ゴ Pro W3\", \"Hiragino Kaku Gothic Pro\", Osaka, \"メイリオ\", Meiryo, \"ＭＳ Ｐゴシック\", \"MS PGothic\", \"MS UI Gothic\", Mincho, sans-serif;", "zhfontcss":"","zhhansfontcss":"","zhhantfontcss":"","kofontcss":"", "vifontcss":""}}
+{
+    "defaults": {
+        "pattern": "kanji",
+        "literal": false,
+        "interval": 180,
+        "groupby": 0,
+        "lang": "ja",
+        "unseen": true,
+        "tooltips": true,
+        "kanjionly": true,
+        "saveimagequality": 1,
+        "saveimagedelay": 1000,
+        "jafontcss": "font-family: \"ヒラギノ角ゴ Pro W3\", \"Hiragino Kaku Gothic Pro\", Osaka, \"メイリオ\", Meiryo, \"ＭＳ Ｐゴシック\", \"MS PGothic\", \"MS UI Gothic\", Mincho, sans-serif;",
+        "zhfontcss": "",
+        "zhhansfontcss": "",
+        "zhhantfontcss": "",
+        "kofontcss": "",
+        "vifontcss": ""
+    }
+}
