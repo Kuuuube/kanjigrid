@@ -60,7 +60,7 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 - `Save Image` can optionally save at up to 5x the displayed quality. Configurable in `config.json` with the `saveimagequality` setting.
 
-    WARNING: On extremely large kanji grids this can cause anki to crash. Consider exporting as a PDF for higher quality instead if that is an issue.
+    WARNING: On extremely large kanji grids this can cause anki to crash. Consider saving as a PDF for higher quality instead if that is an issue.
 
 - Added option to save Kanji Grid as PDF.
 
