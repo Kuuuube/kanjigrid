@@ -30,6 +30,7 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 4. Optionally, edit any of the other settings to your liking.
 
+5. Click `Generate`.
 4. Click `Generate`.
 
 ## Improvements
