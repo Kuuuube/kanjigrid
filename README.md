@@ -36,6 +36,8 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 - Field selector now uses a dropdown/text box combo instead of a text box.
 
+    The default field value can be overwritten by setting `pattern` in `config.json`.
+
 - All decks can be searched at once by selecting `*` in the deck dropdown.
 
 - Key and key label are now centered.
@@ -55,6 +57,8 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 - Kanji are rendered in a dynamic grid that will adapt to window size instead of a static table.
 
 - Automatically set language tag based on grouping and manual language tag setting.
+
+- Option to set custom fonts per language setting.
 
 - `Save Image` saves the entire page instead of only the visible portion.
 
