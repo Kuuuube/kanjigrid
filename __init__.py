@@ -103,11 +103,6 @@ def get_font_css(config):
     if config.lang ==  "vi":
         return config.vifontcss
 
-class KanjiGridWebView(AnkiWebView):
-    def __init__(self, parent=None):
-        super().__init__()
-
-
 class SortOrder(enum.Enum):
     NONE = 0
     UNICODE = 1
@@ -130,7 +125,7 @@ class KanjiGrid:
             mw.form.menuTools.addSeparator()
             mw.form.menuTools.addAction(self.menuAction)
 
-    def generate(self, config, units, timeNow, saveMode=False):
+    def generate(self, config, units):
         def kanjitile(char, index, count=0, avg_interval=0, missing=False):
             tile = ""
             score = "NaN"
@@ -239,11 +234,11 @@ class KanjiGrid:
             self.html += table
         self.html += "</div></body></html>\n"
 
-    def displaygrid(self, config, units, timeNow):
-        self.generate(config, units, timeNow)
+    def displaygrid(self, config, units):
+        self.generate(config, units)
         self.timepoint("HTML generated")
         self.win = QDialog(mw)
-        self.wv = KanjiGridWebView()
+        self.wv = AnkiWebView()
         vl = QVBoxLayout()
         vl.setContentsMargins(0, 0, 0, 0)
         vl.addWidget(self.wv)
@@ -272,8 +267,8 @@ class KanjiGrid:
             if ".htm" not in fileName:
                 fileName += ".html"
             with open(fileName, 'w', encoding='utf-8') as fileOut:
-                (units, timeNow) = self.kanjigrid(config)
-                self.generate(config, units, timeNow, True)
+                (units, _) = self.kanjigrid(config)
+                self.generate(config, units)
                 fileOut.write(self.html)
             mw.progress.finish()
             showInfo("Page saved to %s!" % os.path.abspath(fileOut.name))
@@ -382,9 +377,9 @@ class KanjiGrid:
     def makegrid(self, config):
         self.time = time.time()
         self.timepoint("Start")
-        (units, timeNow) = self.kanjigrid(config)
+        (units, _) = self.kanjigrid(config)
         if units is not None:
-            self.displaygrid(config, units, timeNow)
+            self.displaygrid(config, units)
 
     def setup(self):
         addonconfig = mw.addonManager.getConfig(__name__)
