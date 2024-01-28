@@ -31,7 +31,20 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 4. Optionally, edit any of the other settings to your liking.
 
 5. Click `Generate`.
-4. Click `Generate`.
+
+## Updating
+
+If you have edited the add-on config file through anki at any point you may run into errors after updating.
+
+You can fix this by resetting the config:
+
+1. Go to `Tools > Add-ons > Kanji Grid Kuuube > Config`.
+
+2. Click `Restore Defaults`.
+
+3. Click `Save`.
+
+4. Restart Anki.
 
 ## Improvements
 
