@@ -114,6 +114,12 @@ class SortOrder(enum.Enum):
             "frequency",
         )[self.value]
 
+def get_background_color(avg_interval, config_interval, count):
+    if count != 0:
+        return hsvrgbstr(scoreAdjust(avg_interval / config_interval)/2)
+    else:
+        return "#FFF"
+
 class KanjiGrid:
     def __init__(self, mw):
         if mw:
@@ -122,7 +128,7 @@ class KanjiGrid:
             mw.form.menuTools.addAction(self.menuAction)
 
     def generate(self, config, units):
-        def kanjitile(char, index, count=0, avg_interval=0):
+        def kanjitile(char, index, bgcolour, count = 0, avg_interval = 0):
             tile = ""
             score = "NaN"
 
@@ -130,11 +136,6 @@ class KanjiGrid:
                 score = round(scoreAdjust(avg_interval / config.interval), 2)
 
             colour = "#000"
-
-            if count != 0:
-                bgcolour = hsvrgbstr(scoreAdjust(avg_interval / config.interval)/2)
-            else:
-                bgcolour = "#FFF"
 
             if config.tooltips:
                 tooltip = "Character: %s" % unicodedata.name(char)
@@ -215,13 +216,17 @@ class KanjiGrid:
                 SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (scoreAdjust(unit.avg_interval / config.interval), unit.count), reverse=True),
                 SortOrder.FREQUENCY: sorted(units.values(), key=lambda unit: (unit.count, scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
             }[SortOrder(config.groupby)]
-            count = -1
+            total_count = 0
+            count_known = 0
             for unit in unitsList:
                 if unit.count != 0 or config.unseen:
-                    count += 1
-                    table += kanjitile(unit.value, count, unit.count, unit.avg_interval)
+                    total_count += 1
+                    bgcolour = get_background_color(unit.avg_interval,config.interval, unit.count)
+                    if unit.count != 0 or bgcolour not in ["#E62E2E", "#FFF"]:
+                        count_known += 1
+                    table += kanjitile(unit.value, total_count, bgcolour, unit.count, unit.avg_interval)
             table += "</div>\n"
-            self.html += "<h4 style=\"color:#888;\">%d total unique kanji</h4>\n" % (count+1)
+            self.html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " total unique kanji known</h4>\n"
             self.html += table
         self.html += "</div></body></html>\n"
 
