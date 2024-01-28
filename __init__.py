@@ -100,9 +100,11 @@ class SortOrder(enum.Enum):
             "frequency",
         )[self.value]
 
-def get_background_color(avg_interval, config_interval, count):
+def get_background_color(avg_interval, config_interval, count, missing = False):
     if count != 0:
         return hsvrgbstr(scoreAdjust(avg_interval / config_interval)/2)
+    elif missing:
+        return "#EEE"
     else:
         return "#FFF"
 
@@ -114,25 +116,25 @@ class KanjiGrid:
             mw.form.menuTools.addAction(self.menuAction)
 
     def generate(self, config, units):
-        def kanjitile(char, index, bgcolour, count = 0, avg_interval = 0):
+        def kanjitile(char, index, bgcolor, count = 0, avg_interval = 0):
             tile = ""
             score = "NaN"
 
             if avg_interval:
                 score = round(scoreAdjust(avg_interval / config.interval), 2)
 
-            colour = "#000"
+            color = "#000"
 
             if config.tooltips:
                 tooltip = "Character: %s" % unicodedata.name(char)
                 if count:
                     tooltip += " | Count: %s | " % count
                     tooltip += "Avg Interval: %s | Score: %s | " % (round(avg_interval, 2), score)
-                    tooltip += "Background: %s | Index: %s" % (bgcolour, index)
-                tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\">" % (bgcolour, tooltip)
+                    tooltip += "Background: %s | Index: %s" % (bgcolor, index)
+                tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\">" % (bgcolor, tooltip)
             else:
-                tile += "\t<div style=\"background:%s;\">" % (bgcolour)
-            tile += "<a href=\"http://jisho.org/search/%s%%20%%23kanji\" style=\"color:%s;\">%s</a></div>\n" % (char, colour, char)
+                tile += "\t<div style=\"background:%s;\">" % (bgcolor)
+            tile += "<a href=\"http://jisho.org/search/%s%%20%%23kanji\" style=\"color:%s;\">%s</a></div>\n" % (char, color, char)
 
             return tile
 
@@ -164,7 +166,8 @@ class KanjiGrid:
                 for unit in [units[c] for c in groups.data[i][1] if c in kanji]:
                     if unit.count != 0 or config.unseen:
                         count += 1
-                        table += kanjitile(unit.value, count, unit.count, unit.avg_interval)
+                        bgcolor = get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
+                        table += kanjitile(unit.value, count, bgcolor, unit.count, unit.avg_interval)
                 table += "</div>\n"
                 n = count+1
                 t = len(groups.data[i][1])
@@ -174,7 +177,8 @@ class KanjiGrid:
                     count = -1
                     for char in [c for c in groups.data[i][1] if c not in kanji]:
                         count += 1
-                        table += kanjitile(char, count, missing=True)
+                        bgcolor = get_background_color(unit.avg_interval, config.interval, unit.count, missing = True)
+                        table += kanjitile(char, count, bgcolor)
                     if count == -1:
                         table += "<b style=\"color:#CCC\">None</b>"
                     table += "</div></details>\n"
@@ -188,7 +192,8 @@ class KanjiGrid:
             for unit in [u for u in units.values() if u.value not in chars]:
                 if unit.count != 0 or config.unseen:
                     count += 1
-                    table += kanjitile(unit.value, count, unit.count, unit.avg_interval)
+                    bgcolor = get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
+                    table += kanjitile(unit.value, count, bgcolor, unit.count, unit.avg_interval)
             table += "</div>\n"
             n = count+1
             self.html += "<h4 style=\"color:#888;\">%d of %d - %0.2f%%</h4>\n" % (n, gc, n*100.0/(gc if gc > 0 else 1))
@@ -207,10 +212,10 @@ class KanjiGrid:
             for unit in unitsList:
                 if unit.count != 0 or config.unseen:
                     total_count += 1
-                    bgcolour = get_background_color(unit.avg_interval,config.interval, unit.count)
-                    if unit.count != 0 or bgcolour not in ["#E62E2E", "#FFF"]:
+                    bgcolor = get_background_color(unit.avg_interval,config.interval, unit.count)
+                    if unit.count != 0 or bgcolor not in ["#E62E2E", "#FFF"]:
                         count_known += 1
-                    table += kanjitile(unit.value, total_count, bgcolour, unit.count, unit.avg_interval)
+                    table += kanjitile(unit.value, total_count, bgcolor, unit.count, unit.avg_interval)
             table += "</div>\n"
             self.html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " total unique kanji known</h4>\n"
             self.html += table
