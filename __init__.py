@@ -177,7 +177,7 @@ class KanjiGrid:
                     count = -1
                     for char in [c for c in groups.data[i][1] if c not in kanji]:
                         count += 1
-                        bgcolor = get_background_color(unit.avg_interval, config.interval, unit.count, missing = True)
+                        bgcolor = "#EEE"
                         table += kanjitile(char, count, bgcolor)
                     if count == -1:
                         table += "<b style=\"color:#CCC\">None</b>"
