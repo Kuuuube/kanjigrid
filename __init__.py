@@ -217,7 +217,7 @@ class KanjiGrid:
                         count_known += 1
                     table += kanjitile(unit.value, total_count, bgcolor, unit.count, unit.avg_interval)
             table += "</div>\n"
-            self.html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " total unique kanji known</h4>\n"
+            self.html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " Known - " + str(round(count_known / total_count * 100, 2)) + "%</h4>\n"
             self.html += table
         self.html += "</div></body></html>\n"
 
