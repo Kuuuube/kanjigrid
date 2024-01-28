@@ -1,6 +1,6 @@
 {
     "defaults": {
-        "pattern": "kanji",
+        "pattern": "",
         "literal": false,
         "interval": 180,
         "groupby": 0,

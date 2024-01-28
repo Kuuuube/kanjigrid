@@ -420,6 +420,9 @@ class KanjiGrid:
         field = QComboBox()
         field.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         def update_fields_dropdown(deckname):
+            if config.pattern != "":
+                field.setCurrentText(config.pattern)
+                return
             if deckname != "*":
                 deckname = mw.col.decks.get(config.did)['name']
             new_text = set()
