@@ -13,6 +13,7 @@ import unicodedata
 import urllib.parse
 import shlex
 import json
+import collections
 from functools import reduce
 
 from anki.utils import ids2str
@@ -26,22 +27,17 @@ from aqt.qt import (Qt, QAction, QStandardPaths, QSizePolicy, QFileDialog,
 
 from . import data
 
-class TestedUnit:
-    def __init__(self, value):
-        self.idx = 0
-        self.value = value
-        self.avg_interval = 0.0
-        self.count = 0
+unit_tuple = collections.namedtuple("unit", "idx value avg_interval count")
 
-def addDataFromCard(unit, idx, card):
+def addDataFromCard(unit, new_idx, card):
     if card.type > 0:
         newTotal = (unit.avg_interval * unit.count) + card.ivl
+        new_count = unit.count + 1
+        avg_interval = newTotal / new_count
+        return unit_tuple(unit.idx, unit.value, avg_interval, new_count)
 
-        unit.count += 1
-        unit.avg_interval = newTotal / unit.count
-
-    if idx < unit.idx or unit.idx == 0:
-        unit.idx = idx
+    if new_idx < unit.idx or unit.idx == 0:
+        return unit_tuple(new_idx, unit.value, unit.avg_interval, unit.count)
 
     return unit
 
@@ -57,7 +53,7 @@ def addUnitData(units, unitKey, i, card, kanjionly):
     validKey = data.ignore.find(unitKey) == -1 and (not kanjionly or isKanji(unitKey))
     if validKey:
         if unitKey not in units:
-            unit = TestedUnit(unitKey)
+            unit = unit_tuple(0, unitKey, 0.0, 0)
             units[unitKey] = unit
         units[unitKey] = addDataFromCard(units[unitKey], i, card)
 
