@@ -36,33 +36,32 @@ class TestedUnit:
         self.count = 0
         self.mod = 0
 
-    def addDataFromCard(self, idx, card, timeNow):
-        if card.type > 0:
-            newTotal = (self.avg_interval * self.count) + card.ivl
+def addDataFromCard(unit, idx, card, timeNow):
+    if card.type > 0:
+        newTotal = (unit.avg_interval * unit.count) + card.ivl
 
-            self.count += 1
-            self.avg_interval = newTotal / self.count
-        if card.type == 2:
-            if card.due < self.due or self.due == 0:
-                self.due = card.due
+        unit.count += 1
+        unit.avg_interval = newTotal / unit.count
+    if card.type == 2:
+        if card.due < unit.due or unit.due == 0:
+            unit.due = card.due
 
-            if card.odue < self.odue or self.odue == 0:
-                self.odue = card.odue
-                self.mod = self.odue
+        if card.odue < unit.odue or unit.odue == 0:
+            unit.odue = card.odue
+            unit.mod = unit.odue
 
-        if idx < self.idx or self.idx == 0:
-            self.idx = idx
+    if idx < unit.idx or unit.idx == 0:
+        unit.idx = idx
 
+    return unit
 
 cjk_re = re.compile("CJK (UNIFIED|COMPATIBILITY) IDEOGRAPH")
 def isKanji(unichar):
     return bool(cjk_re.match(unicodedata.name(unichar, "")))
 
-
 def scoreAdjust(score):
     score += 1
     return 1 - 1 / (score * score)
-
 
 def addUnitData(units, unitKey, i, card, kanjionly, timeNow):
     validKey = data.ignore.find(unitKey) == -1 and (not kanjionly or isKanji(unitKey))
@@ -70,9 +69,7 @@ def addUnitData(units, unitKey, i, card, kanjionly, timeNow):
         if unitKey not in units:
             unit = TestedUnit(unitKey)
             units[unitKey] = unit
-
-        units[unitKey].addDataFromCard(i, card, timeNow)
-
+        units[unitKey] = addDataFromCard(units[unitKey], i, card, timeNow)
 
 def hsvrgbstr(h, s=0.8, v=0.9):
     _256 = lambda x: round(x*256)
@@ -117,7 +114,6 @@ class SortOrder(enum.Enum):
             "frequency",
         )[self.value]
 
-
 class KanjiGrid:
     def __init__(self, mw):
         if mw:
@@ -126,22 +122,17 @@ class KanjiGrid:
             mw.form.menuTools.addAction(self.menuAction)
 
     def generate(self, config, units):
-        def kanjitile(char, index, count=0, avg_interval=0, missing=False):
+        def kanjitile(char, index, count=0, avg_interval=0):
             tile = ""
             score = "NaN"
 
             if avg_interval:
                 score = round(scoreAdjust(avg_interval / config.interval), 2)
 
-            if missing:
-                colour = "#888"
-            else:
-                colour = "#000"
+            colour = "#000"
 
             if count != 0:
                 bgcolour = hsvrgbstr(scoreAdjust(avg_interval / config.interval)/2)
-            elif missing:
-                bgcolour = "#EEE"
             else:
                 bgcolour = "#FFF"
 
