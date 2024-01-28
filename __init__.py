@@ -31,24 +31,14 @@ class TestedUnit:
         self.idx = 0
         self.value = value
         self.avg_interval = 0.0
-        self.due = 0.0
-        self.odue = 0.0
         self.count = 0
-        self.mod = 0
 
-def addDataFromCard(unit, idx, card, timeNow):
+def addDataFromCard(unit, idx, card):
     if card.type > 0:
         newTotal = (unit.avg_interval * unit.count) + card.ivl
 
         unit.count += 1
         unit.avg_interval = newTotal / unit.count
-    if card.type == 2:
-        if card.due < unit.due or unit.due == 0:
-            unit.due = card.due
-
-        if card.odue < unit.odue or unit.odue == 0:
-            unit.odue = card.odue
-            unit.mod = unit.odue
 
     if idx < unit.idx or unit.idx == 0:
         unit.idx = idx
@@ -63,13 +53,13 @@ def scoreAdjust(score):
     score += 1
     return 1 - 1 / (score * score)
 
-def addUnitData(units, unitKey, i, card, kanjionly, timeNow):
+def addUnitData(units, unitKey, i, card, kanjionly):
     validKey = data.ignore.find(unitKey) == -1 and (not kanjionly or isKanji(unitKey))
     if validKey:
         if unitKey not in units:
             unit = TestedUnit(unitKey)
             units[unitKey] = unit
-        units[unitKey] = addDataFromCard(units[unitKey], i, card, timeNow)
+        units[unitKey] = addDataFromCard(units[unitKey], i, card)
 
 def hsvrgbstr(h, s=0.8, v=0.9):
     _256 = lambda x: round(x*256)
@@ -263,7 +253,7 @@ class KanjiGrid:
             if ".htm" not in fileName:
                 fileName += ".html"
             with open(fileName, 'w', encoding='utf-8') as fileOut:
-                (units, _) = self.kanjigrid(config)
+                units = self.kanjigrid(config)
                 self.generate(config, units)
                 fileOut.write(self.html)
             mw.progress.finish()
@@ -349,7 +339,6 @@ class KanjiGrid:
 
         units = dict()
         notes = dict()
-        timeNow = time.time()
         for i in cids:
             card = mw.col.getCard(i)
             if card.nid not in notes.keys():
@@ -366,14 +355,14 @@ class KanjiGrid:
                 unitKey = notes[card.nid]
             if unitKey is not None:
                 for ch in unitKey:
-                    addUnitData(units, ch, i, card, config.kanjionly, timeNow)
+                    addUnitData(units, ch, i, card, config.kanjionly)
         self.timepoint("Units created")
-        return units, timeNow
+        return units
 
     def makegrid(self, config):
         self.time = time.time()
         self.timepoint("Start")
-        (units, _) = self.kanjigrid(config)
+        units = self.kanjigrid(config)
         if units is not None:
             self.displaygrid(config, units)
 
