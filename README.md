@@ -46,6 +46,30 @@ You can fix this by resetting the config:
 
 4. Restart Anki.
 
+## Config Values
+
+- `pattern` The default text in the `Field` dropdown box. Controls which field(s) to look for kanji in. Defaults to the first field of the selected deck if no value is found.
+
+- `interval` The default text in the `Card interval considered strong` box. Sets the interval for cards to be given the Strong color on the grid.
+
+- `groupby` The default setting in the `Group by` dropdown. The first dropdown item is number 0.
+
+- `lang` The default setting in the `Language` dropdown. This controls fontcss and search options.
+
+- `unseen` Whether or not to display kanji that has not been viewed yet in the deck.
+
+- `tooltips` Whether or not to display tooltips when hovering over kanji in the grid.
+
+- `kanjionly` Whether or not to only show kanji in the grid.
+
+- `saveimagequality` The quality to save the grid at when seleting `Save Image` on the grid. Accepted values are 0-5. WARNING: On large grids using anything except `1` may crash anki.
+
+- `saveimagedelay` The delay in ms to wait when resizing the image if `saveimagequality` is not 1. Setting this to a higher value may help mitigate crashes.
+
+- `jafontcss` `zhfontcss` `zhhansfontcss` `zhhantfontcss` `kofontcss` `vifontcss` The css to apply to the grid for the respective language. This is intended to be used for fonts but accepts all css. For fonts, use the following syntax: `font-family:%s;`. Replace `%s` with your fonts list.
+
+- `jasearch` `zhsearch` `zhhanssearch` `zhhantsearch` `kosearch` `visearch` The search option to provide for the respective language. Use `%s` to define the kanji's position in the search string.
+
 ## Improvements
 
 - Field selector now uses a dropdown/text box combo instead of a text box.
