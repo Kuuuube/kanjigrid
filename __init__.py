@@ -47,7 +47,7 @@ class KanjiGrid:
                 tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\">" % (bgcolor, tooltip)
             else:
                 tile += "\t<div style=\"background:%s;\">" % (bgcolor)
-            tile += "<a href=\"http://jisho.org/search/%s%%20%%23kanji\" style=\"color:%s;\">%s</a></div>\n" % (char, color, char)
+            tile += "<a href=\"" + util.get_search(config, char) + "\" style=\"color:" + color + ";\">" + char + "</a></div>\n"
 
             return tile
 

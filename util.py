@@ -85,4 +85,19 @@ def get_font_css(config):
         return config.kofontcss
     if config.lang ==  "vi":
         return config.vifontcss
-    
+
+def get_search(config, char):
+    search_url = ""
+    if config.lang == "ja":
+        search_url = config.jasearch
+    if config.lang ==  "zh":
+        search_url = config.zhsearch
+    if config.lang ==  "zh-Hans":
+        search_url = config.zhhanssearch
+    if config.lang ==  "zh-Hant":
+        search_url = config.zhhantsearch
+    if config.lang ==  "ko":
+        search_url = config.kosearch
+    if config.lang ==  "vi":
+        search_url = config.visearch
+    return search_url.replace("%s", char)

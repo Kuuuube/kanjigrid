@@ -15,6 +15,12 @@
         "zhhansfontcss": "",
         "zhhantfontcss": "",
         "kofontcss": "",
-        "vifontcss": ""
+        "vifontcss": "",
+        "jasearch": "https://jisho.org/search/%s %23kanji",
+        "zhsearch": "",
+        "zhhanssearch": "",
+        "zhhantsearch": "",
+        "kosearch": "",
+        "visearch": ""
     }
 }
