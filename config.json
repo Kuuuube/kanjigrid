@@ -1,7 +1,6 @@
 {
     "defaults": {
         "pattern": "",
-        "literal": false,
         "interval": 180,
         "groupby": 2,
         "lang": "ja",
