@@ -19,7 +19,7 @@ from aqt.qt import (Qt, QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox, 
                     QComboBox, QPushButton)
 
-from . import data, util, save
+from . import config_util, data, util, save
 
 class KanjiGrid:
     def __init__(self, mw):
@@ -205,7 +205,8 @@ class KanjiGrid:
 
     def setup(self):
         addonconfig = mw.addonManager.getConfig(__name__)
-        config = types.SimpleNamespace(**addonconfig['defaults'])
+        validated_config = config_util.validate_config(addonconfig["defaults"])
+        config = types.SimpleNamespace(**validated_config)
         if addonconfig.get("_debug_time", False):
             self.timepoint = lambda c: print("%s: %0.3f" % (c, time.time()-self.time))
         else:
