@@ -137,7 +137,7 @@ class KanjiGrid:
             self.html += table
         self.html += "</div></body></html>\n"
 
-    def displaygrid(self, config, units):
+    def displaygrid(self, config, deckname, units):
         self.generate(config, units)
         self.timepoint("HTML generated")
         self.win = QDialog(mw)
@@ -148,13 +148,13 @@ class KanjiGrid:
         self.wv.stdHtml(self.html)
         hl = QHBoxLayout()
         vl.addLayout(hl)
-        save_html = QPushButton("Save HTML", clicked=lambda: save.savehtml(self, mw, config))
+        save_html = QPushButton("Save HTML", clicked=lambda: save.savehtml(self, mw, config, deckname))
         hl.addWidget(save_html)
-        same_image = QPushButton("Save Image", clicked=lambda: save.savepng(self, mw, config))
+        same_image = QPushButton("Save Image", clicked=lambda: save.savepng(self, mw, config, deckname))
         hl.addWidget(same_image)
-        save_pdf = QPushButton("Save PDF", clicked=lambda: save.savepdf(self, mw))
+        save_pdf = QPushButton("Save PDF", clicked=lambda: save.savepdf(self, mw, deckname))
         hl.addWidget(save_pdf)
-        save_json = QPushButton("Save JSON", clicked=lambda: save.savejson(self, mw, config, units))
+        save_json = QPushButton("Save JSON", clicked=lambda: save.savejson(self, mw, config, deckname, units))
         hl.addWidget(save_json)
         bb = QPushButton("Close", clicked=self.win.reject)
         hl.addWidget(bb)
@@ -200,8 +200,9 @@ class KanjiGrid:
         self.time = time.time()
         self.timepoint("Start")
         units = self.kanjigrid(config)
+        deckname = mw.col.decks.name(config.did)
         if units is not None:
-            self.displaygrid(config, units)
+            self.displaygrid(config, deckname, units)
 
     def setup(self):
         addonconfig = mw.addonManager.getConfig(__name__)

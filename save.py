@@ -1,11 +1,17 @@
 import os
 import json
+import datetime
+import re
 from aqt.utils import showInfo, showCritical
 from aqt.qt import (QStandardPaths, QFileDialog, QTimer, QPageLayout, QPageSize,
                     QMarginsF)
 
-def savehtml(self, mw, config):
-    fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "Web Page (*.html *.htm)")[0]
+def get_filename(name):
+    current_date = datetime.datetime.now().strftime("%Y_%m_%d")
+    return re.sub("(\s|<|>|:|\"|/|\\\|\||\?|\*)", "_", name) + "_" + current_date
+
+def savehtml(self, mw, config, deckname):
+    fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".html", "Web Page (*.html *.htm)")[0]
     if fileName != "":
         mw.progress.start(immediate=True)
         if ".htm" not in fileName:
@@ -17,7 +23,7 @@ def savehtml(self, mw, config):
         mw.progress.finish()
         showInfo("Page saved to %s!" % os.path.abspath(fileOut.name))
 
-def savepng(self, mw, config):
+def savepng(self, mw, config, deckname):
     oldsize = self.wv.size()
 
     content_size = self.wv.page().contentsSize().toSize()
@@ -35,7 +41,7 @@ def savepng(self, mw, config):
             self.wv.resize(content_size)
         QTimer.singleShot(config.saveimagedelay, resize_to_content)
 
-    fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "Portable Network Graphics (*.png)")[0]
+    fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".png", "Portable Network Graphics (*.png)")[0]
     if fileName != "":
         if ".png" not in fileName:
             fileName += ".png"
@@ -49,8 +55,8 @@ def savepng(self, mw, config):
     self.wv.page().setZoomFactor(1)
     self.wv.resize(oldsize)
 
-def savepdf(self, mw):
-    fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "PDF (*.pdf)")[0]
+def savepdf(self, mw, deckname):
+    fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".pdf", "PDF (*.pdf)")[0]
     if fileName != "":
         mw.progress.start(immediate=True)
         if ".pdf" not in fileName:
@@ -67,8 +73,8 @@ def savepdf(self, mw):
         page_size.setHeight(page_size.height() * 0.75)
         self.wv.printToPdf(fileName, QPageLayout(QPageSize(QPageSize(page_size, QPageSize.Unit.Point, None, QPageSize.SizeMatchPolicy.ExactMatch)), QPageLayout.Orientation.Portrait, QMarginsF()))
 
-def savejson(self, mw, config, units):
-    fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "JSON (*.json)")[0]
+def savejson(self, mw, config, deckname, units):
+    fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".json", "JSON (*.json)")[0]
     if fileName != "":
         mw.progress.start(immediate=True)
         if ".json" not in fileName:
