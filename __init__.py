@@ -3,7 +3,6 @@
 # Upstream: https://github.com/kuuuube/kanjigrid
 # AnkiWeb:  https://ankiweb.net/shared/info/1610304449
 
-import enum
 import operator
 import re
 import time
@@ -11,7 +10,6 @@ import types
 import unicodedata
 import urllib.parse
 import shlex
-import collections
 from functools import reduce
 
 from anki.utils import ids2str
@@ -22,22 +20,6 @@ from aqt.qt import (Qt, QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QComboBox, QPushButton)
 
 from . import data, util, save
-
-unit_tuple = collections.namedtuple("unit", "idx value avg_interval count")
-
-class SortOrder(enum.Enum):
-    NONE = 0
-    UNICODE = 1
-    SCORE = 2
-    FREQUENCY = 3
-
-    def pretty_value(self):
-        return (
-            "order found",
-            "unicode order",
-            "score",
-            "frequency",
-        )[self.value]
 
 class KanjiGrid:
     def __init__(self, mw):
@@ -86,8 +68,8 @@ class KanjiGrid:
         self.html += "&nbsp;Strong</p></div>\n"
         self.html += "<hr style=\"border-style: dashed;border-color: #666;width: 100%;\">\n"
         self.html += "<div style=\"text-align: center;\">\n"
-        if config.groupby >= len(SortOrder):
-            groups = data.groups[config.groupby - len(SortOrder)]
+        if config.groupby >= len(util.SortOrder):
+            groups = data.groups[config.groupby - len(util.SortOrder)]
             gc = 0
             kanji = [u.value for u in units.values()]
             for i in range(1, len(groups.data)):
@@ -133,11 +115,11 @@ class KanjiGrid:
         else:
             table = "<div class=\"grid-container\">\n"
             unitsList = {
-                SortOrder.NONE:      sorted(units.values(), key=lambda unit: (unit.idx, unit.count)),
-                SortOrder.UNICODE:   sorted(units.values(), key=lambda unit: (unicodedata.name(unit.value), unit.count)),
-                SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (util.scoreAdjust(unit.avg_interval / config.interval), unit.count), reverse=True),
-                SortOrder.FREQUENCY: sorted(units.values(), key=lambda unit: (unit.count, util.scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
-            }[SortOrder(config.groupby)]
+                util.SortOrder.NONE:      sorted(units.values(), key=lambda unit: (unit.idx, unit.count)),
+                util.SortOrder.UNICODE:   sorted(units.values(), key=lambda unit: (unicodedata.name(unit.value), unit.count)),
+                util.SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (util.scoreAdjust(unit.avg_interval / config.interval), unit.count), reverse=True),
+                util.SortOrder.FREQUENCY: sorted(units.values(), key=lambda unit: (unit.count, util.scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
+            }[util.SortOrder(config.groupby)]
             total_count = 0
             count_known = 0
             for unit in unitsList:
@@ -295,7 +277,7 @@ class KanjiGrid:
         il.addWidget(stint)
         groupby = QComboBox()
         groupby.addItems([
-            *("None, sorted by " + x.pretty_value() for x in SortOrder),
+            *("None, sorted by " + x.pretty_value() for x in util.SortOrder),
             *(x.name for x in data.groups),
         ])
         groupby.setCurrentIndex(config.groupby)

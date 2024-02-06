@@ -1,10 +1,25 @@
 import re
 import unicodedata
 import collections
+import enum
 
 from . import data
 
 unit_tuple = collections.namedtuple("unit", "idx value avg_interval count")
+
+class SortOrder(enum.Enum):
+    NONE = 0
+    UNICODE = 1
+    SCORE = 2
+    FREQUENCY = 3
+
+    def pretty_value(self):
+        return (
+            "order found",
+            "unicode order",
+            "score",
+            "frequency",
+        )[self.value]
 
 cjk_re = re.compile("CJK (UNIFIED|COMPATIBILITY) IDEOGRAPH")
 def isKanji(unichar):
