@@ -106,6 +106,12 @@ You can fix this by resetting the config:
 
 - Added option to save Kanji Grid as PDF.
 
+- Filename is autofilled with deck name and date when saving.
+
+- Search option when clicking on a kanji is customizeable for each language.
+
+- Config validation and safer loading to help prevent crashes.
+
 ## Bug Fixes
 
 - `Save HTML` and `Save Image` now properly function.
