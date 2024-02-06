@@ -5,27 +5,23 @@
 
 import enum
 import operator
-import os
 import re
 import time
 import types
 import unicodedata
 import urllib.parse
 import shlex
-import json
 import collections
 from functools import reduce
 
 from anki.utils import ids2str
 from aqt import mw
-from aqt.utils import showInfo, showCritical
 from aqt.webview import AnkiWebView
-from aqt.qt import (Qt, QAction, QStandardPaths, QSizePolicy, QFileDialog,
-                    QDialog, QHBoxLayout, QVBoxLayout, QGroupBox, QLabel,
-                    QCheckBox, QSpinBox, QComboBox, QPushButton, QTimer,
-                    QPageLayout, QPageSize, QMarginsF)
+from aqt.qt import (Qt, QAction, QSizePolicy, QDialog, QHBoxLayout, 
+                    QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox, 
+                    QComboBox, QPushButton)
 
-from . import data, util
+from . import data, util, save
 
 unit_tuple = collections.namedtuple("unit", "idx value avg_interval count")
 
@@ -170,13 +166,13 @@ class KanjiGrid:
         self.wv.stdHtml(self.html)
         hl = QHBoxLayout()
         vl.addLayout(hl)
-        save_html = QPushButton("Save HTML", clicked=lambda: self.savehtml(config))
+        save_html = QPushButton("Save HTML", clicked=lambda: save.savehtml(self, mw, config))
         hl.addWidget(save_html)
-        same_image = QPushButton("Save Image", clicked=lambda: self.savepng(config))
+        same_image = QPushButton("Save Image", clicked=lambda: save.savepng(self, mw, config))
         hl.addWidget(same_image)
-        save_pdf = QPushButton("Save PDF", clicked=lambda: self.savepdf())
+        save_pdf = QPushButton("Save PDF", clicked=lambda: save.savepdf(self, mw))
         hl.addWidget(save_pdf)
-        save_json = QPushButton("Save JSON", clicked=lambda: self.savejson(config, units))
+        save_json = QPushButton("Save JSON", clicked=lambda: save.savejson(self, mw, config, units))
         hl.addWidget(save_json)
         bb = QPushButton("Close", clicked=self.win.reject)
         hl.addWidget(bb)
@@ -184,86 +180,6 @@ class KanjiGrid:
         self.win.resize(1000, 800)
         self.timepoint("Window complete")
         return 0
-
-    def savehtml(self, config):
-        fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "Web Page (*.html *.htm)")[0]
-        if fileName != "":
-            mw.progress.start(immediate=True)
-            if ".htm" not in fileName:
-                fileName += ".html"
-            with open(fileName, 'w', encoding='utf-8') as fileOut:
-                units = self.kanjigrid(config)
-                self.generate(config, units)
-                fileOut.write(self.html)
-            mw.progress.finish()
-            showInfo("Page saved to %s!" % os.path.abspath(fileOut.name))
-
-    def savepng(self, config):
-        oldsize = self.wv.size()
-
-        content_size = self.wv.page().contentsSize().toSize()
-        content_size.setWidth(self.wv.size().width() * config.saveimagequality) #width does not need to change to content size
-        content_size.setHeight(content_size.height() * config.saveimagequality)
-        self.wv.resize(content_size)
-
-        if config.saveimagequality != 1:
-            self.wv.page().setZoomFactor(config.saveimagequality)
-
-            def resize_to_content():
-                content_size = self.wv.page().contentsSize().toSize()
-                content_size.setWidth(self.wv.size().width()) #width does not need to change to content size
-                content_size.setHeight(content_size.height())
-                self.wv.resize(content_size)
-            QTimer.singleShot(config.saveimagedelay, resize_to_content)
-
-        fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "Portable Network Graphics (*.png)")[0]
-        if fileName != "":
-            if ".png" not in fileName:
-                fileName += ".png"
-
-            success = self.wv.grab().save(fileName, b"PNG")
-            if success:
-                showInfo("Image saved to %s!" % os.path.abspath(fileName))
-            else:
-                showCritical("Failed to save the image.")
-
-        self.wv.page().setZoomFactor(1)
-        self.wv.resize(oldsize)
-
-    def savepdf(self):
-        fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "PDF (*.pdf)")[0]
-        if fileName != "":
-            mw.progress.start(immediate=True)
-            if ".pdf" not in fileName:
-                fileName += ".pdf"
-
-            def finish():
-                mw.progress.finish()
-                showInfo("PDF saved to %s!" % os.path.abspath(fileName))
-                self.wv.pdfPrintingFinished.disconnect()
-
-            self.wv.pdfPrintingFinished.connect(finish)
-            page_size = self.wv.page().contentsSize()
-            page_size.setWidth(page_size.width() * 0.75) #`pixels * 0.75 = points` with default dpi used by printToPdf or QPageSize
-            page_size.setHeight(page_size.height() * 0.75)
-            self.wv.printToPdf(fileName, QPageLayout(QPageSize(QPageSize(page_size, QPageSize.Unit.Point, None, QPageSize.SizeMatchPolicy.ExactMatch)), QPageLayout.Orientation.Portrait, QMarginsF()))
-
-    def savejson(self, config, units):
-        fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0], "JSON (*.json)")[0]
-        if fileName != "":
-            mw.progress.start(immediate=True)
-            if ".json" not in fileName:
-                fileName += ".json"
-            with open(fileName, 'w', encoding='utf-8') as fileOut:
-                self.time = time.time()
-                self.timepoint("JSON start")
-                self.generatejson(config, units)
-                fileOut.write(self.json)
-            mw.progress.finish()
-            showInfo("JSON saved to %s!" % os.path.abspath(fileOut.name))
-
-    def generatejson(self, config, units):
-        self.json = json.dumps({'units':units, 'config':config}, default=lambda x: x.__dict__, indent=4)
 
     def kanjigrid(self, config):
         dids = [config.did]
