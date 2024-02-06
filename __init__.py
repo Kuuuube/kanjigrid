@@ -25,66 +25,9 @@ from aqt.qt import (Qt, QAction, QStandardPaths, QSizePolicy, QFileDialog,
                     QCheckBox, QSpinBox, QComboBox, QPushButton, QTimer,
                     QPageLayout, QPageSize, QMarginsF)
 
-from . import data
+from . import data, util
 
 unit_tuple = collections.namedtuple("unit", "idx value avg_interval count")
-
-def addDataFromCard(unit, new_idx, card):
-    if card.type > 0:
-        newTotal = (unit.avg_interval * unit.count) + card.ivl
-        new_count = unit.count + 1
-        avg_interval = newTotal / new_count
-        return unit_tuple(unit.idx, unit.value, avg_interval, new_count)
-
-    if new_idx < unit.idx or unit.idx == 0:
-        return unit_tuple(new_idx, unit.value, unit.avg_interval, unit.count)
-
-    return unit
-
-cjk_re = re.compile("CJK (UNIFIED|COMPATIBILITY) IDEOGRAPH")
-def isKanji(unichar):
-    return bool(cjk_re.match(unicodedata.name(unichar, "")))
-
-def scoreAdjust(score):
-    score += 1
-    return 1 - 1 / (score * score)
-
-def addUnitData(units, unitKey, i, card, kanjionly):
-    validKey = data.ignore.find(unitKey) == -1 and (not kanjionly or isKanji(unitKey))
-    if validKey:
-        if unitKey not in units:
-            unit = unit_tuple(0, unitKey, 0.0, 0)
-            units[unitKey] = unit
-        units[unitKey] = addDataFromCard(units[unitKey], i, card)
-
-def hsvrgbstr(h, s=0.8, v=0.9):
-    _256 = lambda x: round(x*256)
-    i = int(h*6.0)
-    f = (h*6.0) - i
-    p = v*(1.0 - s)
-    q = v*(1.0 - s*f)
-    t = v*(1.0 - s*(1.0-f))
-    i = i % 6
-    if i == 0: return "#%0.2X%0.2X%0.2X" % (_256(v), _256(t), _256(p))
-    if i == 1: return "#%0.2X%0.2X%0.2X" % (_256(q), _256(v), _256(p))
-    if i == 2: return "#%0.2X%0.2X%0.2X" % (_256(p), _256(v), _256(t))
-    if i == 3: return "#%0.2X%0.2X%0.2X" % (_256(p), _256(q), _256(v))
-    if i == 4: return "#%0.2X%0.2X%0.2X" % (_256(t), _256(p), _256(v))
-    if i == 5: return "#%0.2X%0.2X%0.2X" % (_256(v), _256(p), _256(q))
-
-def get_font_css(config):
-    if config.lang == "ja":
-        return config.jafontcss
-    if config.lang ==  "zh":
-        return config.zhfontcss
-    if config.lang ==  "zh-Hans":
-        return config.zhhansfontcss
-    if config.lang ==  "zh-Hant":
-        return config.zhhantfontcss
-    if config.lang ==  "ko":
-        return config.kofontcss
-    if config.lang ==  "vi":
-        return config.vifontcss
 
 class SortOrder(enum.Enum):
     NONE = 0
@@ -100,14 +43,6 @@ class SortOrder(enum.Enum):
             "frequency",
         )[self.value]
 
-def get_background_color(avg_interval, config_interval, count, missing = False):
-    if count != 0:
-        return hsvrgbstr(scoreAdjust(avg_interval / config_interval)/2)
-    elif missing:
-        return "#EEE"
-    else:
-        return "#FFF"
-
 class KanjiGrid:
     def __init__(self, mw):
         if mw:
@@ -121,7 +56,7 @@ class KanjiGrid:
             score = "NaN"
 
             if avg_interval:
-                score = round(scoreAdjust(avg_interval / config.interval), 2)
+                score = round(util.scoreAdjust(avg_interval / config.interval), 2)
 
             color = "#000"
 
@@ -143,7 +78,7 @@ class KanjiGrid:
             deckname = mw.col.decks.name(config.did).rsplit('::', 1)[-1]
 
         self.html  = "<!doctype html><html lang=\"%s\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>" % config.lang
-        self.html += "<style type=\"text/css\">body{text-align:center;}.grid-container{display:grid;grid-gap:2px;grid-template-columns:repeat(auto-fit,minmax(23px, 1fr));" + get_font_css(config) + "}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
+        self.html += "<style type=\"text/css\">body{text-align:center;}.grid-container{display:grid;grid-gap:2px;grid-template-columns:repeat(auto-fit,minmax(23px, 1fr));" + util.get_font_css(config) + "}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
         self.html += "</head>\n"
         self.html += "<body>\n"
         self.html += "<div style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</div>\n" % deckname
@@ -151,7 +86,7 @@ class KanjiGrid:
         self.html += "<p style=\"text-align: center\">Weak&nbsp;"
 	# keycolors = (hsvrgbstr(n/6.0) for n in range(6+1))
         for c in [n/6.0 for n in range(6+1)]:
-            self.html += "<span class=\"key\" style=\"background-color: %s;\">&nbsp;</span>" % hsvrgbstr(c/2)
+            self.html += "<span class=\"key\" style=\"background-color: %s;\">&nbsp;</span>" % util.hsvrgbstr(c/2)
         self.html += "&nbsp;Strong</p></div>\n"
         self.html += "<hr style=\"border-style: dashed;border-color: #666;width: 100%;\">\n"
         self.html += "<div style=\"text-align: center;\">\n"
@@ -166,7 +101,7 @@ class KanjiGrid:
                 for unit in [units[c] for c in groups.data[i][1] if c in kanji]:
                     if unit.count != 0 or config.unseen:
                         count += 1
-                        bgcolor = get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
+                        bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
                         table += kanjitile(unit.value, count, bgcolor, unit.count, unit.avg_interval)
                 table += "</div>\n"
                 n = count+1
@@ -192,7 +127,7 @@ class KanjiGrid:
             for unit in [u for u in units.values() if u.value not in chars]:
                 if unit.count != 0 or config.unseen:
                     count += 1
-                    bgcolor = get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
+                    bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
                     table += kanjitile(unit.value, count, bgcolor, unit.count, unit.avg_interval)
             table += "</div>\n"
             n = count+1
@@ -204,15 +139,15 @@ class KanjiGrid:
             unitsList = {
                 SortOrder.NONE:      sorted(units.values(), key=lambda unit: (unit.idx, unit.count)),
                 SortOrder.UNICODE:   sorted(units.values(), key=lambda unit: (unicodedata.name(unit.value), unit.count)),
-                SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (scoreAdjust(unit.avg_interval / config.interval), unit.count), reverse=True),
-                SortOrder.FREQUENCY: sorted(units.values(), key=lambda unit: (unit.count, scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
+                SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (util.scoreAdjust(unit.avg_interval / config.interval), unit.count), reverse=True),
+                SortOrder.FREQUENCY: sorted(units.values(), key=lambda unit: (unit.count, util.scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
             }[SortOrder(config.groupby)]
             total_count = 0
             count_known = 0
             for unit in unitsList:
                 if unit.count != 0 or config.unseen:
                     total_count += 1
-                    bgcolor = get_background_color(unit.avg_interval,config.interval, unit.count)
+                    bgcolor = util.get_background_color(unit.avg_interval,config.interval, unit.count)
                     if unit.count != 0 or bgcolor not in ["#E62E2E", "#FFF"]:
                         count_known += 1
                     table += kanjitile(unit.value, total_count, bgcolor, unit.count, unit.avg_interval)
@@ -359,7 +294,7 @@ class KanjiGrid:
                 unitKey = notes[card.nid]
             if unitKey is not None:
                 for ch in unitKey:
-                    addUnitData(units, ch, i, card, config.kanjionly)
+                    util.addUnitData(units, ch, i, card, config.kanjionly)
         self.timepoint("Units created")
         return units
 
