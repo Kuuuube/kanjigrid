@@ -200,7 +200,9 @@ class KanjiGrid:
         self.time = time.time()
         self.timepoint("Start")
         units = self.kanjigrid(config)
-        deckname = mw.col.decks.name(config.did)
+        deckname = config.did
+        if config.did != "*":
+            deckname = mw.col.decks.name(config.did)
         if units is not None:
             self.displaygrid(config, deckname, units)
 
