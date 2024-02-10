@@ -112,6 +112,10 @@ You can fix this by resetting the config:
 
 - Config validation and safer loading to help prevent crashes.
 
+- Renamed `Probably Chinese` Kanji Kentei Level sort category to `Non-Kanji Kentei`.
+
+- Added missing characters (mostly kyujitai) to Kanji Kentei Levels.
+
 ## Bug Fixes
 
 - `Save HTML` and `Save Image` now properly function.
