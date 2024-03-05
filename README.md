@@ -114,7 +114,7 @@ You can fix this by resetting the config:
 
 - Renamed `Probably Chinese` Kanji Kentei Level sort category to `Non-Kanji Kentei`.
 
-- Added missing characters (mostly kyujitai) to Kanji Kentei Levels.
+- Removed `Missing Kanji` in groupings when there are no missing kanji.
 
 ## Bug Fixes
 
@@ -125,6 +125,8 @@ You can fix this by resetting the config:
 - Fixed divide by zero error when no kanji are found and a kanji grouping is selected.
 
 - Fixed JLPT kanji lists missing some characters.
+
+- Added missing characters (mostly kyujitai) to Kanji Kentei Levels.
 
 ## Info
 
