@@ -70,21 +70,21 @@ class KanjiGrid:
         self.html += "<div style=\"text-align: center;\">\n"
         if config.groupby >= len(util.SortOrder):
             groups = data.groups[config.groupby - len(util.SortOrder)]
-            gc = 0
             kanji = [u.value for u in units.values()]
             for i in range(1, len(groups.data)):
                 self.html += "<h2 style=\"color:#888;\">%s Kanji</h2>\n" % groups.data[i][0]
                 table = "<div class=\"grid-container\">\n"
-                count = -1
+                count_found = 0
+                count_known = 0
                 for unit in [units[c] for c in groups.data[i][1] if c in kanji]:
                     if unit.count != 0 or config.unseen:
-                        count += 1
+                        count_found += 1
                         bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
-                        table += kanjitile(unit.value, count, bgcolor, unit.count, unit.avg_interval)
+                        if unit.count != 0 or bgcolor not in ["#E62E2E", "#FFF"]:
+                            count_known += 1
+                        table += kanjitile(unit.value, count_found, bgcolor, unit.count, unit.avg_interval)
                 table += "</div>\n"
-                n = count+1
-                t = len(groups.data[i][1])
-                gc += n
+                total_count = len(groups.data[i][1])
                 if config.unseen:
                     table += "<details><summary>Missing kanji</summary><div class=\"grid-container\">\n"
                     count = -1
@@ -95,21 +95,23 @@ class KanjiGrid:
                     if count == -1:
                         table += "<b style=\"color:#CCC\">None</b>"
                     table += "</div></details>\n"
-                self.html += "<h4 style=\"color:#888;\">%d of %d - %0.2f%%</h4>\n" % (n, t, n*100.0/t)
+                self.html += "<h4 style=\"color:#888;\">" + str(count_found) + " of " + str(total_count) + " Found - " + "{:.2f}".format(round(count_found / (total_count if total_count > 0 else 1) * 100, 2)) + "%, " + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
                 self.html += table
 
             chars = reduce(lambda x, y: x+y, dict(groups.data).values())
             self.html += "<h2 style=\"color:#888;\">%s Kanji</h2>" % groups.data[0][0]
             table = "<div class=\"grid-container\">\n"
-            count = -1
+            total_count = 0
+            count_known = 0
             for unit in [u for u in units.values() if u.value not in chars]:
                 if unit.count != 0 or config.unseen:
-                    count += 1
+                    total_count += 1
                     bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
-                    table += kanjitile(unit.value, count, bgcolor, unit.count, unit.avg_interval)
+                    if unit.count != 0 or bgcolor not in ["#E62E2E", "#FFF"]:
+                        count_known += 1
+                    table += kanjitile(unit.value, total_count, bgcolor, unit.count, unit.avg_interval)
             table += "</div>\n"
-            n = count+1
-            self.html += "<h4 style=\"color:#888;\">%d of %d - %0.2f%%</h4>\n" % (n, gc, n*100.0/(gc if gc > 0 else 1))
+            self.html += "<h4 style=\"color:#888;\">" + str(total_count) + " of " + str(total_count) + " - " + "{:.2f}".format(round(total_count / (total_count if total_count > 0 else 1) * 100, 2)) + "% Found, " + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
             self.html += table
             self.html += "<style type=\"text/css\">.datasource{font-style:italic;font-size:0.75em;margin-top:1em;overflow-wrap:break-word;}.datasource a{color:#1034A6;}</style><span class=\"datasource\">Data source: " + ' '.join("<a href=\"{}\">{}</a>".format(w, urllib.parse.unquote(w)) if re.match("https?://", w) else w for w in groups.source.split(' ')) + "</span>"
         else:
@@ -131,7 +133,7 @@ class KanjiGrid:
                     table += kanjitile(unit.value, total_count, bgcolor, unit.count, unit.avg_interval)
             table += "</div>\n"
             if total_count != 0:
-                self.html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " Known - " + str(round(count_known / total_count * 100, 2)) + "%</h4>\n"
+                self.html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
             else:
                 self.html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " Known - 0%</h4>\n"
             self.html += table
