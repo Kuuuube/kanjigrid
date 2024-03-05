@@ -86,14 +86,16 @@ class KanjiGrid:
                 table += "</div>\n"
                 total_count = len(groups.data[i][1])
                 if config.unseen:
-                    table += "<details><summary>Missing kanji</summary><div class=\"grid-container\">\n"
+                    unseen_kanji = []
                     count = -1
                     for char in [c for c in groups.data[i][1] if c not in kanji]:
                         count += 1
                         bgcolor = "#EEE"
-                        table += kanjitile(char, count, bgcolor)
-                    if count == -1:
-                        table += "<b style=\"color:#CCC\">None</b>"
+                        unseen_kanji.append(kanjitile(char, count, bgcolor))
+                    if count != -1:
+                        table += "<details><summary>Missing kanji</summary><div class=\"grid-container\">\n"
+                        for element in unseen_kanji:
+                            table += element
                     table += "</div></details>\n"
                 self.html += "<h4 style=\"color:#888;\">" + str(count_found) + " of " + str(total_count) + " Found - " + "{:.2f}".format(round(count_found / (total_count if total_count > 0 else 1) * 100, 2)) + "%, " + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
                 self.html += table
