@@ -29,21 +29,14 @@ class KanjiGrid:
             mw.form.menuTools.addAction(self.menuAction)
 
     def generate(self, config, units):
-        def kanjitile(char, index, bgcolor, count = 0, avg_interval = 0):
+        def kanjitile(char, bgcolor, count = 0, avg_interval = 0):
             tile = ""
-            score = "NaN"
-
-            if avg_interval:
-                score = round(util.scoreAdjust(avg_interval / config.interval), 2)
-
             color = "#000"
 
             if config.tooltips:
                 tooltip = "Character: %s" % unicodedata.name(char)
-                if count:
-                    tooltip += " | Count: %s | " % count
-                    tooltip += "Avg Interval: %s | Score: %s | " % (round(avg_interval, 2), score)
-                    tooltip += "Background: %s | Index: %s" % (bgcolor, index)
+                if avg_interval:
+                    tooltip += " | Avg Interval: " + str("{:.2f}".format(avg_interval, 2)) + " | Score: " + str("{:.2f}".format(util.scoreAdjust(avg_interval / config.interval), 2))
                 tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\">" % (bgcolor, tooltip)
             else:
                 tile += "\t<div style=\"background:%s;\">" % (bgcolor)
@@ -82,17 +75,17 @@ class KanjiGrid:
                         bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
                         if unit.count != 0 or bgcolor not in ["#E62E2E", "#FFF"]:
                             count_known += 1
-                        table += kanjitile(unit.value, count_found, bgcolor, unit.count, unit.avg_interval)
+                        table += kanjitile(unit.value, bgcolor, count_found, unit.avg_interval)
                 table += "</div>\n"
                 total_count = len(groups.data[i][1])
                 if config.unseen:
                     unseen_kanji = []
-                    count = -1
+                    count = 0
                     for char in [c for c in groups.data[i][1] if c not in kanji]:
                         count += 1
                         bgcolor = "#EEE"
-                        unseen_kanji.append(kanjitile(char, count, bgcolor))
-                    if count != -1:
+                        unseen_kanji.append(kanjitile(char, bgcolor))
+                    if count != 0:
                         table += "<details><summary>Missing kanji</summary><div class=\"grid-container\">\n"
                         for element in unseen_kanji:
                             table += element
@@ -111,7 +104,7 @@ class KanjiGrid:
                     bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
                     if unit.count != 0 or bgcolor not in ["#E62E2E", "#FFF"]:
                         count_known += 1
-                    table += kanjitile(unit.value, total_count, bgcolor, unit.count, unit.avg_interval)
+                    table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)
             table += "</div>\n"
             self.html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
             self.html += table
@@ -132,7 +125,7 @@ class KanjiGrid:
                     bgcolor = util.get_background_color(unit.avg_interval,config.interval, unit.count)
                     if unit.count != 0 or bgcolor not in ["#E62E2E", "#FFF"]:
                         count_known += 1
-                    table += kanjitile(unit.value, total_count, bgcolor, unit.count, unit.avg_interval)
+                    table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)
             table += "</div>\n"
             if total_count != 0:
                 self.html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
