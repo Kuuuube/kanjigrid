@@ -116,6 +116,8 @@ You can fix this by resetting the config:
 
 - Removed `Missing Kanji` in groupings when there are no missing kanji.
 
+- Added better counts and percentages to grids.
+
 ## Bug Fixes
 
 - `Save HTML` and `Save Image` now properly function.
