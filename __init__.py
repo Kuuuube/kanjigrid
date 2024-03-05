@@ -111,7 +111,7 @@ class KanjiGrid:
                         count_known += 1
                     table += kanjitile(unit.value, total_count, bgcolor, unit.count, unit.avg_interval)
             table += "</div>\n"
-            self.html += "<h4 style=\"color:#888;\">" + str(total_count) + " of " + str(total_count) + " - " + "{:.2f}".format(round(total_count / (total_count if total_count > 0 else 1) * 100, 2)) + "% Found, " + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
+            self.html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
             self.html += table
             self.html += "<style type=\"text/css\">.datasource{font-style:italic;font-size:0.75em;margin-top:1em;overflow-wrap:break-word;}.datasource a{color:#1034A6;}</style><span class=\"datasource\">Data source: " + ' '.join("<a href=\"{}\">{}</a>".format(w, urllib.parse.unquote(w)) if re.match("https?://", w) else w for w in groups.source.split(' ')) + "</span>"
         else:
