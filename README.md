@@ -64,6 +64,8 @@ You can fix this by resetting the config:
 
 - `saveimagequality` The quality to save the grid at when seleting `Save Image` on the grid. Accepted values are 0-5. WARNING: On large grids using anything except `1` may crash anki.
 
+- `copyonclick` Copies kanji when clicked on instead of searching in a browser.
+
 - `saveimagedelay` The delay in ms to wait when resizing the image if `saveimagequality` is not 1. Setting this to a higher value may help mitigate crashes.
 
 - `jafontcss` `zhfontcss` `zhhansfontcss` `zhhantfontcss` `kofontcss` `vifontcss` The css to apply to the grid for the respective language. This is intended to be used for fonts but accepts all css. For fonts, use the following syntax: `font-family:%s;`. Replace `%s` with your fonts list.
@@ -117,6 +119,8 @@ You can fix this by resetting the config:
 - Removed `Missing Kanji` in groupings when there are no missing kanji.
 
 - Added better counts and percentages to grids.
+
+- Added option to copy kanji on click instead of searching in a browser.
 
 ## Bug Fixes
 
