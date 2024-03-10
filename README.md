@@ -32,23 +32,9 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 5. Click `Generate`.
 
-## Updating
-
-If you have edited the add-on config file through anki at any point you may run into errors after updating.
-
-You can fix this by resetting the config:
-
-1. Go to `Tools > Add-ons > Kanji Grid Kuuube > Config`.
-
-2. Click `Restore Defaults`.
-
-3. Click `Save`.
-
-4. Restart Anki.
-
 ## Known Issues
 
-1. On Linux, some users have experienced issues with crashing when generating the grid. If this happens try changing Anki to `Vulkan`. 
+- On Linux, some users have experienced issues with crashing when generating the grid. If this happens try changing Anki to `Vulkan`. 
 
     `Tools` > `Preferences` > `Appearance` > `Video driver` > `Vulkan`
 
