@@ -46,6 +46,12 @@ You can fix this by resetting the config:
 
 4. Restart Anki.
 
+## Known Issues
+
+1. On Linux, some users have experienced issues with crashing when generating the grid. If this happens try changing Anki to `Vulkan`. 
+
+    `Tools` > `Preferences` > `Appearance` > `Video driver` > `Vulkan`
+
 ## Config Values
 
 - `pattern` The default text in the `Field` dropdown box. Controls which field(s) to look for kanji in. Defaults to the first field of the selected deck if no value is found.
