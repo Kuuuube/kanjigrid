@@ -51,6 +51,8 @@ class KanjiGrid:
         self.html  = "<!doctype html><html lang=\"%s\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>" % config.lang
         self.html += "<style type=\"text/css\">body{text-align:center;}.grid-container{display:grid;grid-gap:2px;grid-template-columns:repeat(auto-fit,23px);justify-content:center;" + util.get_font_css(config) + "}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
         self.html += "</head>\n"
+        if config.copyonclick:
+            self.html += "<script>function copyText(e){const t=document.createRange(),n=document.createElement('div');n.textContent=e,document.body.appendChild(n),t.selectNode(n);const o=window.getSelection();o.removeAllRanges(),o.addRange(t),document.execCommand('copy'),document.body.removeChild(n)}document.addEventListener('click',(function(e){e.srcElement.href&&(e.preventDefault(),copyText(e.srcElement.textContent))}),!1);</script>"
         self.html += "<body>\n"
         self.html += "<div style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</div>\n" % deckname
         self.html += "<p style=\"text-align: center\">Key</p>"
