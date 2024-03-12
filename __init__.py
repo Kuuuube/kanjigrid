@@ -40,7 +40,13 @@ class KanjiGrid:
                 tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\">" % (bgcolor, tooltip)
             else:
                 tile += "\t<div style=\"background:%s;\">" % (bgcolor)
-            tile += "<a href=\"" + util.get_search(config, char) + "\" style=\"color:" + color + ";\">" + char + "</a></div>\n"
+
+            if config.copyonclick:
+                tile += "<a style=\"color:" + color + ";cursor: pointer;\">" + char + "</a>"
+            else:
+                tile += "<a href=\"" + util.get_search(config, char) + "\" style=\"color:" + color + ";\">" + char + "</a>"
+
+            tile += "</div>\n"
 
             return tile
 
@@ -52,7 +58,7 @@ class KanjiGrid:
         self.html += "<style type=\"text/css\">body{text-align:center;}.grid-container{display:grid;grid-gap:2px;grid-template-columns:repeat(auto-fit,23px);justify-content:center;" + util.get_font_css(config) + "}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
         self.html += "</head>\n"
         if config.copyonclick:
-            self.html += "<script>function copyText(e){const t=document.createRange(),n=document.createElement('div');n.textContent=e,document.body.appendChild(n),t.selectNode(n);const o=window.getSelection();o.removeAllRanges(),o.addRange(t),document.execCommand('copy'),document.body.removeChild(n)}document.addEventListener('click',(function(e){e.srcElement.href&&(e.preventDefault(),copyText(e.srcElement.textContent))}),!1);</script>"
+            self.html += "<script>function copyText(text) {const range = document.createRange();const tempElem = document.createElement('div');tempElem.textContent = text;document.body.appendChild(tempElem);range.selectNode(tempElem);const selection = window.getSelection();selection.removeAllRanges();selection.addRange(range);document.execCommand('copy');document.body.removeChild(tempElem);}document.addEventListener('click', function(e) {e.preventDefault();if (e.srcElement.tagName == 'A') {copyText(e.srcElement.textContent);}}, false);</script>"
         self.html += "<body>\n"
         self.html += "<div style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</div>\n" % deckname
         self.html += "<p style=\"text-align: center\">Key</p>"
