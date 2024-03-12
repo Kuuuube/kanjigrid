@@ -37,17 +37,20 @@ def addUnitData(units, unitKey, i, card, kanjionly):
             units[unitKey] = unit
         units[unitKey] = addDataFromCard(units[unitKey], i, card)
 
-def addDataFromCard(unit, new_idx, card):
+def addDataFromCard(unit, idx, card):
+    new_idx = unit.idx
+    new_avg_interval = unit.avg_interval
+    new_count = unit.count
+
     if card.type > 0:
         newTotal = (unit.avg_interval * unit.count) + card.ivl
         new_count = unit.count + 1
-        avg_interval = newTotal / new_count
-        return unit_tuple(unit.idx, unit.value, avg_interval, new_count)
+        new_avg_interval = newTotal / new_count
 
     if new_idx < unit.idx or unit.idx == 0:
-        return unit_tuple(new_idx, unit.value, unit.avg_interval, unit.count)
+        new_idx = idx
 
-    return unit
+    return unit_tuple(new_idx, unit.value, new_avg_interval, new_count)
 
 def hsvrgbstr(h, s=0.8, v=0.9):
     _256 = lambda x: round(x*256)
