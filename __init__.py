@@ -102,7 +102,7 @@ class KanjiGrid:
                 self.html += table
 
             chars = reduce(lambda x, y: x+y, dict(groups.data).values())
-            self.html += "<h2 style=\"color:#888;\">%s Kanji</h2>" % groups.data[0][0]
+            self.html += "<h2 style=\"color:#888;\">" + str(groups.data[0][0]) + "</h2>" #label for "not in group" groups
             table = "<div class=\"grid-container\">\n"
             total_count = 0
             count_known = 0
