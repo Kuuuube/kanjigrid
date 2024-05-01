@@ -114,7 +114,7 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 - Added option to copy kanji on click instead of searching in a browser.
 
-- Added JPDB Kanji Frequency List
+- Added JPDB Kanji Frequency List.
 
 ## Bug Fixes
 
