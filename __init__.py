@@ -182,7 +182,7 @@ class KanjiGrid:
         units = dict()
         notes = dict()
         for i in cids:
-            card = mw.col.getCard(i)
+            card = mw.col.get_card(i)
             if card.nid not in notes.keys():
                 keys = card.note().keys()
                 unitKey = set()
@@ -226,7 +226,7 @@ class KanjiGrid:
         fl = QHBoxLayout()
         deckcb = QComboBox()
         deckcb.addItem("*") # * = all decks
-        deckcb.addItems(sorted(mw.col.decks.allNames()))
+        deckcb.addItems(sorted(mw.col.decks.all_names()))
         deckcb.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         fl.addWidget(QLabel("Deck: "))
         deckcb.setCurrentText(mw.col.decks.get(config.did)['name'])
@@ -234,7 +234,7 @@ class KanjiGrid:
             if deckname == "*":
                 config.did = "*"
                 return
-            config.did = mw.col.decks.byName(deckname)['id']
+            config.did = mw.col.decks.by_name(deckname)['id']
         deckcb.currentTextChanged.connect(change_did)
         fl.addWidget(deckcb)
         vl.addLayout(fl)
