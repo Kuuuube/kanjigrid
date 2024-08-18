@@ -17,7 +17,7 @@ from aqt import mw
 from aqt.webview import AnkiWebView
 from aqt.qt import (Qt, QAction, QSizePolicy, QDialog, QHBoxLayout, 
                     QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox, 
-                    QComboBox, QPushButton)
+                    QComboBox, QPushButton, QLineEdit)
 
 from . import config_util, data, util, save
 
@@ -176,7 +176,7 @@ class KanjiGrid:
             for _, id_ in mw.col.decks.children(int(deck_id)):
                 dids.append(id_)
         self.timepoint("Decks selected")
-        cids = mw.col.find_cards(util.make_query(dids, config.pattern))
+        cids = mw.col.find_cards("(" + util.make_query(dids, config.pattern) + ") " + config.searchfilter)
         self.timepoint("Cards selected")
 
         units = dict()
@@ -292,6 +292,7 @@ class KanjiGrid:
         groupby.setCurrentIndex(config.groupby)
         il.addWidget(QLabel("Group by:"))
         il.addWidget(groupby)
+
         pagelang = QComboBox()
         pagelang.addItems(["ja", "zh","zh-Hans", "zh-Hant", "ko", "vi"])
         def update_pagelang_dropdown():
@@ -302,6 +303,12 @@ class KanjiGrid:
         pagelang.setCurrentText(config.lang)
         il.addWidget(QLabel("Language:"))
         il.addWidget(pagelang)
+
+        search_filter = QLineEdit()
+        search_filter.setText(config.searchfilter)
+        il.addWidget(QLabel("Filter:"))
+        il.addWidget(search_filter)
+
         shnew = QCheckBox("Show units not yet seen")
         shnew.setChecked(config.unseen)
         il.addWidget(shnew)
@@ -322,6 +329,7 @@ class KanjiGrid:
             mw.progress.start(immediate=True)
             config.pattern = field.currentText().lower()
             config.pattern = shlex.split(config.pattern)
+            config.searchfilter = search_filter.text()
             config.interval = stint.value()
             config.groupby = groupby.currentIndex()
             config.lang = pagelang.currentText()

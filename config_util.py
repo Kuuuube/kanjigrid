@@ -21,7 +21,8 @@ config_schema = {
     "zhhanssearch": "",
     "zhhantsearch": "",
     "kosearch": "",
-    "visearch": ""
+    "visearch": "",
+    "searchfilter": ""
 }
 
 def validate_config(config):
