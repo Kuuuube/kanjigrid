@@ -176,7 +176,13 @@ class KanjiGrid:
             for _, id_ in mw.col.decks.children(int(deck_id)):
                 dids.append(id_)
         self.timepoint("Decks selected")
-        cids = mw.col.find_cards("(" + util.make_query(dids, config.pattern) + ") " + config.searchfilter)
+        cids = []
+        #mw.col.find_cards and mw.col.db.list sort differently
+        #mw.col.db.list is kept due to some users being very picky about the order of kanji when using `Group by: None, sorted by order found`
+        if len(config.searchfilter) > 0 and len(config.pattern) > 0 and len(dids) > 0:
+            cids = mw.col.find_cards("(" + util.make_query(dids, config.pattern) + ") " + config.searchfilter)
+        else:
+            cids = mw.col.db.list("select id from cards where did in %s or odid in %s" % (ids2str(dids), ids2str(dids)))
         self.timepoint("Cards selected")
 
         units = dict()
