@@ -66,7 +66,9 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 - `searchfilter` The default setting for `Additional Search Filters`. This is appended to the existing filtering and must use the same format as [Anki's Browser Searching](https://docs.ankiweb.net/searching.html).
 
-## Improvements
+## Improvements and Bug Fixes
+
+Changelog compared to the old kanji grid add-on.
 
 <details>
 <summary>Improvements</summary>
@@ -124,8 +126,6 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 - Added option for Additional Search Filters.
 
 </details>
-
-## Bug Fixes
 
 <details>
 <summary>Bug Fixes</summary>
