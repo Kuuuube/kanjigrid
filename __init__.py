@@ -307,7 +307,7 @@ class KanjiGrid:
         search_filter = QLineEdit()
         search_filter.setText(config.searchfilter)
         search_filter.setPlaceholderText("e.g. \"is:new\" or \"tag:mining_deck\"")
-        il.addWidget(QLabel("Filter:"))
+        il.addWidget(QLabel("Additional Search Filters:"))
         il.addWidget(search_filter)
 
         shnew = QCheckBox("Show units not yet seen")
