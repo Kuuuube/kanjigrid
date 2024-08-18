@@ -68,6 +68,9 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 ## Improvements
 
+<details>
+<summary>Improvements</summary>
+
 - Field selector now uses a dropdown/text box combo instead of a text box.
 
     The default field value can be overwritten by setting `pattern` in `config.json`.
@@ -120,7 +123,12 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 - Added option for Additional Search Filters.
 
+</details>
+
 ## Bug Fixes
+
+<details>
+<summary>Bug Fixes</summary>
 
 - `Save HTML` and `Save Image` now properly function.
 
@@ -131,6 +139,8 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 - Fixed JLPT kanji lists missing some characters.
 
 - Added missing characters (mostly kyujitai) to Kanji Kentei Levels.
+
+</details>
 
 ## Info
 
