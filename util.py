@@ -104,3 +104,17 @@ def get_search(config, char):
     if config.lang ==  "vi":
         search_url = config.visearch
     return search_url.replace("%s", char)
+
+def fields_to_query(fields):
+    query_strings = []
+    for field in fields:
+        query_strings.append(str(field) + ":*")
+    return " OR ".join(query_strings)
+
+def make_query(deck_ids, fields):
+    query_strings = []
+    fields_string = fields_to_query(fields)
+    for deck_id in deck_ids:
+        query_strings.append("(did:" + str(deck_id) + " AND (" + fields_string + "))")
+
+    return " OR ".join(query_strings)

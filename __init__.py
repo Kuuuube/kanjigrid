@@ -176,7 +176,7 @@ class KanjiGrid:
             for _, id_ in mw.col.decks.children(int(deck_id)):
                 dids.append(id_)
         self.timepoint("Decks selected")
-        cids = mw.col.db.list("select id from cards where did in %s or odid in %s" % (ids2str(dids), ids2str(dids)))
+        cids = mw.col.find_cards(util.make_query(dids, config.pattern))
         self.timepoint("Cards selected")
 
         units = dict()
