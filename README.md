@@ -64,6 +64,8 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 - `jasearch` `zhsearch` `zhhanssearch` `zhhantsearch` `kosearch` `visearch` The search option to provide for the respective language. Use `%s` to define the kanji's position in the search string.
 
+- `searchfilter` The default setting for `Additional Search Filters`. This is appended to the existing filtering and must use the same format as [Anki's Browser Searching](https://docs.ankiweb.net/searching.html).
+
 ## Improvements
 
 - Field selector now uses a dropdown/text box combo instead of a text box.
@@ -115,6 +117,8 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 - Added option to copy kanji on click instead of searching in a browser.
 
 - Added JPDB Kanji Frequency List.
+
+- Added option for Additional Search Filters.
 
 ## Bug Fixes
 
