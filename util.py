@@ -108,7 +108,7 @@ def get_search(config, char):
 def fields_to_query(fields):
     query_strings = []
     for field in fields:
-        query_strings.append(str(field) + ":*")
+        query_strings.append("\"" + str(field) + ":*\"")
     return " OR ".join(query_strings)
 
 def make_query(deck_ids, fields):
