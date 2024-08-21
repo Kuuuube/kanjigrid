@@ -125,6 +125,8 @@ Changelog compared to the old kanji grid add-on.
 
 - Added option for Additional Search Filters.
 
+- Added The Kodansha Kanji Learner's Course (KLC) grouping.
+
 </details>
 
 <details>
