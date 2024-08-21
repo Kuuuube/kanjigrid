@@ -121,7 +121,7 @@ Changelog compared to the old kanji grid add-on.
 
 - Added option to copy kanji on click instead of searching in a browser.
 
-- Added JPDB Kanji Frequency List.
+- Added JPDB Kanji Frequency List grouping.
 
 - Added option for Additional Search Filters.
 
