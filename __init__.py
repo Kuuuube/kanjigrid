@@ -161,6 +161,8 @@ class KanjiGrid:
         hl.addWidget(save_pdf)
         save_json = QPushButton("Save JSON", clicked=lambda: save.savejson(self, mw, config, deckname, units))
         hl.addWidget(save_json)
+        save_txt = QPushButton("Save TXT", clicked=lambda: save.savetxt(self, mw, config, deckname, units))
+        hl.addWidget(save_txt)
         bb = QPushButton("Close", clicked=self.win.reject)
         hl.addWidget(bb)
         self.win.setLayout(vl)

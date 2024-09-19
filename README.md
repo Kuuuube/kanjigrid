@@ -127,6 +127,8 @@ Changelog compared to the old kanji grid add-on.
 
 - Added The Kodansha Kanji Learner's Course (KLC) grouping.
 
+- Added option to save all kanji as TXT.
+
 </details>
 
 <details>

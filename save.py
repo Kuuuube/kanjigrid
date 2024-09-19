@@ -85,3 +85,15 @@ def savejson(self, mw, config, deckname, units):
             fileOut.write(json_dump)
         mw.progress.finish()
         showInfo("JSON saved to %s!" % os.path.abspath(fileOut.name))
+
+def savetxt(self, mw, config, deckname, units):
+    fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".txt", "TXT (*.txt)")[0]
+    if fileName != "":
+        mw.progress.start(immediate=True)
+        if ".txt" not in fileName:
+            fileName += ".txt"
+        with open(fileName, 'w', encoding='utf-8') as fileOut:
+            self.timepoint("TXT start")
+            fileOut.write("".join(units.keys()))
+        mw.progress.finish()
+        showInfo("TXT saved to %s!" % os.path.abspath(fileOut.name))
