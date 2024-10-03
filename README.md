@@ -73,6 +73,8 @@ Changelog compared to the old kanji grid add-on.
 <details>
 <summary>Improvements</summary>
 
+### UI/UX
+
 - Field selector now uses a dropdown/text box combo instead of a text box.
 
     The default field value can be overwritten by setting `pattern` in `config.json`.
@@ -87,17 +89,41 @@ Changelog compared to the old kanji grid add-on.
 
 - Default window size is larger to better fit modern display resolutions.
 
-- Chinese character groupings can be selected.
-
-- Added Basic Kanji Book (BKB) V1 & V2 grouping.
-
-- Added option to save Kanji Grid as JSON.
-
 - Kanji are rendered in a dynamic grid that will adapt to window size instead of a static table.
 
 - Automatically set language tag based on grouping and manual language tag setting.
 
+- Added better counts and percentages to grids.
+
+### Config and Options
+
+- Config validation and safer loading to help prevent crashes.
+
+- Added option to copy kanji on click instead of searching in a browser.
+
+- Added option for Additional Search Filters.
+
 - Option to set custom fonts per language setting.
+
+- Search option when clicking on a kanji is customizeable for each language.
+
+### Groupings
+
+- Chinese character groupings can be selected.
+
+- Added Basic Kanji Book (BKB) V1 & V2 grouping.
+
+- Added JPDB Kanji Frequency List grouping.
+
+- Added The Kodansha Kanji Learner's Course (KLC) grouping.
+
+- Renamed `Probably Chinese` Kanji Kentei Level sort category to `Non-Kanji Kentei`.
+
+- Removed `Missing Kanji` in groupings when there are no missing kanji.
+
+### Exporting
+
+- Added option to save Kanji Grid as JSON.
 
 - `Save Image` saves the entire page instead of only the visible portion.
 
@@ -108,24 +134,6 @@ Changelog compared to the old kanji grid add-on.
 - Added option to save Kanji Grid as PDF.
 
 - Filename is autofilled with deck name and date when saving.
-
-- Search option when clicking on a kanji is customizeable for each language.
-
-- Config validation and safer loading to help prevent crashes.
-
-- Renamed `Probably Chinese` Kanji Kentei Level sort category to `Non-Kanji Kentei`.
-
-- Removed `Missing Kanji` in groupings when there are no missing kanji.
-
-- Added better counts and percentages to grids.
-
-- Added option to copy kanji on click instead of searching in a browser.
-
-- Added JPDB Kanji Frequency List grouping.
-
-- Added option for Additional Search Filters.
-
-- Added The Kodansha Kanji Learner's Course (KLC) grouping.
 
 - Added option to save all kanji as TXT.
 
