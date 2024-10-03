@@ -61,18 +61,17 @@ def hsvrgbstr(h, s=0.8, v=0.9):
     q = v*(1.0 - s*f)
     t = v*(1.0 - s*(1.0-f))
     i = i % 6
-    match i:
-        case 0:
+    if i == 0:
             return "#%0.2X%0.2X%0.2X" % (_256(v), _256(t), _256(p))
-        case 1:
+    if i == 1:
             return "#%0.2X%0.2X%0.2X" % (_256(q), _256(v), _256(p))
-        case 2:
+    if i == 2:
             return "#%0.2X%0.2X%0.2X" % (_256(p), _256(v), _256(t))
-        case 3:
+    if i == 3:
             return "#%0.2X%0.2X%0.2X" % (_256(p), _256(q), _256(v))
-        case 4:
+    if i == 4:
             return "#%0.2X%0.2X%0.2X" % (_256(t), _256(p), _256(v))
-        case 5:
+    if i == 5:
             return "#%0.2X%0.2X%0.2X" % (_256(v), _256(p), _256(q))
 
 def get_background_color(avg_interval, config_interval, count, missing = False):
