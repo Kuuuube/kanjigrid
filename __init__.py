@@ -15,8 +15,8 @@ from functools import reduce
 from anki.utils import ids2str
 from aqt import mw
 from aqt.webview import AnkiWebView
-from aqt.qt import (Qt, QAction, QSizePolicy, QDialog, QHBoxLayout, 
-                    QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox, 
+from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
+                    QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox,
                     QComboBox, QPushButton, QLineEdit)
 
 from . import config_util, data, util, save
@@ -36,7 +36,7 @@ class KanjiGrid:
             if config.tooltips:
                 tooltip = "Character: %s" % unicodedata.name(char)
                 if avg_interval:
-                    tooltip += " | Avg Interval: " + str("{:.2f}".format(avg_interval, 2)) + " | Score: " + str("{:.2f}".format(util.scoreAdjust(avg_interval / config.interval), 2))
+                    tooltip += " | Avg Interval: " + str("{:.2f}".format(avg_interval)) + " | Score: " + str("{:.2f}".format(util.scoreAdjust(avg_interval / config.interval)))
                 tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\">" % (bgcolor, tooltip)
             else:
                 tile += "\t<div style=\"background:%s;\">" % (bgcolor)

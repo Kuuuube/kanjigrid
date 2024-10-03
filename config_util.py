@@ -28,7 +28,7 @@ config_schema = {
 def validate_config(config):
     for config_schema_key in config_schema.keys():
         if config_schema_key in config.keys():
-            if type(config_schema[config_schema_key]) == type(config[config_schema_key]):
+            if type(config_schema[config_schema_key]) is type(config[config_schema_key]):
                 continue
         config[config_schema_key] = config_schema[config_schema_key]
     return config

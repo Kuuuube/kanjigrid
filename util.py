@@ -53,19 +53,27 @@ def addDataFromCard(unit, idx, card):
     return unit_tuple(new_idx, unit.value, new_avg_interval, new_count)
 
 def hsvrgbstr(h, s=0.8, v=0.9):
-    _256 = lambda x: round(x*256)
+    def _256(x):
+        return round(x * 256)
     i = int(h*6.0)
     f = (h*6.0) - i
     p = v*(1.0 - s)
     q = v*(1.0 - s*f)
     t = v*(1.0 - s*(1.0-f))
     i = i % 6
-    if i == 0: return "#%0.2X%0.2X%0.2X" % (_256(v), _256(t), _256(p))
-    if i == 1: return "#%0.2X%0.2X%0.2X" % (_256(q), _256(v), _256(p))
-    if i == 2: return "#%0.2X%0.2X%0.2X" % (_256(p), _256(v), _256(t))
-    if i == 3: return "#%0.2X%0.2X%0.2X" % (_256(p), _256(q), _256(v))
-    if i == 4: return "#%0.2X%0.2X%0.2X" % (_256(t), _256(p), _256(v))
-    if i == 5: return "#%0.2X%0.2X%0.2X" % (_256(v), _256(p), _256(q))
+    match i:
+        case 0:
+            return "#%0.2X%0.2X%0.2X" % (_256(v), _256(t), _256(p))
+        case 1:
+            return "#%0.2X%0.2X%0.2X" % (_256(q), _256(v), _256(p))
+        case 2:
+            return "#%0.2X%0.2X%0.2X" % (_256(p), _256(v), _256(t))
+        case 3:
+            return "#%0.2X%0.2X%0.2X" % (_256(p), _256(q), _256(v))
+        case 4:
+            return "#%0.2X%0.2X%0.2X" % (_256(t), _256(p), _256(v))
+        case 5:
+            return "#%0.2X%0.2X%0.2X" % (_256(v), _256(p), _256(q))
 
 def get_background_color(avg_interval, config_interval, count, missing = False):
     if count != 0:
