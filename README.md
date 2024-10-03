@@ -117,6 +117,8 @@ Changelog compared to the old kanji grid add-on.
 
 - Added The Kodansha Kanji Learner's Course (KLC) grouping.
 
+- Added JIS Levels grouping.
+
 - Renamed `Probably Chinese` Kanji Kentei Level sort category to `Non-Kanji Kentei`.
 
 - Removed `Missing Kanji` in groupings when there are no missing kanji.
