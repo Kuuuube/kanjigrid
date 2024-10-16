@@ -112,6 +112,9 @@ def get_search(config, char):
         search_url = config.visearch
     return search_url.replace("%s", char)
 
+def get_browse_command(char):
+    return "javascript:bridgeCommand('" + char + "');"
+
 def fields_to_query(fields):
     query_strings = []
     for field in fields:

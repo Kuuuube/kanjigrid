@@ -13,7 +13,7 @@ import shlex
 from functools import reduce
 
 from anki.utils import ids2str
-from aqt import mw
+from aqt import mw, dialogs
 from aqt.webview import AnkiWebView
 from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox,
@@ -43,6 +43,8 @@ class KanjiGrid:
 
             if config.copyonclick:
                 tile += "<a style=\"color:" + color + ";cursor: pointer;\">" + char + "</a>"
+            elif config.browseonclick:
+                tile += "<a href=\"" + util.get_browse_command(char) + "\" style=\"color:" + color + ";\">" + char + "</a>"
             else:
                 tile += "<a href=\"" + util.get_search(config, char) + "\" style=\"color:" + color + ";\">" + char + "</a>"
 
@@ -142,11 +144,23 @@ class KanjiGrid:
             self.html += table
         self.html += "</div></body></html>\n"
 
+    def open_note_browser(self, mw, deckname, fields_list, search_string):
+        fields_string = ""
+        for i, field in enumerate(fields_list):
+            if i != 0:
+                fields_string += " OR "
+            fields_string += field + ":*" + search_string + "*"
+        browser = dialogs.open("Browser", mw)
+        browser.form.searchEdit.lineEdit().setText("deck:\"" + deckname + "\" " + fields_string)
+        browser.onSearchActivated()
+
     def displaygrid(self, config, deckname, units):
         self.generate(config, units)
         self.timepoint("HTML generated")
         self.win = QDialog(mw)
         self.wv = AnkiWebView()
+        fields_list = config.pattern
+        self.wv.set_bridge_command(lambda search_string: self.open_note_browser(mw, deckname, fields_list, search_string), None)
         vl = QVBoxLayout()
         vl.setContentsMargins(0, 0, 0, 0)
         vl.addWidget(self.wv)
