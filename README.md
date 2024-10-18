@@ -58,7 +58,7 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 - `copyonclick` Copies kanji when clicked on instead of searching in a web browser or note browser.
 
-- `browseonclick` Opens the note browser when clicking on kanji instead of searching in a web browser.
+- `browseonclick` Opens the Anki note browser when clicking on kanji instead of searching in a web browser.
 
 - `saveimagedelay` The delay in ms to wait when resizing the image if `saveimagequality` is not 1. Setting this to a higher value may help mitigate crashes.
 
