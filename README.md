@@ -101,7 +101,9 @@ Changelog compared to the old kanji grid add-on.
 
 - Config validation and safer loading to help prevent crashes.
 
-- Added option to copy kanji on click instead of searching in a browser.
+- Added option to copy kanji on click instead of searching in a web browser.
+
+- Added option to search in the Anki note browser instead of a web browser when clicking on kanji.
 
 - Added option for Additional Search Filters.
 
