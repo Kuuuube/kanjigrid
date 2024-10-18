@@ -1,0 +1,1 @@
+zip kanjigrid_kuuuube_0.0.0.zip *.py config.json
