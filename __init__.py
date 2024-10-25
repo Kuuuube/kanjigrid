@@ -316,6 +316,7 @@ class KanjiGrid:
         groupby.setCurrentIndex(config.groupby)
         il.addWidget(QLabel("Group by:"))
         il.addWidget(groupby)
+
         sortby = QComboBox()
         sortby.addItems([
             *(x.pretty_value().capitalize() for x in util.SortOrder)
