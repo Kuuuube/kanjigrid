@@ -327,9 +327,9 @@ class KanjiGrid:
         pagelang = QComboBox()
         pagelang.addItems(["ja", "zh","zh-Hans", "zh-Hant", "ko", "vi"])
         def update_pagelang_dropdown():
-            index = groupby.currentIndex() - 4
+            index = groupby.currentIndex() - 1
             if index > 0:
-                pagelang.setCurrentText(data.groups[groupby.currentIndex() - 4].lang)
+                pagelang.setCurrentText(data.groups[index].lang)
         groupby.currentTextChanged.connect(update_pagelang_dropdown)
         pagelang.setCurrentText(config.lang)
         il.addWidget(QLabel("Language:"))
