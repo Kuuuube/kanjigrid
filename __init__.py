@@ -195,7 +195,7 @@ class KanjiGrid:
         self.timepoint("Decks selected")
         cids = []
         #mw.col.find_cards and mw.col.db.list sort differently
-        #mw.col.db.list is kept due to some users being very picky about the order of kanji when using `Group by: None, sorted by order found`
+        #mw.col.db.list is kept due to some users being very picky about the order of kanji when using `Sort by: None`
         if len(config.searchfilter) > 0 and len(config.pattern) > 0 and len(dids) > 0:
             cids = mw.col.find_cards("(" + util.make_query(dids, config.pattern) + ") " + config.searchfilter)
         else:
