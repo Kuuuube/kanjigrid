@@ -2,7 +2,8 @@
     "defaults": {
         "pattern": "",
         "interval": 180,
-        "groupby": 2,
+        "groupby": 0,
+        "sortby": 2,
         "lang": "ja",
         "unseen": true,
         "tooltips": true,

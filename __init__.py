@@ -71,15 +71,22 @@ class KanjiGrid:
         self.html += "&nbsp;Strong</p></div>\n"
         self.html += "<hr style=\"border-style: dashed;border-color: #666;width: 100%;\">\n"
         self.html += "<div style=\"text-align: center;\">\n"
-        if config.groupby >= len(util.SortOrder):
-            groups = data.groups[config.groupby - len(util.SortOrder)]
-            kanji = [u.value for u in units.values()]
+        unitsList = {
+            util.SortOrder.NONE:      sorted(units.values(), key=lambda unit: (unit.idx, unit.count)),
+            util.SortOrder.UNICODE:   sorted(units.values(), key=lambda unit: (unicodedata.name(unit.value), unit.count)),
+            util.SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (util.scoreAdjust(unit.avg_interval / config.interval), unit.count), reverse=True),
+            util.SortOrder.FREQUENCY: sorted(units.values(), key=lambda unit: (unit.count, util.scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
+        }[util.SortOrder(config.sortby)]
+        if config.groupby > 0:
+            groups = data.groups[config.groupby - 1]
+            kanji = dict(zip([u.value for u in unitsList], range(len(unitsList))))
             for i in range(1, len(groups.data)):
                 self.html += "<h2 style=\"color:#888;\">%s Kanji</h2>\n" % groups.data[i][0]
                 table = "<div class=\"grid-container\">\n"
+                sorted_data = sorted(groups.data[i][1], key=lambda c: kanji[c] if c in kanji else len(kanji))
                 count_found = 0
                 count_known = 0
-                for unit in [units[c] for c in groups.data[i][1] if c in kanji]:
+                for unit in [units[c] for c in sorted_data if c in kanji]:
                     if unit.count != 0 or config.unseen:
                         count_found += 1
                         bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
@@ -87,11 +94,11 @@ class KanjiGrid:
                             count_known += 1
                         table += kanjitile(unit.value, bgcolor, count_found, unit.avg_interval)
                 table += "</div>\n"
-                total_count = len(groups.data[i][1])
+                total_count = len(sorted_data)
                 if config.unseen:
                     unseen_kanji = []
                     count = 0
-                    for char in [c for c in groups.data[i][1] if c not in kanji]:
+                    for char in [c for c in sorted_data if c not in kanji]:
                         count += 1
                         bgcolor = "#EEE"
                         unseen_kanji.append(kanjitile(char, bgcolor))
@@ -108,7 +115,7 @@ class KanjiGrid:
             table = "<div class=\"grid-container\">\n"
             total_count = 0
             count_known = 0
-            for unit in [u for u in units.values() if u.value not in chars]:
+            for unit in [u for u in unitsList if u.value not in chars]:
                 if unit.count != 0 or config.unseen:
                     total_count += 1
                     bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
@@ -121,12 +128,6 @@ class KanjiGrid:
             self.html += "<style type=\"text/css\">.datasource{font-style:italic;font-size:0.75em;margin-top:1em;overflow-wrap:break-word;}.datasource a{color:#1034A6;}</style><span class=\"datasource\">Data source: " + ' '.join("<a href=\"{}\">{}</a>".format(w, urllib.parse.unquote(w)) if re.match("https?://", w) else w for w in groups.source.split(' ')) + "</span>"
         else:
             table = "<div class=\"grid-container\">\n"
-            unitsList = {
-                util.SortOrder.NONE:      sorted(units.values(), key=lambda unit: (unit.idx, unit.count)),
-                util.SortOrder.UNICODE:   sorted(units.values(), key=lambda unit: (unicodedata.name(unit.value), unit.count)),
-                util.SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (util.scoreAdjust(unit.avg_interval / config.interval), unit.count), reverse=True),
-                util.SortOrder.FREQUENCY: sorted(units.values(), key=lambda unit: (unit.count, util.scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
-            }[util.SortOrder(config.groupby)]
             total_count = 0
             count_known = 0
             for unit in unitsList:
@@ -306,14 +307,22 @@ class KanjiGrid:
         stint.setValue(config.interval)
         il.addWidget(QLabel("Card interval considered strong:"))
         il.addWidget(stint)
+
         groupby = QComboBox()
         groupby.addItems([
-            *("None, sorted by " + x.pretty_value() for x in util.SortOrder),
+            "None",
             *(x.name for x in data.groups),
         ])
         groupby.setCurrentIndex(config.groupby)
         il.addWidget(QLabel("Group by:"))
         il.addWidget(groupby)
+        sortby = QComboBox()
+        sortby.addItems([
+            *(x.pretty_value().capitalize() for x in util.SortOrder)
+        ])
+        sortby.setCurrentIndex(config.sortby)
+        il.addWidget(QLabel("Sort by:"))
+        il.addWidget(sortby)
 
         pagelang = QComboBox()
         pagelang.addItems(["ja", "zh","zh-Hans", "zh-Hant", "ko", "vi"])
@@ -355,6 +364,7 @@ class KanjiGrid:
             config.searchfilter = search_filter.text()
             config.interval = stint.value()
             config.groupby = groupby.currentIndex()
+            config.sortby = sortby.currentIndex()
             config.lang = pagelang.currentText()
             config.unseen = shnew.isChecked()
             self.makegrid(config)
