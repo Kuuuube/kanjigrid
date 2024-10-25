@@ -46,6 +46,8 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 - `groupby` The default setting in the `Group by` dropdown. The first dropdown item is number 0.
 
+- `sortby` The default setting in the `Sort by` dropdown. The first dropdown item is number 0.
+
 - `lang` The default setting in the `Language` dropdown. This controls fontcss and search options.
 
 - `unseen` Whether or not to display kanji that has not been viewed yet in the deck.
