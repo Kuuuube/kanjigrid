@@ -15,7 +15,7 @@ class SortOrder(enum.Enum):
 
     def pretty_value(self):
         return (
-            "order found",
+            "none",
             "unicode order",
             "score",
             "frequency",
