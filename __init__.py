@@ -79,14 +79,20 @@ class KanjiGrid:
         }[util.SortOrder(config.sortby)]
         if config.groupby > 0:
             groups = data.groups[config.groupby - 1]
-            kanji = dict(zip([u.value for u in unitsList], range(len(unitsList))))
+            kanji = [u.value for u in unitsList]
             for i in range(1, len(groups.data)):
                 self.html += "<h2 style=\"color:#888;\">%s Kanji</h2>\n" % groups.data[i][0]
                 table = "<div class=\"grid-container\">\n"
-                sorted_data = sorted(groups.data[i][1], key=lambda c: kanji[c] if c in kanji else len(kanji))
                 count_found = 0
                 count_known = 0
-                for unit in [units[c] for c in sorted_data if c in kanji]:
+
+                sorted_units = []
+                if config.sortby == 0:
+                    sorted_units = [units[c] for c in groups.data[i][1] if c in kanji]
+                else:
+                    sorted_units = [units[c] for c in kanji if c in groups.data[i][1]]
+
+                for unit in sorted_units:
                     if unit.count != 0 or config.unseen:
                         count_found += 1
                         bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
@@ -94,11 +100,11 @@ class KanjiGrid:
                             count_known += 1
                         table += kanjitile(unit.value, bgcolor, count_found, unit.avg_interval)
                 table += "</div>\n"
-                total_count = len(sorted_data)
+                total_count = len(groups.data[i][1])
                 if config.unseen:
                     unseen_kanji = []
                     count = 0
-                    for char in [c for c in sorted_data if c not in kanji]:
+                    for char in [c for c in groups.data[i][1] if c not in kanji]:
                         count += 1
                         bgcolor = "#EEE"
                         unseen_kanji.append(kanjitile(char, bgcolor))
