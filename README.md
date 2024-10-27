@@ -113,6 +113,8 @@ Changelog compared to the old kanji grid add-on.
 
 - Search option when clicking on a kanji is customizeable for each language.
 
+- Added option to sort within groupings.
+
 ### Groupings
 
 - Chinese character groupings can be selected.
