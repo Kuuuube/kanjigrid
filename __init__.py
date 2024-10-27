@@ -71,12 +71,14 @@ class KanjiGrid:
         self.html += "&nbsp;Strong</p></div>\n"
         self.html += "<hr style=\"border-style: dashed;border-color: #666;width: 100%;\">\n"
         self.html += "<div style=\"text-align: center;\">\n"
+
         unitsList = {
             util.SortOrder.NONE:      sorted(units.values(), key=lambda unit: (unit.idx, unit.count)),
             util.SortOrder.UNICODE:   sorted(units.values(), key=lambda unit: (unicodedata.name(unit.value), unit.count)),
             util.SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (util.scoreAdjust(unit.avg_interval / config.interval), unit.count), reverse=True),
             util.SortOrder.FREQUENCY: sorted(units.values(), key=lambda unit: (unit.count, util.scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
         }[util.SortOrder(config.sortby)]
+
         if config.groupby > 0:
             groups = data.groups[config.groupby - 1]
             kanji = [u.value for u in unitsList]
