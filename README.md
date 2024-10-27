@@ -34,9 +34,13 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 ## Known Issues
 
-- On Linux, some users have experienced issues with crashing when generating the grid. If this happens, try changing Anki to `Vulkan` or `Software` renderer.
+1. On Linux, some users have experienced issues with crashing when generating the grid. If this happens, try changing Anki to `Vulkan` or `Software` renderer.
 
     `Tools` > `Preferences` > `Appearance` > `Video driver` > `Vulkan` or `Software`
+
+2. In some cases, if you have edited the config file, you may run into issues. You can fix this by resetting the config:
+
+    `Tools > Add-ons > Kanji Grid Kuuube > Config`, `Restore Defaults`, `Save`, Restart Anki.
 
 ## Config Values
 
