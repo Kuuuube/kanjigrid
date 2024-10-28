@@ -23,7 +23,7 @@ class SortOrder(enum.Enum):
 
 cjk_re = re.compile("CJK (UNIFIED|COMPATIBILITY) IDEOGRAPH")
 def isKanji(unichar):
-    return bool(cjk_re.match(unicodedata.name(unichar, "")))
+    return bool(cjk_re.match(safe_unicodedata_name(unichar, "")))
 
 def scoreAdjust(score):
     score += 1
@@ -128,3 +128,9 @@ def make_query(deck_ids, fields):
         query_strings.append("(did:" + str(deck_id) + " AND (" + fields_string + "))")
 
     return " OR ".join(query_strings)
+
+def safe_unicodedata_name(char, default = ""):
+    try:
+        return unicodedata.name(char)
+    except Exception:
+        return default

@@ -7,7 +7,6 @@ import operator
 import re
 import time
 import types
-import unicodedata
 import urllib.parse
 import shlex
 from functools import reduce
@@ -34,7 +33,7 @@ class KanjiGrid:
             color = "#000"
 
             if config.tooltips:
-                tooltip = "Character: %s" % unicodedata.name(char)
+                tooltip = "Character: %s" % util.safe_unicodedata_name(char)
                 if avg_interval:
                     tooltip += " | Avg Interval: " + str("{:.2f}".format(avg_interval)) + " | Score: " + str("{:.2f}".format(util.scoreAdjust(avg_interval / config.interval)))
                 tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\">" % (bgcolor, tooltip)
@@ -74,7 +73,7 @@ class KanjiGrid:
 
         unitsList = {
             util.SortOrder.NONE:      sorted(units.values(), key=lambda unit: (unit.idx, unit.count)),
-            util.SortOrder.UNICODE:   sorted(units.values(), key=lambda unit: (unicodedata.name(unit.value), unit.count)),
+            util.SortOrder.UNICODE:   sorted(units.values(), key=lambda unit: (util.safe_unicodedata_name(unit.value), unit.count)),
             util.SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (util.scoreAdjust(unit.avg_interval / config.interval), unit.count), reverse=True),
             util.SortOrder.FREQUENCY: sorted(units.values(), key=lambda unit: (unit.count, util.scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
         }[util.SortOrder(config.sortby)]
