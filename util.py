@@ -23,7 +23,7 @@ class SortOrder(enum.Enum):
 
 cjk_re = re.compile("CJK (UNIFIED|COMPATIBILITY) IDEOGRAPH")
 def isKanji(unichar):
-    return bool(cjk_re.match(safe_unicodedata_name(unichar, "")))
+    return bool(cjk_re.match(safe_unicodedata_name(unichar)))
 
 def scoreAdjust(score):
     score += 1
