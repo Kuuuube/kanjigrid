@@ -152,14 +152,14 @@ class KanjiGrid:
             self.html += table
         self.html += "</div></body></html>\n"
 
-    def open_note_browser(self, mw, deckname, fields_list, search_string):
+    def open_note_browser(self, mw, deckname, fields_list, additional_search_filters, search_string):
         fields_string = ""
         for i, field in enumerate(fields_list):
             if i != 0:
                 fields_string += " OR "
             fields_string += field + ":*" + search_string + "*"
         browser = dialogs.open("Browser", mw)
-        browser.form.searchEdit.lineEdit().setText("deck:\"" + deckname + "\" " + fields_string)
+        browser.form.searchEdit.lineEdit().setText("deck:\"" + deckname + "\" " + fields_string + " " + additional_search_filters)
         browser.onSearchActivated()
 
     def displaygrid(self, config, deckname, units):
@@ -168,7 +168,8 @@ class KanjiGrid:
         self.win = QDialog(mw)
         self.wv = AnkiWebView()
         fields_list = config.pattern
-        self.wv.set_bridge_command(lambda search_string: self.open_note_browser(mw, deckname, fields_list, search_string), None)
+        additional_search_filters = config.searchfilter
+        self.wv.set_bridge_command(lambda search_string: self.open_note_browser(mw, deckname, fields_list, additional_search_filters, search_string), None)
         vl = QVBoxLayout()
         vl.setContentsMargins(0, 0, 0, 0)
         vl.addWidget(self.wv)
