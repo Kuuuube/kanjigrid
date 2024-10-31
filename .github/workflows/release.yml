@@ -16,7 +16,7 @@ jobs:
 
       - name: Build
         run: |
-          zip kanjigrid_kuuuube_${{ github.ref_name }}.zip *.py config.json
+          ./release.sh
 
       - name: Release
         uses: softprops/action-gh-release@v2
