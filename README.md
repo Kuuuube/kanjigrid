@@ -121,6 +121,8 @@ Changelog compared to the old kanji grid add-on.
 
 ### Groupings
 
+- Groupings are now contained in individual json files instead of a single python file.
+
 - Chinese character groupings can be selected.
 
 - Added Basic Kanji Book (BKB) V1 & V2 grouping.
