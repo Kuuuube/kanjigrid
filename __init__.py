@@ -252,6 +252,8 @@ class KanjiGrid:
             self.timepoint = lambda _: None
         config.did = mw.col.conf['curDeck']
 
+        data.init_groups()
+
         swin = QDialog(mw)
         vl = QVBoxLayout()
         fl = QHBoxLayout()
