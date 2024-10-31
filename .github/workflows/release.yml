@@ -18,6 +18,7 @@ jobs:
         run: |
           chmod +x release.sh
           ./release.sh
+          mv kanjigrid_kuuuube_0.0.0.zip kanjigrid_kuuuube_${{ github.ref_name }}.zip
 
       - name: Release
         uses: softprops/action-gh-release@v2
