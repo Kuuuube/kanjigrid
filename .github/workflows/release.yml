@@ -16,6 +16,7 @@ jobs:
 
       - name: Build
         run: |
+          chmod +x release.sh
           ./release.sh
 
       - name: Release
