@@ -167,6 +167,7 @@ class KanjiGrid:
         self.timepoint("HTML generated")
         self.win = QDialog(mw)
         self.wv = AnkiWebView()
+        self.win.closeEvent = lambda _: self.wv.cleanup()
         fields_list = config.pattern
         additional_search_filters = config.searchfilter
         self.wv.set_bridge_command(lambda search_string: self.open_note_browser(mw, deckname, fields_list, additional_search_filters, search_string), None)
