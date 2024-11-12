@@ -16,7 +16,7 @@ from aqt import mw, dialogs
 from aqt.webview import AnkiWebView
 from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox,
-                    QComboBox, QPushButton, QLineEdit)
+                    QComboBox, QPushButton, QLineEdit, qconnect)
 
 from . import config_util, data, util, save
 
@@ -167,7 +167,8 @@ class KanjiGrid:
         self.timepoint("HTML generated")
         self.win = QDialog(mw)
         self.wv = AnkiWebView()
-        self.win.closeEvent = lambda _: self.wv.cleanup()
+        qconnect(self.win.finished, lambda _: self.wv.cleanup())
+        mw.garbage_collect_on_dialog_finish(self.win)
         fields_list = config.pattern
         additional_search_filters = config.searchfilter
         self.wv.set_bridge_command(lambda search_string: self.open_note_browser(mw, deckname, fields_list, additional_search_filters, search_string), None)
