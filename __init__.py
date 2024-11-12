@@ -188,7 +188,7 @@ class KanjiGrid:
             m.clear()
             copy_action = m.addAction(f"Copy {char} to clipboard")
             qconnect(copy_action.triggered, lambda: self.on_copy_cmd(char))
-            browse_action = m.addAction(f"Search deck for {char}")
+            browse_action = m.addAction(f"Browse deck for {char}")
             qconnect(browse_action.triggered, lambda: self.on_browse_cmd(char))
             search_action = m.addAction(f"Search online for {char}")
             qconnect(search_action.triggered, lambda: self.on_search_cmd(char))
