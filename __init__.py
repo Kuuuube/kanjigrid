@@ -12,11 +12,11 @@ import shlex
 from functools import reduce
 
 from anki.utils import ids2str
-from aqt import mw, dialogs
+from aqt import mw, dialogs, gui_hooks
 from aqt.webview import AnkiWebView
 from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox,
-                    QComboBox, QPushButton, QLineEdit)
+                    QComboBox, QPushButton, QLineEdit, QMenu, QApplication, qconnect)
 
 from . import config_util, data, util, save
 
@@ -32,13 +32,15 @@ class KanjiGrid:
             tile = ""
             color = "#000"
 
+            context_menu_events = f" onmouseenter=\"bridgeCommand('h:{char}');\" onmouseleave=\"bridgeCommand('l:{char}');\"" if config.contextmenu else ""
+
             if config.tooltips:
                 tooltip = "Character: %s" % util.safe_unicodedata_name(char)
                 if avg_interval:
                     tooltip += " | Avg Interval: " + str("{:.2f}".format(avg_interval)) + " | Score: " + str("{:.2f}".format(util.scoreAdjust(avg_interval / config.interval)))
-                tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\">" % (bgcolor, tooltip)
+                tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\"%s>" % (bgcolor, tooltip, context_menu_events)
             else:
-                tile += "\t<div style=\"background:%s;\">" % (bgcolor)
+                tile += "\t<div style=\"background:%s;\"%s>" % (bgcolor, context_menu_events)
 
             if config.copyonclick:
                 tile += "<a style=\"color:" + color + ";cursor: pointer;\">" + char + "</a>"
@@ -162,15 +164,57 @@ class KanjiGrid:
         browser.form.searchEdit.lineEdit().setText("deck:\"" + deckname + "\" " + fields_string + " " + additional_search_filters)
         browser.onSearchActivated()
 
+    def open_search_link(self, config, char):
+        link = util.get_search(config, char)
+        # aqt.utils.openLink is an alternative
+        self.wv.eval(f"window.open('{link}', '_blank');")
+
+    def link_handler(self, link):
+        if link[:2] == "h:":
+            self.hovered = link[2:]
+        elif link[:2] == "l:":
+            if link[2:] == self.hovered:
+                # clear when outside grid
+                self.hovered = ""
+        else:
+            self.on_browse_cmd(link)
+
+    def add_webview_context_menu_items(self, wv: AnkiWebView, m: QMenu) -> None:
+        # hook is active while kanjigrid is open, and right clicking on the main window (deck list) will also trigger this, so check wv
+        if wv is self.wv and self.hovered != "":
+            char = self.hovered
+            a = m.addAction(f"Copy {char} to clipboard")
+            qconnect(a.triggered, lambda: self.on_copy_cmd(char))
+            a = m.addAction(f"Search deck for {char}")
+            qconnect(a.triggered, lambda: self.on_browse_cmd(char))
+            a = m.addAction(f"Search online for {char}")
+            qconnect(a.triggered, lambda: self.on_search_cmd(char))
+
     def displaygrid(self, config, deckname, units):
         self.generate(config, units)
         self.timepoint("HTML generated")
         self.win = QDialog(mw)
         self.wv = AnkiWebView()
-        self.win.closeEvent = lambda _: self.wv.cleanup()
-        fields_list = config.pattern
-        additional_search_filters = config.searchfilter
-        self.wv.set_bridge_command(lambda search_string: self.open_note_browser(mw, deckname, fields_list, additional_search_filters, search_string), None)
+
+        def on_window_close(_):
+            self.wv.cleanup()
+            if config.contextmenu:
+                gui_hooks.webview_will_show_context_menu.remove(self.add_webview_context_menu_items)
+        self.win.closeEvent = on_window_close
+
+        if config.contextmenu:
+            self.hovered = ""
+            self.on_browse_cmd = lambda char: self.open_note_browser(mw, deckname, config.pattern, config.searchfilter, char)
+            self.on_search_cmd = lambda char: self.open_search_link(config, char)
+            self.on_copy_cmd = QApplication.clipboard().setText
+            self.wv.set_bridge_command(self.link_handler, None)
+            # add webview context menu hook and defer cleanup (in on_window_close)
+            gui_hooks.webview_will_show_context_menu.append(self.add_webview_context_menu_items)
+        else:
+            fields_list = config.pattern
+            additional_search_filters = config.searchfilter
+            self.wv.set_bridge_command(lambda search_string: self.open_note_browser(mw, deckname, fields_list, additional_search_filters, search_string), None)
+
         vl = QVBoxLayout()
         vl.setContentsMargins(0, 0, 0, 0)
         vl.addWidget(self.wv)
