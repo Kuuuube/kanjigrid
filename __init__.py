@@ -27,12 +27,12 @@ class KanjiGrid:
             mw.form.menuTools.addSeparator()
             mw.form.menuTools.addAction(self.menuAction)
 
-    def generate(self, config, units):
+    def generate(self, config, units, export = False):
         def kanjitile(char, bgcolor, count = 0, avg_interval = 0):
             tile = ""
             color = "#000"
 
-            context_menu_events = f" onmouseenter=\"bridgeCommand('h:{char}');\" onmouseleave=\"bridgeCommand('l:{char}');\"" if config.contextmenu else ""
+            context_menu_events = f" onmouseenter=\"bridgeCommand('h:{char}');\" onmouseleave=\"bridgeCommand('l:{char}');\"" if not export else ""
 
             if config.tooltips:
                 tooltip = "Character: %s" % util.safe_unicodedata_name(char)
@@ -44,7 +44,7 @@ class KanjiGrid:
 
             if config.copyonclick:
                 tile += "<a style=\"color:" + color + ";cursor: pointer;\">" + char + "</a>"
-            elif config.browseonclick:
+            elif config.browseonclick and not export:
                 tile += "<a href=\"" + util.get_browse_command(char) + "\" style=\"color:" + color + ";\">" + char + "</a>"
             else:
                 tile += "<a href=\"" + util.get_search(config, char) + "\" style=\"color:" + color + ";\">" + char + "</a>"
