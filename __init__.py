@@ -170,10 +170,12 @@ class KanjiGrid:
         self.wv.eval(f"window.open('{link}', '_blank');")
 
     def link_handler(self, link):
-        if link[:2] == "h:":
-            self.hovered = link[2:]
-        elif link[:2] == "l:":
-            if link[2:] == self.hovered:
+        link_prefix = link[:2]
+        link_suffix = link[2:]
+        if link_prefix == "h:":
+            self.hovered = link_suffix
+        elif link_prefix == "l:":
+            if link_suffix == self.hovered:
                 # clear when outside grid
                 self.hovered = ""
         else:
