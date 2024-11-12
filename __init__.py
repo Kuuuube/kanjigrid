@@ -183,6 +183,7 @@ class KanjiGrid:
         # hook is active while kanjigrid is open, and right clicking on the main window (deck list) will also trigger this, so check wv
         if wv is self.wv and self.hovered != "":
             char = self.hovered
+            m.clear()
             a = m.addAction(f"Copy {char} to clipboard")
             qconnect(a.triggered, lambda: self.on_copy_cmd(char))
             a = m.addAction(f"Search deck for {char}")
