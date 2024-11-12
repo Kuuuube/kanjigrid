@@ -16,7 +16,8 @@ from aqt import mw, dialogs, gui_hooks
 from aqt.webview import AnkiWebView
 from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox,
-                    QComboBox, QPushButton, QLineEdit, QMenu, QApplication, qconnect)
+                    QComboBox, QPushButton, QLineEdit, QMenu, QApplication,
+                    qconnect)
 
 from . import config_util, data, util, save
 
@@ -200,9 +201,10 @@ class KanjiGrid:
         self.wv = AnkiWebView()
 
         def on_window_close(_):
-            self.wv.cleanup()
             gui_hooks.webview_will_show_context_menu.remove(self.add_webview_context_menu_items)
         self.win.closeEvent = on_window_close
+        qconnect(self.win.finished, lambda _: self.wv.cleanup())
+        mw.garbage_collect_on_dialog_finish(self.win)
 
         self.hovered = ""
         self.on_browse_cmd = lambda char: self.open_note_browser(mw, deckname, config.pattern, config.searchfilter, char)
