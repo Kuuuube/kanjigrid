@@ -103,6 +103,8 @@ Changelog compared to the old kanji grid add-on.
 
 - Added better counts and percentages to grids.
 
+- Added context menu items for copying, browsing, and searching when right clicking a kanji tile.
+
 ### Config and Options
 
 - Config validation and safer loading to help prevent crashes.
@@ -167,6 +169,8 @@ Changelog compared to the old kanji grid add-on.
 - Fixed JLPT kanji lists missing some characters.
 
 - Added missing characters (mostly kyujitai) to Kanji Kentei Levels.
+
+- Fixed a memory leak due to not cleaning up old webviews.
 
 </details>
 
