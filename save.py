@@ -18,7 +18,6 @@ def savehtml(self, mw, config, deckname):
             fileName += ".html"
         with open(fileName, 'w', encoding='utf-8') as fileOut:
             config.browseonclick = False #disallow bridge command on exported html
-            config.contextmenu = False
             units = self.kanjigrid(config)
             self.generate(config, units)
             fileOut.write(self.html)

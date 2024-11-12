@@ -201,22 +201,16 @@ class KanjiGrid:
 
         def on_window_close(_):
             self.wv.cleanup()
-            if config.contextmenu:
-                gui_hooks.webview_will_show_context_menu.remove(self.add_webview_context_menu_items)
+            gui_hooks.webview_will_show_context_menu.remove(self.add_webview_context_menu_items)
         self.win.closeEvent = on_window_close
 
-        if config.contextmenu:
-            self.hovered = ""
-            self.on_browse_cmd = lambda char: self.open_note_browser(mw, deckname, config.pattern, config.searchfilter, char)
-            self.on_search_cmd = lambda char: self.open_search_link(config, char)
-            self.on_copy_cmd = QApplication.clipboard().setText
-            self.wv.set_bridge_command(self.link_handler, None)
-            # add webview context menu hook and defer cleanup (in on_window_close)
-            gui_hooks.webview_will_show_context_menu.append(self.add_webview_context_menu_items)
-        else:
-            fields_list = config.pattern
-            additional_search_filters = config.searchfilter
-            self.wv.set_bridge_command(lambda search_string: self.open_note_browser(mw, deckname, fields_list, additional_search_filters, search_string), None)
+        self.hovered = ""
+        self.on_browse_cmd = lambda char: self.open_note_browser(mw, deckname, config.pattern, config.searchfilter, char)
+        self.on_search_cmd = lambda char: self.open_search_link(config, char)
+        self.on_copy_cmd = QApplication.clipboard().setText
+        self.wv.set_bridge_command(self.link_handler, None)
+        # add webview context menu hook and defer cleanup (in on_window_close)
+        gui_hooks.webview_will_show_context_menu.append(self.add_webview_context_menu_items)
 
         vl = QVBoxLayout()
         vl.setContentsMargins(0, 0, 0, 0)
