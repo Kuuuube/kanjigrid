@@ -186,12 +186,12 @@ class KanjiGrid:
         if wv is self.wv and self.hovered != "":
             char = self.hovered
             m.clear()
-            a = m.addAction(f"Copy {char} to clipboard")
-            qconnect(a.triggered, lambda: self.on_copy_cmd(char))
-            a = m.addAction(f"Search deck for {char}")
-            qconnect(a.triggered, lambda: self.on_browse_cmd(char))
-            a = m.addAction(f"Search online for {char}")
-            qconnect(a.triggered, lambda: self.on_search_cmd(char))
+            copy_action = m.addAction(f"Copy {char} to clipboard")
+            qconnect(copy_action.triggered, lambda: self.on_copy_cmd(char))
+            browse_action = m.addAction(f"Search deck for {char}")
+            qconnect(browse_action.triggered, lambda: self.on_browse_cmd(char))
+            search_action = m.addAction(f"Search online for {char}")
+            qconnect(search_action.triggered, lambda: self.on_search_cmd(char))
 
     def displaygrid(self, config, deckname, units):
         self.generate(config, units)
