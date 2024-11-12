@@ -12,11 +12,12 @@ import shlex
 from functools import reduce
 
 from anki.utils import ids2str
-from aqt import mw, dialogs
+from aqt import mw, dialogs, gui_hooks
 from aqt.webview import AnkiWebView
 from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox,
-                    QComboBox, QPushButton, QLineEdit, qconnect)
+                    QComboBox, QPushButton, QLineEdit, QMenu, QApplication,
+                    qconnect)
 
 from . import config_util, data, util, save
 
@@ -27,22 +28,24 @@ class KanjiGrid:
             mw.form.menuTools.addSeparator()
             mw.form.menuTools.addAction(self.menuAction)
 
-    def generate(self, config, units):
+    def generate(self, config, units, export = False):
         def kanjitile(char, bgcolor, count = 0, avg_interval = 0):
             tile = ""
             color = "#000"
+
+            context_menu_events = f" onmouseenter=\"bridgeCommand('h:{char}');\" onmouseleave=\"bridgeCommand('l:{char}');\"" if not export else ""
 
             if config.tooltips:
                 tooltip = "Character: %s" % util.safe_unicodedata_name(char)
                 if avg_interval:
                     tooltip += " | Avg Interval: " + str("{:.2f}".format(avg_interval)) + " | Score: " + str("{:.2f}".format(util.scoreAdjust(avg_interval / config.interval)))
-                tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\">" % (bgcolor, tooltip)
+                tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\"%s>" % (bgcolor, tooltip, context_menu_events)
             else:
-                tile += "\t<div style=\"background:%s;\">" % (bgcolor)
+                tile += "\t<div style=\"background:%s;\"%s>" % (bgcolor, context_menu_events)
 
             if config.copyonclick:
                 tile += "<a style=\"color:" + color + ";cursor: pointer;\">" + char + "</a>"
-            elif config.browseonclick:
+            elif config.browseonclick and not export:
                 tile += "<a href=\"" + util.get_browse_command(char) + "\" style=\"color:" + color + ";\">" + char + "</a>"
             else:
                 tile += "<a href=\"" + util.get_search(config, char) + "\" style=\"color:" + color + ";\">" + char + "</a>"
@@ -162,16 +165,55 @@ class KanjiGrid:
         browser.form.searchEdit.lineEdit().setText("deck:\"" + deckname + "\" " + fields_string + " " + additional_search_filters)
         browser.onSearchActivated()
 
+    def open_search_link(self, config, char):
+        link = util.get_search(config, char)
+        # aqt.utils.openLink is an alternative
+        self.wv.eval(f"window.open('{link}', '_blank');")
+
+    def link_handler(self, link):
+        link_prefix = link[:2]
+        link_suffix = link[2:]
+        if link_prefix == "h:":
+            self.hovered = link_suffix
+        elif link_prefix == "l:":
+            if link_suffix == self.hovered:
+                # clear when outside grid
+                self.hovered = ""
+        else:
+            self.on_browse_cmd(link)
+
+    def add_webview_context_menu_items(self, wv: AnkiWebView, m: QMenu) -> None:
+        # hook is active while kanjigrid is open, and right clicking on the main window (deck list) will also trigger this, so check wv
+        if wv is self.wv and self.hovered != "":
+            char = self.hovered
+            m.clear()
+            copy_action = m.addAction(f"Copy {char} to clipboard")
+            qconnect(copy_action.triggered, lambda: self.on_copy_cmd(char))
+            browse_action = m.addAction(f"Browse deck for {char}")
+            qconnect(browse_action.triggered, lambda: self.on_browse_cmd(char))
+            search_action = m.addAction(f"Search online for {char}")
+            qconnect(search_action.triggered, lambda: self.on_search_cmd(char))
+
     def displaygrid(self, config, deckname, units):
         self.generate(config, units)
         self.timepoint("HTML generated")
         self.win = QDialog(mw)
         self.wv = AnkiWebView()
+
+        def on_window_close(_):
+            gui_hooks.webview_will_show_context_menu.remove(self.add_webview_context_menu_items)
+        self.win.closeEvent = on_window_close
         qconnect(self.win.finished, lambda _: self.wv.cleanup())
         mw.garbage_collect_on_dialog_finish(self.win)
-        fields_list = config.pattern
-        additional_search_filters = config.searchfilter
-        self.wv.set_bridge_command(lambda search_string: self.open_note_browser(mw, deckname, fields_list, additional_search_filters, search_string), None)
+
+        self.hovered = ""
+        self.on_browse_cmd = lambda char: self.open_note_browser(mw, deckname, config.pattern, config.searchfilter, char)
+        self.on_search_cmd = lambda char: self.open_search_link(config, char)
+        self.on_copy_cmd = QApplication.clipboard().setText
+        self.wv.set_bridge_command(self.link_handler, None)
+        # add webview context menu hook and defer cleanup (in on_window_close)
+        gui_hooks.webview_will_show_context_menu.append(self.add_webview_context_menu_items)
+
         vl = QVBoxLayout()
         vl.setContentsMargins(0, 0, 0, 0)
         vl.addWidget(self.wv)
