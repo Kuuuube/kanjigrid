@@ -200,10 +200,11 @@ class KanjiGrid:
         self.win = QDialog(mw, Qt.WindowType.Window)
         self.wv = AnkiWebView()
 
-        def on_window_close(_):
-            self.wv.cleanup()
+        def on_window_close(current_wv):
+            current_wv.cleanup()
             gui_hooks.webview_will_show_context_menu.remove(self.add_webview_context_menu_items)
-        qconnect(self.win.finished, on_window_close)
+        current_wv = self.wv
+        qconnect(self.win.finished, lambda _: on_window_close(current_wv))
         mw.garbage_collect_on_dialog_finish(self.win)
 
         self.hovered = ""
