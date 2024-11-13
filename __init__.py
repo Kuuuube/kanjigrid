@@ -53,7 +53,7 @@ class KanjiGrid:
 
         vl = QVBoxLayout()
         vl.setContentsMargins(0, 0, 0, 0)
-        vl.addWidget(self.wv)
+        vl.addWidget(current_wv)
         current_wv.stdHtml(generated_html)
         hl = QHBoxLayout()
         vl.addLayout(hl)
@@ -67,7 +67,7 @@ class KanjiGrid:
         hl.addWidget(save_json)
         save_txt = QPushButton("Save TXT", clicked=lambda: save.savetxt(mw, current_win, config, deckname, units))
         hl.addWidget(save_txt)
-        bb = QPushButton("Close", clicked=self.win.reject)
+        bb = QPushButton("Close", clicked=current_win.reject)
         hl.addWidget(bb)
         current_win.setLayout(vl)
         current_win.resize(1000, 800)
