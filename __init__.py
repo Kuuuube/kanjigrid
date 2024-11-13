@@ -3,12 +3,10 @@
 # Upstream: https://github.com/kuuuube/kanjigrid
 # AnkiWeb:  https://ankiweb.net/shared/info/1610304449
 
-import operator
 import time
 import types
 import shlex
 
-from anki.utils import ids2str
 from aqt import mw, dialogs, gui_hooks
 from aqt.webview import AnkiWebView
 from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
@@ -92,7 +90,7 @@ class KanjiGrid:
         self.wv.stdHtml(generated_html)
         hl = QHBoxLayout()
         vl.addLayout(hl)
-        save_html = QPushButton("Save HTML", clicked=lambda: save.savehtml(self, mw, config, deckname))
+        save_html = QPushButton("Save HTML", clicked=lambda: save.savehtml(mw, current_win, config, deckname))
         hl.addWidget(save_html)
         same_image = QPushButton("Save Image", clicked=lambda: save.savepng(current_wv, current_win, config, deckname))
         hl.addWidget(same_image)
@@ -108,49 +106,10 @@ class KanjiGrid:
         self.win.resize(1000, 800)
         self.timepoint("Window complete")
 
-    def kanjigrid(self, config):
-        dids = [config.did]
-        if config.did == "*":
-            dids = mw.col.decks.all_ids()
-        for deck_id in dids:
-            for _, id_ in mw.col.decks.children(int(deck_id)):
-                dids.append(id_)
-        self.timepoint("Decks selected")
-        cids = []
-        #mw.col.find_cards and mw.col.db.list sort differently
-        #mw.col.db.list is kept due to some users being very picky about the order of kanji when using `Sort by: None`
-        if len(config.searchfilter) > 0 and len(config.pattern) > 0 and len(dids) > 0:
-            cids = mw.col.find_cards("(" + util.make_query(dids, config.pattern) + ") " + config.searchfilter)
-        else:
-            cids = mw.col.db.list("select id from cards where did in %s or odid in %s" % (ids2str(dids), ids2str(dids)))
-        self.timepoint("Cards selected")
-
-        units = dict()
-        notes = dict()
-        for i in cids:
-            card = mw.col.get_card(i)
-            if card.nid not in notes.keys():
-                keys = card.note().keys()
-                unitKey = set()
-                matches = operator.eq
-                for keyword in config.pattern:
-                    for key in keys:
-                        if matches(key.lower(), keyword):
-                            unitKey.update(set(card.note()[key]))
-                            break
-                notes[card.nid] = unitKey
-            else:
-                unitKey = notes[card.nid]
-            if unitKey is not None:
-                for ch in unitKey:
-                    util.addUnitData(units, ch, i, card, config.kanjionly)
-        self.timepoint("Units created")
-        return units
-
     def makegrid(self, config):
         self.time = time.time()
         self.timepoint("Start")
-        units = self.kanjigrid(config)
+        units = generate_grid.kanjigrid(mw, config)
         deckname = config.did
         if config.did != "*":
             deckname = mw.col.decks.name(config.did)

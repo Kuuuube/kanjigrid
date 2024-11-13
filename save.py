@@ -12,15 +12,15 @@ def get_filename(name):
     current_date = datetime.datetime.now().strftime("%Y_%m_%d")
     return re.sub("(\s|<|>|:|\"|/|\\\|\||\?|\*)", "_", name) + "_" + current_date
 
-def savehtml(self, mw, config, deckname):
-    fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".html", "Web Page (*.html *.htm)")[0]
+def savehtml(mw, win, config, deckname):
+    fileName = QFileDialog.getSaveFileName(win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".html", "Web Page (*.html *.htm)")[0]
     if fileName != "":
         mw.progress.start(immediate=True)
         if ".htm" not in fileName:
             fileName += ".html"
         with open(fileName, 'w', encoding='utf-8') as fileOut:
-            units = self.kanjigrid(config)
-            generated_html = generate_grid.generate(config, units, export = True)
+            units = generate_grid.kanjigrid(mw, config)
+            generated_html = generate_grid.generate(mw, config, units, export = True)
             fileOut.write(generated_html)
         mw.progress.finish()
         showInfo("Page saved to %s!" % os.path.abspath(fileOut.name))

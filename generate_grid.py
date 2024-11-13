@@ -1,6 +1,9 @@
-from functools import reduce
 import urllib.parse
 import re
+import operator
+
+from functools import reduce
+from anki.utils import ids2str
 
 from . import util, data
 
@@ -131,3 +134,39 @@ def generate(mw, config, units, export = False):
         result_html += table
     result_html += "</div></body></html>\n"
     return result_html
+
+def kanjigrid(mw, config):
+    dids = [config.did]
+    if config.did == "*":
+        dids = mw.col.decks.all_ids()
+    for deck_id in dids:
+        for _, id_ in mw.col.decks.children(int(deck_id)):
+            dids.append(id_)
+    cids = []
+    #mw.col.find_cards and mw.col.db.list sort differently
+    #mw.col.db.list is kept due to some users being very picky about the order of kanji when using `Sort by: None`
+    if len(config.searchfilter) > 0 and len(config.pattern) > 0 and len(dids) > 0:
+        cids = mw.col.find_cards("(" + util.make_query(dids, config.pattern) + ") " + config.searchfilter)
+    else:
+        cids = mw.col.db.list("select id from cards where did in %s or odid in %s" % (ids2str(dids), ids2str(dids)))
+
+    units = dict()
+    notes = dict()
+    for i in cids:
+        card = mw.col.get_card(i)
+        if card.nid not in notes.keys():
+            keys = card.note().keys()
+            unitKey = set()
+            matches = operator.eq
+            for keyword in config.pattern:
+                for key in keys:
+                    if matches(key.lower(), keyword):
+                        unitKey.update(set(card.note()[key]))
+                        break
+            notes[card.nid] = unitKey
+        else:
+            unitKey = notes[card.nid]
+        if unitKey is not None:
+            for ch in unitKey:
+                util.addUnitData(units, ch, i, card, config.kanjionly)
+    return units
