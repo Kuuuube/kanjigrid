@@ -14,6 +14,8 @@ def open_note_browser(deckname, fields_list, additional_search_filters, search_s
         if i != 0:
             fields_string += " OR "
         fields_string += field + ":*" + search_string + "*"
+    if len(fields_list) > 1:
+        fields_string = "(" + fields_string + ")"
     browser = dialogs.open("Browser", mw)
     browser.form.searchEdit.lineEdit().setText("deck:\"" + deckname + "\" " + fields_string + " " + additional_search_filters)
     browser.onSearchActivated()
