@@ -201,9 +201,9 @@ class KanjiGrid:
         self.wv = AnkiWebView()
 
         def on_window_close(_):
+            self.wv.cleanup()
             gui_hooks.webview_will_show_context_menu.remove(self.add_webview_context_menu_items)
-        self.win.closeEvent = on_window_close
-        qconnect(self.win.finished, lambda _: self.wv.cleanup())
+        qconnect(self.win.finished, on_window_close)
         mw.garbage_collect_on_dialog_finish(self.win)
 
         self.hovered = ""
