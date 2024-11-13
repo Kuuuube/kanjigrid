@@ -7,14 +7,13 @@ import time
 import types
 import shlex
 
-from aqt import mw, dialogs, gui_hooks
+from aqt import mw, gui_hooks
 from aqt.webview import AnkiWebView
 from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox,
-                    QComboBox, QPushButton, QLineEdit, QMenu, QApplication, Qt,
-                    qconnect)
+                    QComboBox, QPushButton, QLineEdit, Qt, qconnect)
 
-from . import config_util, data, util, save, generate_grid
+from . import config_util, data, util, save, generate_grid, webview_util
 
 class KanjiGrid:
     def __init__(self, mw):
@@ -23,22 +22,7 @@ class KanjiGrid:
             mw.form.menuTools.addSeparator()
             mw.form.menuTools.addAction(self.menuAction)
 
-    def open_note_browser(self, mw, deckname, fields_list, additional_search_filters, search_string):
-        fields_string = ""
-        for i, field in enumerate(fields_list):
-            if i != 0:
-                fields_string += " OR "
-            fields_string += field + ":*" + search_string + "*"
-        browser = dialogs.open("Browser", mw)
-        browser.form.searchEdit.lineEdit().setText("deck:\"" + deckname + "\" " + fields_string + " " + additional_search_filters)
-        browser.onSearchActivated()
-
-    def open_search_link(self, config, char):
-        link = util.get_search(config, char)
-        # aqt.utils.openLink is an alternative
-        self.wv.eval(f"window.open('{link}', '_blank');")
-
-    def link_handler(self, link):
+    def link_handler(self, link, config, deckname):
         link_prefix = link[:2]
         link_suffix = link[2:]
         if link_prefix == "h:":
@@ -48,19 +32,7 @@ class KanjiGrid:
                 # clear when outside grid
                 self.hovered = ""
         else:
-            self.on_browse_cmd(link)
-
-    def add_webview_context_menu_items(self, wv: AnkiWebView, m: QMenu) -> None:
-        # hook is active while kanjigrid is open, and right clicking on the main window (deck list) will also trigger this, so check wv
-        if wv is self.wv and self.hovered != "":
-            char = self.hovered
-            m.clear()
-            copy_action = m.addAction(f"Copy {char} to clipboard")
-            qconnect(copy_action.triggered, lambda: self.on_copy_cmd(char))
-            browse_action = m.addAction(f"Browse deck for {char}")
-            qconnect(browse_action.triggered, lambda: self.on_browse_cmd(char))
-            search_action = m.addAction(f"Search online for {char}")
-            qconnect(search_action.triggered, lambda: self.on_search_cmd(char))
+            webview_util.on_browse_cmd(link, config, deckname)
 
     def displaygrid(self, config, deckname, units):
         generated_html = generate_grid.generate(mw, config, units)
@@ -72,17 +44,14 @@ class KanjiGrid:
 
         def on_window_close(current_wv):
             current_wv.cleanup()
-            gui_hooks.webview_will_show_context_menu.remove(self.add_webview_context_menu_items)
+            gui_hooks.webview_will_show_context_menu.remove(webview_util.add_webview_context_menu_items)
         qconnect(self.win.finished, lambda _: on_window_close(current_wv))
         mw.garbage_collect_on_dialog_finish(self.win)
 
         self.hovered = ""
-        self.on_browse_cmd = lambda char: self.open_note_browser(mw, deckname, config.pattern, config.searchfilter, char)
-        self.on_search_cmd = lambda char: self.open_search_link(config, char)
-        self.on_copy_cmd = QApplication.clipboard().setText
-        self.wv.set_bridge_command(self.link_handler, None)
+        self.wv.set_bridge_command(lambda link: self.link_handler(link, config, deckname), None)
         # add webview context menu hook and defer cleanup (in on_window_close)
-        gui_hooks.webview_will_show_context_menu.append(self.add_webview_context_menu_items)
+        gui_hooks.webview_will_show_context_menu.append(lambda wv, m: webview_util.add_webview_context_menu_items(wv, current_wv, m, config, deckname, self.hovered))
 
         vl = QVBoxLayout()
         vl.setContentsMargins(0, 0, 0, 0)
