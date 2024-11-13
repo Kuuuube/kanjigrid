@@ -4,12 +4,9 @@
 # AnkiWeb:  https://ankiweb.net/shared/info/1610304449
 
 import operator
-import re
 import time
 import types
-import urllib.parse
 import shlex
-from functools import reduce
 
 from anki.utils import ids2str
 from aqt import mw, dialogs, gui_hooks
@@ -19,7 +16,7 @@ from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QComboBox, QPushButton, QLineEdit, QMenu, QApplication, Qt,
                     qconnect)
 
-from . import config_util, data, util, save
+from . import config_util, data, util, save, generate_grid
 
 class KanjiGrid:
     def __init__(self, mw):
@@ -27,133 +24,6 @@ class KanjiGrid:
             self.menuAction = QAction("Generate Kanji Grid", mw, triggered=self.setup)
             mw.form.menuTools.addSeparator()
             mw.form.menuTools.addAction(self.menuAction)
-
-    def generate(self, config, units, export = False):
-        def kanjitile(char, bgcolor, count = 0, avg_interval = 0):
-            tile = ""
-            color = "#000"
-
-            context_menu_events = f" onmouseenter=\"bridgeCommand('h:{char}');\" onmouseleave=\"bridgeCommand('l:{char}');\"" if not export else ""
-
-            if config.tooltips:
-                tooltip = "Character: %s" % util.safe_unicodedata_name(char)
-                if avg_interval:
-                    tooltip += " | Avg Interval: " + str("{:.2f}".format(avg_interval)) + " | Score: " + str("{:.2f}".format(util.scoreAdjust(avg_interval / config.interval)))
-                tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\"%s>" % (bgcolor, tooltip, context_menu_events)
-            else:
-                tile += "\t<div style=\"background:%s;\"%s>" % (bgcolor, context_menu_events)
-
-            if config.copyonclick:
-                tile += "<a style=\"color:" + color + ";cursor: pointer;\">" + char + "</a>"
-            elif config.browseonclick and not export:
-                tile += "<a href=\"" + util.get_browse_command(char) + "\" style=\"color:" + color + ";\">" + char + "</a>"
-            else:
-                tile += "<a href=\"" + util.get_search(config, char) + "\" style=\"color:" + color + ";\">" + char + "</a>"
-
-            tile += "</div>\n"
-
-            return tile
-
-        deckname = "*"
-        if config.did != "*":
-            deckname = mw.col.decks.name(config.did).rsplit('::', 1)[-1]
-
-        self.html  = "<!doctype html><html lang=\"%s\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>" % config.lang
-        self.html += "<style type=\"text/css\">body{text-align:center;}.grid-container{display:grid;grid-gap:2px;grid-template-columns:repeat(auto-fit,23px);justify-content:center;" + util.get_font_css(config) + "}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
-        self.html += "</head>\n"
-        if config.copyonclick:
-            self.html += "<script>function copyText(text) {const range = document.createRange();const tempElem = document.createElement('div');tempElem.textContent = text;document.body.appendChild(tempElem);range.selectNode(tempElem);const selection = window.getSelection();selection.removeAllRanges();selection.addRange(range);document.execCommand('copy');document.body.removeChild(tempElem);}document.addEventListener('click', function(e) {e.preventDefault();if (e.srcElement.tagName == 'A') {copyText(e.srcElement.textContent);}}, false);</script>"
-        self.html += "<body>\n"
-        self.html += "<div style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</div>\n" % deckname
-        self.html += "<p style=\"text-align: center\">Key</p>"
-        self.html += "<p style=\"text-align: center\">Weak&nbsp;"
-	# keycolors = (hsvrgbstr(n/6.0) for n in range(6+1))
-        for c in [n/6.0 for n in range(6+1)]:
-            self.html += "<span class=\"key\" style=\"background-color: %s;\">&nbsp;</span>" % util.hsvrgbstr(c/2)
-        self.html += "&nbsp;Strong</p></div>\n"
-        self.html += "<hr style=\"border-style: dashed;border-color: #666;width: 100%;\">\n"
-        self.html += "<div style=\"text-align: center;\">\n"
-
-        unitsList = {
-            util.SortOrder.NONE:      sorted(units.values(), key=lambda unit: (unit.idx, unit.count)),
-            util.SortOrder.UNICODE:   sorted(units.values(), key=lambda unit: (util.safe_unicodedata_name(unit.value), unit.count)),
-            util.SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (util.scoreAdjust(unit.avg_interval / config.interval), unit.count), reverse=True),
-            util.SortOrder.FREQUENCY: sorted(units.values(), key=lambda unit: (unit.count, util.scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
-        }[util.SortOrder(config.sortby)]
-
-        if config.groupby > 0:
-            groups = data.groups[config.groupby - 1]
-            kanji = [u.value for u in unitsList]
-            for i in range(1, len(groups.data)):
-                self.html += "<h2 style=\"color:#888;\">%s Kanji</h2>\n" % groups.data[i][0]
-                table = "<div class=\"grid-container\">\n"
-                count_found = 0
-                count_known = 0
-
-                sorted_units = []
-                if config.sortby == 0:
-                    sorted_units = [units[c] for c in groups.data[i][1] if c in kanji]
-                else:
-                    sorted_units = [units[c] for c in kanji if c in groups.data[i][1]]
-
-                for unit in sorted_units:
-                    if unit.count != 0 or config.unseen:
-                        count_found += 1
-                        bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
-                        if unit.count != 0 or bgcolor not in ["#E62E2E", "#FFF"]:
-                            count_known += 1
-                        table += kanjitile(unit.value, bgcolor, count_found, unit.avg_interval)
-                table += "</div>\n"
-                total_count = len(groups.data[i][1])
-                if config.unseen:
-                    unseen_kanji = []
-                    count = 0
-                    for char in [c for c in groups.data[i][1] if c not in kanji]:
-                        count += 1
-                        bgcolor = "#EEE"
-                        unseen_kanji.append(kanjitile(char, bgcolor))
-                    if count != 0:
-                        table += "<details><summary>Missing kanji</summary><div class=\"grid-container\">\n"
-                        for element in unseen_kanji:
-                            table += element
-                    table += "</div></details>\n"
-                self.html += "<h4 style=\"color:#888;\">" + str(count_found) + " of " + str(total_count) + " Found - " + "{:.2f}".format(round(count_found / (total_count if total_count > 0 else 1) * 100, 2)) + "%, " + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
-                self.html += table
-
-            chars = reduce(lambda x, y: x+y, dict(groups.data).values())
-            self.html += "<h2 style=\"color:#888;\">" + str(groups.data[0][0]) + "</h2>" #label for "not in group" groups
-            table = "<div class=\"grid-container\">\n"
-            total_count = 0
-            count_known = 0
-            for unit in [u for u in unitsList if u.value not in chars]:
-                if unit.count != 0 or config.unseen:
-                    total_count += 1
-                    bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
-                    if unit.count != 0 or bgcolor not in ["#E62E2E", "#FFF"]:
-                        count_known += 1
-                    table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)
-            table += "</div>\n"
-            self.html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
-            self.html += table
-            self.html += "<style type=\"text/css\">.datasource{font-style:italic;font-size:0.75em;margin-top:1em;overflow-wrap:break-word;}.datasource a{color:#1034A6;}</style><span class=\"datasource\">Data source: " + ' '.join("<a href=\"{}\">{}</a>".format(w, urllib.parse.unquote(w)) if re.match("https?://", w) else w for w in groups.source.split(' ')) + "</span>"
-        else:
-            table = "<div class=\"grid-container\">\n"
-            total_count = 0
-            count_known = 0
-            for unit in unitsList:
-                if unit.count != 0 or config.unseen:
-                    total_count += 1
-                    bgcolor = util.get_background_color(unit.avg_interval,config.interval, unit.count)
-                    if unit.count != 0 or bgcolor not in ["#E62E2E", "#FFF"]:
-                        count_known += 1
-                    table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)
-            table += "</div>\n"
-            if total_count != 0:
-                self.html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
-            else:
-                self.html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " Known - 0%</h4>\n"
-            self.html += table
-        self.html += "</div></body></html>\n"
 
     def open_note_browser(self, mw, deckname, fields_list, additional_search_filters, search_string):
         fields_string = ""
@@ -195,7 +65,7 @@ class KanjiGrid:
             qconnect(search_action.triggered, lambda: self.on_search_cmd(char))
 
     def displaygrid(self, config, deckname, units):
-        self.generate(config, units)
+        generated_html = generate_grid.generate(mw, config, units)
         self.timepoint("HTML generated")
         self.win = QDialog(mw, Qt.WindowType.Window)
         current_win = self.win
@@ -219,7 +89,7 @@ class KanjiGrid:
         vl = QVBoxLayout()
         vl.setContentsMargins(0, 0, 0, 0)
         vl.addWidget(self.wv)
-        self.wv.stdHtml(self.html)
+        self.wv.stdHtml(generated_html)
         hl = QHBoxLayout()
         vl.addLayout(hl)
         save_html = QPushButton("Save HTML", clicked=lambda: save.savehtml(self, mw, config, deckname))
@@ -237,7 +107,6 @@ class KanjiGrid:
         self.win.setLayout(vl)
         self.win.resize(1000, 800)
         self.timepoint("Window complete")
-        return 0
 
     def kanjigrid(self, config):
         dids = [config.did]

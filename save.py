@@ -6,6 +6,8 @@ from aqt.utils import showInfo, showCritical
 from aqt.qt import (QStandardPaths, QFileDialog, QTimer, QPageLayout, QPageSize,
                     QMarginsF)
 
+from . import generate_grid
+
 def get_filename(name):
     current_date = datetime.datetime.now().strftime("%Y_%m_%d")
     return re.sub("(\s|<|>|:|\"|/|\\\|\||\?|\*)", "_", name) + "_" + current_date
@@ -18,8 +20,8 @@ def savehtml(self, mw, config, deckname):
             fileName += ".html"
         with open(fileName, 'w', encoding='utf-8') as fileOut:
             units = self.kanjigrid(config)
-            self.generate(config, units, export = True)
-            fileOut.write(self.html)
+            generated_html = generate_grid.generate(config, units, export = True)
+            fileOut.write(generated_html)
         mw.progress.finish()
         showInfo("Page saved to %s!" % os.path.abspath(fileOut.name))
 
