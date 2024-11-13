@@ -18,6 +18,7 @@ from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox,
                     QComboBox, QPushButton, QLineEdit, QMenu, QApplication, Qt,
                     qconnect)
+from aqt.utils import tooltip, is_win
 
 from . import config_util, data, util, save
 
@@ -203,6 +204,7 @@ class KanjiGrid:
         def on_window_close(_):
             self.wv.cleanup()
             gui_hooks.webview_will_show_context_menu.remove(self.add_webview_context_menu_items)
+            self.win = None
         qconnect(self.win.finished, on_window_close)
         mw.garbage_collect_on_dialog_finish(self.win)
 
@@ -287,6 +289,19 @@ class KanjiGrid:
             self.displaygrid(config, deckname, units)
 
     def setup(self):
+        if hasattr(self, "win") and self.win is not None:
+            # raise grid window (taken from AnkiQt.onAppMsg)
+            if is_win:
+                # on windows we can raise the window by minimizing and restoring
+                self.win.showMinimized()
+                self.win.setWindowState(Qt.WindowState.WindowActive)
+                self.win.showNormal()
+            else:
+                # on osx we can raise the window. on unity the icon in the tray will just flash.
+                self.win.activateWindow()
+                self.win.raise_()
+            tooltip("Grid is already open.", parent=self.win)
+            return
         addonconfig = mw.addonManager.getConfig(__name__)
         validated_config = config_util.validate_config(addonconfig["defaults"])
         config = types.SimpleNamespace(**validated_config)
