@@ -55,8 +55,8 @@ def savepng(wv, win, config, deckname):
     wv.page().setZoomFactor(1)
     wv.resize(oldsize)
 
-def savepdf(self, mw, deckname):
-    fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".pdf", "PDF (*.pdf)")[0]
+def savepdf(mw, wv, win, deckname):
+    fileName = QFileDialog.getSaveFileName(win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".pdf", "PDF (*.pdf)")[0]
     if fileName != "":
         mw.progress.start(immediate=True)
         if ".pdf" not in fileName:
@@ -65,35 +65,33 @@ def savepdf(self, mw, deckname):
         def finish():
             mw.progress.finish()
             showInfo("PDF saved to %s!" % os.path.abspath(fileName))
-            self.wv.pdfPrintingFinished.disconnect()
+            wv.pdfPrintingFinished.disconnect()
 
-        self.wv.pdfPrintingFinished.connect(finish)
-        page_size = self.wv.page().contentsSize()
+        wv.pdfPrintingFinished.connect(finish)
+        page_size = wv.page().contentsSize()
         page_size.setWidth(page_size.width() * 0.75) #`pixels * 0.75 = points` with default dpi used by printToPdf or QPageSize
         page_size.setHeight(page_size.height() * 0.75)
-        self.wv.printToPdf(fileName, QPageLayout(QPageSize(QPageSize(page_size, QPageSize.Unit.Point, None, QPageSize.SizeMatchPolicy.ExactMatch)), QPageLayout.Orientation.Portrait, QMarginsF()))
+        wv.printToPdf(fileName, QPageLayout(QPageSize(QPageSize(page_size, QPageSize.Unit.Point, None, QPageSize.SizeMatchPolicy.ExactMatch)), QPageLayout.Orientation.Portrait, QMarginsF()))
 
-def savejson(self, mw, config, deckname, units):
-    fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".json", "JSON (*.json)")[0]
+def savejson(mw, win, config, deckname, units):
+    fileName = QFileDialog.getSaveFileName(win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".json", "JSON (*.json)")[0]
     if fileName != "":
         mw.progress.start(immediate=True)
         if ".json" not in fileName:
             fileName += ".json"
         with open(fileName, 'w', encoding='utf-8') as fileOut:
-            self.timepoint("JSON start")
             json_dump = json.dumps({'units':units, 'config':config}, default=lambda x: x.__dict__, indent=4)
             fileOut.write(json_dump)
         mw.progress.finish()
         showInfo("JSON saved to %s!" % os.path.abspath(fileOut.name))
 
-def savetxt(self, mw, config, deckname, units):
-    fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".txt", "TXT (*.txt)")[0]
+def savetxt(mw, win, config, deckname, units):
+    fileName = QFileDialog.getSaveFileName(win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".txt", "TXT (*.txt)")[0]
     if fileName != "":
         mw.progress.start(immediate=True)
         if ".txt" not in fileName:
             fileName += ".txt"
         with open(fileName, 'w', encoding='utf-8') as fileOut:
-            self.timepoint("TXT start")
             fileOut.write("".join(units.keys()))
         mw.progress.finish()
         showInfo("TXT saved to %s!" % os.path.abspath(fileOut.name))
