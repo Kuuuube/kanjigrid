@@ -16,7 +16,7 @@ from aqt import mw, dialogs, gui_hooks
 from aqt.webview import AnkiWebView
 from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox,
-                    QComboBox, QPushButton, QLineEdit, QMenu, QApplication,
+                    QComboBox, QPushButton, QLineEdit, QMenu, QApplication, Qt,
                     qconnect)
 
 from . import config_util, data, util, save
@@ -197,7 +197,7 @@ class KanjiGrid:
     def displaygrid(self, config, deckname, units):
         self.generate(config, units)
         self.timepoint("HTML generated")
-        self.win = QDialog(mw)
+        self.win = QDialog(mw, Qt.WindowType.Window)
         self.wv = AnkiWebView()
 
         def on_window_close(_):
