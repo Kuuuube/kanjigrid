@@ -23,37 +23,37 @@ def savehtml(self, mw, config, deckname):
         mw.progress.finish()
         showInfo("Page saved to %s!" % os.path.abspath(fileOut.name))
 
-def savepng(self, mw, config, deckname):
-    oldsize = self.wv.size()
+def savepng(wv, win, config, deckname):
+    oldsize = wv.size()
 
-    content_size = self.wv.page().contentsSize().toSize()
-    content_size.setWidth(self.wv.size().width() * config.saveimagequality) #width does not need to change to content size
+    content_size = wv.page().contentsSize().toSize()
+    content_size.setWidth(wv.size().width() * config.saveimagequality) #width does not need to change to content size
     content_size.setHeight(content_size.height() * config.saveimagequality)
-    self.wv.resize(content_size)
+    wv.resize(content_size)
 
     if config.saveimagequality != 1:
-        self.wv.page().setZoomFactor(config.saveimagequality)
+        wv.page().setZoomFactor(config.saveimagequality)
 
         def resize_to_content():
-            content_size = self.wv.page().contentsSize().toSize()
-            content_size.setWidth(self.wv.size().width()) #width does not need to change to content size
+            content_size = wv.page().contentsSize().toSize()
+            content_size.setWidth(wv.size().width()) #width does not need to change to content size
             content_size.setHeight(content_size.height())
-            self.wv.resize(content_size)
+            wv.resize(content_size)
         QTimer.singleShot(config.saveimagedelay, resize_to_content)
 
-    fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".png", "Portable Network Graphics (*.png)")[0]
+    fileName = QFileDialog.getSaveFileName(win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".png", "Portable Network Graphics (*.png)")[0]
     if fileName != "":
         if ".png" not in fileName:
             fileName += ".png"
 
-        success = self.wv.grab().save(fileName, b"PNG")
+        success = wv.grab().save(fileName, b"PNG")
         if success:
             showInfo("Image saved to %s!" % os.path.abspath(fileName))
         else:
             showCritical("Failed to save the image.")
 
-    self.wv.page().setZoomFactor(1)
-    self.wv.resize(oldsize)
+    wv.page().setZoomFactor(1)
+    wv.resize(oldsize)
 
 def savepdf(self, mw, deckname):
     fileName = QFileDialog.getSaveFileName(self.win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".pdf", "PDF (*.pdf)")[0]

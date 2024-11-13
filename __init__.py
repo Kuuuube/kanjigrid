@@ -198,12 +198,13 @@ class KanjiGrid:
         self.generate(config, units)
         self.timepoint("HTML generated")
         self.win = QDialog(mw, Qt.WindowType.Window)
+        current_win = self.win
         self.wv = AnkiWebView()
+        current_wv = self.wv
 
         def on_window_close(current_wv):
             current_wv.cleanup()
             gui_hooks.webview_will_show_context_menu.remove(self.add_webview_context_menu_items)
-        current_wv = self.wv
         qconnect(self.win.finished, lambda _: on_window_close(current_wv))
         mw.garbage_collect_on_dialog_finish(self.win)
 
@@ -223,7 +224,7 @@ class KanjiGrid:
         vl.addLayout(hl)
         save_html = QPushButton("Save HTML", clicked=lambda: save.savehtml(self, mw, config, deckname))
         hl.addWidget(save_html)
-        same_image = QPushButton("Save Image", clicked=lambda: save.savepng(self, mw, config, deckname))
+        same_image = QPushButton("Save Image", clicked=lambda: save.savepng(current_wv, current_win, config, deckname))
         hl.addWidget(same_image)
         save_pdf = QPushButton("Save PDF", clicked=lambda: save.savepdf(self, mw, deckname))
         hl.addWidget(save_pdf)
