@@ -3,7 +3,6 @@
 # Upstream: https://github.com/kuuuube/kanjigrid
 # AnkiWeb:  https://ankiweb.net/shared/info/1610304449
 
-import time
 import types
 import shlex
 
@@ -36,7 +35,6 @@ class KanjiGrid:
 
     def displaygrid(self, config, deckname, units):
         generated_html = generate_grid.generate(mw, config, units)
-        self.timepoint("HTML generated")
         self.win = QDialog(mw, Qt.WindowType.Window)
         current_win = self.win
         self.wv = AnkiWebView()
@@ -73,11 +71,8 @@ class KanjiGrid:
         hl.addWidget(bb)
         self.win.setLayout(vl)
         self.win.resize(1000, 800)
-        self.timepoint("Window complete")
 
     def makegrid(self, config):
-        self.time = time.time()
-        self.timepoint("Start")
         units = generate_grid.kanjigrid(mw, config)
         deckname = config.did
         if config.did != "*":
@@ -89,10 +84,6 @@ class KanjiGrid:
         addonconfig = mw.addonManager.getConfig(__name__)
         validated_config = config_util.validate_config(addonconfig["defaults"])
         config = types.SimpleNamespace(**validated_config)
-        if addonconfig.get("_debug_time", False):
-            self.timepoint = lambda c: print("%s: %0.3f" % (c, time.time()-self.time))
-        else:
-            self.timepoint = lambda _: None
         config.did = mw.col.conf['curDeck']
 
         data.init_groups()
