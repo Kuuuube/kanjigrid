@@ -43,18 +43,18 @@ class KanjiGrid:
         def on_window_close(current_wv):
             current_wv.cleanup()
             gui_hooks.webview_will_show_context_menu.remove(webview_util.add_webview_context_menu_items)
-        qconnect(self.win.finished, lambda _: on_window_close(current_wv))
-        mw.garbage_collect_on_dialog_finish(self.win)
+        qconnect(current_win.finished, lambda _: on_window_close(current_wv))
+        mw.garbage_collect_on_dialog_finish(current_win)
 
         self.hovered = ""
-        self.wv.set_bridge_command(lambda link: self.link_handler(link, config, deckname), None)
+        current_wv.set_bridge_command(lambda link: self.link_handler(link, config, deckname), None)
         # add webview context menu hook and defer cleanup (in on_window_close)
         gui_hooks.webview_will_show_context_menu.append(lambda wv, m: webview_util.add_webview_context_menu_items(wv, current_wv, m, config, deckname, self.hovered))
 
         vl = QVBoxLayout()
         vl.setContentsMargins(0, 0, 0, 0)
         vl.addWidget(self.wv)
-        self.wv.stdHtml(generated_html)
+        current_wv.stdHtml(generated_html)
         hl = QHBoxLayout()
         vl.addLayout(hl)
         save_html = QPushButton("Save HTML", clicked=lambda: save.savehtml(mw, current_win, config, deckname))
@@ -69,8 +69,8 @@ class KanjiGrid:
         hl.addWidget(save_txt)
         bb = QPushButton("Close", clicked=self.win.reject)
         hl.addWidget(bb)
-        self.win.setLayout(vl)
-        self.win.resize(1000, 800)
+        current_win.setLayout(vl)
+        current_win.resize(1000, 800)
 
     def makegrid(self, config):
         units = generate_grid.kanjigrid(mw, config)
