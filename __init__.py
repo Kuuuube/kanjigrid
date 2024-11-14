@@ -81,9 +81,7 @@ class KanjiGrid:
             self.displaygrid(config, deckname, units)
 
     def setup(self):
-        addonconfig = mw.addonManager.getConfig(__name__)
-        validated_config = config_util.validate_config(addonconfig["defaults"])
-        config = types.SimpleNamespace(**validated_config)
+        config = types.SimpleNamespace(**config_util.get_config())
         config.did = mw.col.conf['curDeck']
 
         data.init_groups()

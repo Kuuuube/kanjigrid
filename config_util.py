@@ -1,3 +1,5 @@
+from aqt import mw
+
 config_schema = {
     "pattern": "",
     "literal": False,
@@ -26,6 +28,15 @@ config_schema = {
     "visearch": "",
     "searchfilter": ""
 }
+
+def get_config():
+    config = mw.addonManager.getConfig(__name__)
+
+    if "defaults" in config: #migrate legacy configs that nested settings inside "defaults"
+        config = config["defaults"]
+        mw.addonManager.writeConfig(__name__, config)
+
+    return validate_config(config)
 
 def validate_config(config):
     for config_schema_key in config_schema.keys():
