@@ -29,7 +29,7 @@ def on_browse_cmd(char, config, deckname):
 def on_search_cmd(char, wv, config):
     open_search_link(wv, config, char)
 
-def add_webview_context_menu_items(wv, expected_wv, menu, config, deckname, char) -> None:
+def add_webview_context_menu_items(wv, expected_wv, menu, config, deckname, char):
     # hook is active while kanjigrid is open, and right clicking on the main window (deck list) will also trigger this, so check wv
     if wv is expected_wv and char != "":
         menu.clear()
