@@ -49,7 +49,7 @@ class KanjiGrid:
         self.hovered = ""
         current_wv.set_bridge_command(lambda link: self.link_handler(link, config, deckname), None)
         # add webview context menu hook and defer cleanup (in on_window_close)
-        gui_hooks.webview_will_show_context_menu.append(lambda wv, m: webview_util.add_webview_context_menu_items(wv, current_wv, m, config, deckname, self.hovered))
+        gui_hooks.webview_will_show_context_menu.append(lambda wv, menu: webview_util.add_webview_context_menu_items(wv, current_wv, menu, config, deckname, self.hovered))
 
         vl = QVBoxLayout()
         vl.setContentsMargins(0, 0, 0, 0)
