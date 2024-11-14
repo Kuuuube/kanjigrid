@@ -135,6 +135,8 @@ Changelog compared to the old kanji grid add-on.
 
 - Added JIS Levels grouping.
 
+- Added Thousand Character Classic grouping.
+
 - Renamed `Probably Chinese` Kanji Kentei Level sort category to `Non-Kanji Kentei`.
 
 - Removed `Missing Kanji` in groupings when there are no missing kanji.
