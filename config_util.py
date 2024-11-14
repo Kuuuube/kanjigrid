@@ -1,6 +1,7 @@
 from aqt import mw
 
 config_schema = {
+    "version": 0,
     "pattern": "",
     "literal": False,
     "interval": 180,
