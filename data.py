@@ -28,3 +28,5 @@ def init_groups():
         filepath = data_folder + "/" + file
         grouping_json = json.loads(open(filepath, encoding = "utf-8").read())
         groups.append(KanjiGroups(grouping_json["name"], grouping_json["source"], grouping_json["lang"], grouping_json["data"]))
+
+    groups.sort(key = lambda group: group.name)
