@@ -46,7 +46,7 @@ def generate(mw, config, units, export = False):
     result_html += "<body>\n"
     result_html += "<div style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</div>\n" % deckname
     if config.timetravel_enabled:
-        date_time = datetime.fromtimestamp(config.timetravel_ts/ 1000)
+        date_time = datetime.fromtimestamp(config.timetravel_ts / 1000)
         date_time_str = date_time.strftime("%d/%m/%Y %H:%M:%S")
         result_html += f"<p style=\"color: #888;text-align: center\">for {date_time_str}</p>"
     result_html += "<p style=\"text-align: center\">Key</p>"
@@ -144,10 +144,10 @@ def get_revlog(mw, cids, timetravel_ts):
     # SQLITE_MAX_SQL_LENGTH is 1GB by default
     # so it could handle ~70 million ids
     # but chunk just in case
-    REVLOG_CHUNK = 50000
+    CIDS_CHUNK = 50000
     revlog = {}
-    for i in range(0, len(cids), REVLOG_CHUNK):
-        chunked_cids = cids[i:i+REVLOG_CHUNK]
+    for i in range(0, len(cids), CIDS_CHUNK):
+        chunked_cids = cids[i:i+CIDS_CHUNK]
         revlog_rows = mw.col.db.all(f"""
             select cid, max(id), ivl
             from revlog 
