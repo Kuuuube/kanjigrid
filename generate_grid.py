@@ -3,6 +3,7 @@ import re
 import operator
 
 from functools import reduce
+from datetime import datetime
 from anki.utils import ids2str
 
 from . import util, data
@@ -44,6 +45,10 @@ def generate(mw, config, units, export = False):
         result_html += "<script>function copyText(text) {const range = document.createRange();const tempElem = document.createElement('div');tempElem.textContent = text;document.body.appendChild(tempElem);range.selectNode(tempElem);const selection = window.getSelection();selection.removeAllRanges();selection.addRange(range);document.execCommand('copy');document.body.removeChild(tempElem);}document.addEventListener('click', function(e) {e.preventDefault();if (e.srcElement.tagName == 'A') {copyText(e.srcElement.textContent);}}, false);</script>"
     result_html += "<body>\n"
     result_html += "<div style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</div>\n" % deckname
+    if config.timetravel_enabled:
+        date_time = datetime.fromtimestamp(config.timetravel_ts/ 1000)
+        date_time_str = date_time.strftime("%d/%m/%Y %H:%M:%S")
+        result_html += f"<p style=\"color: #888;text-align: center\">for {date_time_str}</p>"
     result_html += "<p style=\"text-align: center\">Key</p>"
     result_html += "<p style=\"text-align: center\">Weak&nbsp;"
     # keycolors = (hsvrgbstr(n/6.0) for n in range(6+1))
@@ -135,6 +140,42 @@ def generate(mw, config, units, export = False):
     result_html += "</div></body></html>\n"
     return result_html
 
+def get_revlog(mw, cids, timetravel_ts):
+    # SQLITE_MAX_SQL_LENGTH is 1GB by default
+    # so it could handle ~70 million ids
+    # but chunk just in case
+    REVLOG_CHUNK = 50000
+    revlog = {}
+    for i in range(0, len(cids), REVLOG_CHUNK):
+        chunked_cids = cids[i:i+REVLOG_CHUNK]
+        revlog_rows = mw.col.db.all(f"""
+            select cid, max(id), ivl
+            from revlog 
+            where id <= {timetravel_ts}
+            and cid in {ids2str(chunked_cids)}
+            group by cid
+        """)
+        revlog |= {row[0]: row[2] for row in revlog_rows} # cid -> ivl
+
+    return revlog
+
+def timetravel(card, revlog, timetravel_ts):
+    if card.id not in revlog:
+        # card was not reviewd during the timeframe...
+        if card.id > timetravel_ts:
+            # ...and wasn't in deck either, so it shouldn't be counted
+            return False
+        # ...but was still present in deck,
+        # so patch it to be of type "new" (to emulate existing behaviour)
+        card.ivl = 0
+        card.type = 0
+    else:
+        # a negative revlog ivl is in seconds, positive is in days
+        revlog_ivl = revlog[card.id]
+        card.ivl = revlog_ivl if revlog_ivl >= 0 else (-revlog_ivl) // (60 * 60 * 24)
+
+    return True
+
 def kanjigrid(mw, config):
     dids = [config.did]
     if config.did == "*":
@@ -150,10 +191,17 @@ def kanjigrid(mw, config):
     else:
         cids = mw.col.db.list("select id from cards where did in %s or odid in %s" % (ids2str(dids), ids2str(dids)))
 
+    timetravel_enabled = config.timetravel_enabled
+    timetravel_ts = config.timetravel_ts
+    revlog = get_revlog(mw, cids, timetravel_ts) if timetravel_enabled else {}
+
     units = dict()
     notes = dict()
     for i in cids:
         card = mw.col.get_card(i)
+        # tradeoff between branching and mutating here vs collecting all the cards and then filtermapping 
+        if timetravel_enabled and not timetravel(card, revlog, timetravel_ts):
+            continue # ignore card
         if card.nid not in notes.keys():
             keys = card.note().keys()
             unitKey = set()

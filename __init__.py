@@ -10,7 +10,8 @@ from aqt import mw, gui_hooks
 from aqt.webview import AnkiWebView
 from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox,
-                    QComboBox, QPushButton, QLineEdit, Qt, qconnect)
+                    QComboBox, QPushButton, QLineEdit, Qt, 
+                    QDateTimeEdit, QDateTime, QGroupBox, qconnect)
 
 from . import config_util, data, util, save, generate_grid, webview_util
 
@@ -187,6 +188,22 @@ class KanjiGrid:
         shnew = QCheckBox("Show units not yet seen")
         shnew.setChecked(config.unseen)
         il.addWidget(shnew)
+
+        ttb = QGroupBox("Time travel")
+        ttb.setCheckable(True)
+        ttb.setChecked(False)
+        ttb_layout = QVBoxLayout()
+        
+        dt = QDateTimeEdit()
+        dt.setDateTime(QDateTime.currentDateTime())
+        dt.setCalendarPopup(True)
+        ttb_layout.addWidget(dt)
+        ttb_layout.addWidget(QLabel("Note: Generated grid might not match actual past grid exactly"))
+
+        ttb.setLayout(ttb_layout)
+        il.addSpacing(5)
+        il.addWidget(ttb)
+
         frm.setLayout(il)
         hl = QHBoxLayout()
         vl.addLayout(hl)
@@ -210,6 +227,8 @@ class KanjiGrid:
             config.sortby = sortby.currentIndex()
             config.lang = pagelang.currentText()
             config.unseen = shnew.isChecked()
+            config.timetravel_enabled = ttb.isChecked()
+            config.timetravel_ts = dt.dateTime().toMSecsSinceEpoch()
             self.makegrid(config)
             mw.progress.finish()
             self.win.show()
