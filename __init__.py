@@ -88,12 +88,12 @@ class KanjiGrid:
 
         setup_win = QDialog(mw)
         vertical_layout = QVBoxLayout()
-        fl = QHBoxLayout()
+        deck_horizontal_layout = QHBoxLayout()
         deckcb = QComboBox()
         deckcb.addItem("*") # * = all decks
         deckcb.addItems(sorted(mw.col.decks.all_names()))
         deckcb.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        fl.addWidget(QLabel("Deck: "))
+        deck_horizontal_layout.addWidget(QLabel("Deck: "))
         deckcb.setCurrentText(mw.col.decks.get(config.did)['name'])
         def change_did(deckname):
             if deckname == "*":
@@ -101,8 +101,8 @@ class KanjiGrid:
                 return
             config.did = mw.col.decks.by_name(deckname)['id']
         deckcb.currentTextChanged.connect(change_did)
-        fl.addWidget(deckcb)
-        vertical_layout.addLayout(fl)
+        deck_horizontal_layout.addWidget(deckcb)
+        vertical_layout.addLayout(deck_horizontal_layout)
         frm = QGroupBox("Settings")
         vl.addWidget(frm)
         il = QVBoxLayout()
