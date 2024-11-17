@@ -87,7 +87,7 @@ class KanjiGrid:
         data.init_groups()
 
         setup_win = QDialog(mw)
-        vl = QVBoxLayout()
+        vertical_layout = QVBoxLayout()
         fl = QHBoxLayout()
         deckcb = QComboBox()
         deckcb.addItem("*") # * = all decks
@@ -102,7 +102,7 @@ class KanjiGrid:
             config.did = mw.col.decks.by_name(deckname)['id']
         deckcb.currentTextChanged.connect(change_did)
         fl.addWidget(deckcb)
-        vl.addLayout(fl)
+        vertical_layout.addLayout(fl)
         frm = QGroupBox("Settings")
         vl.addWidget(frm)
         il = QVBoxLayout()
@@ -189,12 +189,12 @@ class KanjiGrid:
         il.addWidget(shnew)
         frm.setLayout(il)
         hl = QHBoxLayout()
-        vl.addLayout(hl)
+        vertical_layout.addLayout(hl)
         gen = QPushButton("Generate", clicked = setup_win.accept)
         hl.addWidget(gen)
         cls = QPushButton("Close", clicked = setup_win.reject)
         hl.addWidget(cls)
-        setup_win.setLayout(vl)
+        setup_win.setLayout(vertical_layout)
         setup_win.resize(500, setup_win.height())
         if setup_win.exec():
             mw.progress.start(immediate=True)
