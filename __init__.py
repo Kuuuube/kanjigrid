@@ -210,13 +210,22 @@ class KanjiGrid:
         advanced_tab_vertical_layout.addWidget(QLabel("Additional Search Filters:"))
         advanced_tab_vertical_layout.addWidget(search_filter)
 
-        remember_settings_checkbox = QCheckBox("Remember Settings")
-        remember_settings_checkbox.setChecked(config.remembersettings)
-        def update_remember_settings(e, config):
-            config.remembersettings = bool(e.value)
-            config_util.set_config(config)
-        remember_settings_checkbox.checkStateChanged.connect(lambda e: update_remember_settings(e, config))
-        advanced_tab_vertical_layout.addWidget(remember_settings_checkbox)
+        def set_config_attributes(config):
+            config.pattern = field.currentText().lower()
+            config.pattern = shlex.split(config.pattern)
+            config.searchfilter = search_filter.text()
+            config.interval = stint.value()
+            config.groupby = groupby.currentIndex()
+            config.sortby = sortby.currentIndex()
+            config.lang = pagelang.currentText()
+            config.unseen = shnew.isChecked()
+            return config
+
+        def save_settings(config):
+            config_util.set_config(set_config_attributes(config))
+
+        save_settings_button = QPushButton("Save Settings", clicked = lambda _: save_settings(config))
+        advanced_tab_vertical_layout.addWidget(save_settings_button)
 
         advanced_tab.setLayout(advanced_tab_vertical_layout)
         advanced_tab_scroll_area.setWidget(advanced_tab)
@@ -234,16 +243,7 @@ class KanjiGrid:
         setup_win.resize(500, 400)
         if setup_win.exec():
             mw.progress.start(immediate=True)
-            config.pattern = field.currentText().lower()
-            config.pattern = shlex.split(config.pattern)
-            config.searchfilter = search_filter.text()
-            config.interval = stint.value()
-            config.groupby = groupby.currentIndex()
-            config.sortby = sortby.currentIndex()
-            config.lang = pagelang.currentText()
-            config.unseen = shnew.isChecked()
-            if config.remembersettings:
-                config_util.set_config(config)
+            config = set_config_attributes(config)
             self.makegrid(config)
             mw.progress.finish()
             self.win.show()

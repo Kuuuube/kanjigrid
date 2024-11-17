@@ -27,8 +27,7 @@ config_schema = {
     "zhhantsearch": "",
     "kosearch": "",
     "visearch": "",
-    "searchfilter": "",
-    "remembersettings": True
+    "searchfilter": ""
 }
 
 def set_config(namespace_config):
