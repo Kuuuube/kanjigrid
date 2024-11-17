@@ -241,12 +241,12 @@ class KanjiGrid:
         tabs_frame.addTab(advanced_tab_scroll_area, "Advanced")
 
         #Bottom Buttons
-        hl = QHBoxLayout()
-        vertical_layout.addLayout(hl)
-        gen = QPushButton("Generate", clicked = setup_win.accept)
-        hl.addWidget(gen)
-        cls = QPushButton("Close", clicked = setup_win.reject)
-        hl.addWidget(cls)
+        bottom_buttons_horizontal_layout = QHBoxLayout()
+        vertical_layout.addLayout(bottom_buttons_horizontal_layout)
+        generate_button = QPushButton("Generate", clicked = setup_win.accept)
+        bottom_buttons_horizontal_layout.addWidget(generate_button)
+        close_button = QPushButton("Close", clicked = setup_win.reject)
+        bottom_buttons_horizontal_layout.addWidget(close_button)
 
         setup_win.setLayout(vertical_layout)
         setup_win.resize(500, 400)
