@@ -221,11 +221,14 @@ class KanjiGrid:
             config.unseen = shnew.isChecked()
             return config
 
+        save_reset_buttons_horizontal_layout = QHBoxLayout()
+        advanced_tab_vertical_layout.addLayout(save_reset_buttons_horizontal_layout)
+
         def save_settings(config):
             config_util.set_config(set_config_attributes(config))
 
         save_settings_button = QPushButton("Save Settings", clicked = lambda _: save_settings(config))
-        advanced_tab_vertical_layout.addWidget(save_settings_button)
+        save_reset_buttons_horizontal_layout.addWidget(save_settings_button)
 
         def reset_settings(setup_win):
             reply = QMessageBox.question(setup_win, "Reset Settings", "Confirm reset settings")
@@ -234,7 +237,7 @@ class KanjiGrid:
                 setup_win.reject()
 
         reset_settings_button = QPushButton("Reset Settings", clicked = lambda _: reset_settings(setup_win))
-        advanced_tab_vertical_layout.addWidget(reset_settings_button)
+        save_reset_buttons_horizontal_layout.addWidget(reset_settings_button)
 
         advanced_tab.setLayout(advanced_tab_vertical_layout)
         advanced_tab_scroll_area.setWidget(advanced_tab)
