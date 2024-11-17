@@ -11,7 +11,7 @@ from aqt.webview import AnkiWebView
 from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QVBoxLayout, QTabWidget, QLabel, QCheckBox, QSpinBox,
                     QComboBox, QPushButton, QLineEdit, Qt, qconnect,
-                    QScrollArea, QWidget)
+                    QScrollArea, QWidget, QMessageBox)
 
 from . import config_util, data, util, save, generate_grid, webview_util
 
@@ -226,6 +226,14 @@ class KanjiGrid:
 
         save_settings_button = QPushButton("Save Settings", clicked = lambda _: save_settings(config))
         advanced_tab_vertical_layout.addWidget(save_settings_button)
+
+        def reset_settings(setup_win):
+            reply = QMessageBox.question(setup_win, "Reset Settings", "Confirm reset settings")
+            if reply == QMessageBox.StandardButton.Yes:
+                config_util.reset_config()
+
+        reset_settings_button = QPushButton("Reset Settings", clicked = lambda _: reset_settings(setup_win))
+        advanced_tab_vertical_layout.addWidget(reset_settings_button)
 
         advanced_tab.setLayout(advanced_tab_vertical_layout)
         advanced_tab_scroll_area.setWidget(advanced_tab)

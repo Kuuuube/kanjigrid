@@ -46,6 +46,9 @@ def get_config():
 
     return validate_config(config)
 
+def reset_config():
+    mw.addonManager.writeConfig(__name__, config_schema)
+
 def validate_config(config):
     for config_schema_key in config_schema.keys():
         if config_schema_key in config.keys():
