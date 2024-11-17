@@ -10,7 +10,8 @@ from aqt import mw, gui_hooks
 from aqt.webview import AnkiWebView
 from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QVBoxLayout, QTabWidget, QLabel, QCheckBox, QSpinBox,
-                    QComboBox, QPushButton, QLineEdit, Qt, qconnect, QWidget)
+                    QComboBox, QPushButton, QLineEdit, Qt, qconnect,
+                    QScrollArea, QWidget)
 
 from . import config_util, data, util, save, generate_grid, webview_util
 
@@ -110,6 +111,8 @@ class KanjiGrid:
 
         #General Tab
         general_tab = QWidget()
+        general_tab_scroll_area = QScrollArea()
+        general_tab_scroll_area.setWidgetResizable(True)
         general_tab_vertical_layout = QVBoxLayout()
         general_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
@@ -185,10 +188,13 @@ class KanjiGrid:
         general_tab_vertical_layout.addWidget(shnew)
 
         general_tab.setLayout(general_tab_vertical_layout)
-        tabs_frame.addTab(general_tab, "General")
+        general_tab_scroll_area.setWidget(general_tab)
+        tabs_frame.addTab(general_tab_scroll_area, "General")
 
         #Advanced Tab
         advanced_tab = QWidget()
+        advanced_tab_scroll_area = QScrollArea()
+        advanced_tab_scroll_area.setWidgetResizable(True)
         advanced_tab_vertical_layout = QVBoxLayout()
         advanced_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
@@ -205,7 +211,8 @@ class KanjiGrid:
         advanced_tab_vertical_layout.addWidget(search_filter)
 
         advanced_tab.setLayout(advanced_tab_vertical_layout)
-        tabs_frame.addTab(advanced_tab, "Advanced")
+        advanced_tab_scroll_area.setWidget(advanced_tab)
+        tabs_frame.addTab(advanced_tab_scroll_area, "Advanced")
 
         #Bottom Buttons
         hl = QHBoxLayout()
@@ -216,7 +223,7 @@ class KanjiGrid:
         hl.addWidget(cls)
 
         setup_win.setLayout(vertical_layout)
-        setup_win.resize(500, setup_win.height())
+        setup_win.resize(500, 400)
         if setup_win.exec():
             mw.progress.start(immediate=True)
             config.pattern = field.currentText().lower()
