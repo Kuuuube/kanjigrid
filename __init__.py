@@ -105,8 +105,8 @@ class KanjiGrid:
         deck_horizontal_layout.addWidget(deckcb)
         vertical_layout.addLayout(deck_horizontal_layout)
 
-        frm = QTabWidget()
-        vertical_layout.addWidget(frm)
+        tabs_frame = QTabWidget()
+        vertical_layout.addWidget(tabs_frame)
 
         #General Tab
         general_tab = QWidget()
@@ -191,7 +191,7 @@ class KanjiGrid:
         general_tab_vertical_layout.addWidget(shnew)
 
         general_tab.setLayout(general_tab_vertical_layout)
-        frm.addTab(general_tab, "General")
+        tabs_frame.addTab(general_tab, "General")
 
         #Advanced Tab
         advanced_tab = QWidget()
@@ -205,7 +205,7 @@ class KanjiGrid:
         advanced_tab_vertical_layout.addWidget(search_filter)
 
         advanced_tab.setLayout(advanced_tab_vertical_layout)
-        frm.addTab(advanced_tab, "Advanced")
+        tabs_frame.addTab(advanced_tab, "Advanced")
 
         #Bottom Buttons
         hl = QHBoxLayout()
