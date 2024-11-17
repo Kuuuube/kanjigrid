@@ -27,8 +27,16 @@ config_schema = {
     "zhhantsearch": "",
     "kosearch": "",
     "visearch": "",
-    "searchfilter": ""
+    "searchfilter": "",
+    "remembersettings": True
 }
+
+def set_config(namespace_config):
+    config = dict(namespace_config.__dict__)
+    for key in list(config.keys()):
+        if key not in config_schema.keys():
+            del config[key]
+    mw.addonManager.writeConfig(__name__, config)
 
 def get_config():
     config = mw.addonManager.getConfig(__name__)

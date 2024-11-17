@@ -210,6 +210,14 @@ class KanjiGrid:
         advanced_tab_vertical_layout.addWidget(QLabel("Additional Search Filters:"))
         advanced_tab_vertical_layout.addWidget(search_filter)
 
+        remember_settings_checkbox = QCheckBox("Remember Settings")
+        remember_settings_checkbox.setChecked(config.remembersettings)
+        def update_remember_settings(e, config):
+            config.remembersettings = bool(e.value)
+            config_util.set_config(config)
+        remember_settings_checkbox.checkStateChanged.connect(lambda e: update_remember_settings(e, config))
+        advanced_tab_vertical_layout.addWidget(remember_settings_checkbox)
+
         advanced_tab.setLayout(advanced_tab_vertical_layout)
         advanced_tab_scroll_area.setWidget(advanced_tab)
         tabs_frame.addTab(advanced_tab_scroll_area, "Advanced")
@@ -234,6 +242,8 @@ class KanjiGrid:
             config.sortby = sortby.currentIndex()
             config.lang = pagelang.currentText()
             config.unseen = shnew.isChecked()
+            if config.remembersettings:
+                config_util.set_config(config)
             self.makegrid(config)
             mw.progress.finish()
             self.win.show()

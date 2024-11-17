@@ -24,5 +24,6 @@
     "zhhantsearch": "",
     "kosearch": "",
     "visearch": "",
-    "searchfilter": ""
+    "searchfilter": "",
+    "remembersettings": true
 }
