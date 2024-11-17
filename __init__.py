@@ -195,10 +195,6 @@ class KanjiGrid:
         cls = QPushButton("Close", clicked=swin.reject)
         hl.addWidget(cls)
         swin.setLayout(vl)
-        swin.setTabOrder(gen, cls)
-        swin.setTabOrder(cls, field)
-        swin.setTabOrder(stint, groupby)
-        swin.setTabOrder(groupby, shnew)
         swin.resize(500, swin.height())
         if swin.exec():
             mw.progress.start(immediate=True)
