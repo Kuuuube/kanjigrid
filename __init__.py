@@ -9,8 +9,8 @@ import shlex
 from aqt import mw, gui_hooks
 from aqt.webview import AnkiWebView
 from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
-                    QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox,
-                    QComboBox, QPushButton, QLineEdit, Qt, qconnect)
+                    QVBoxLayout, QTabWidget, QLabel, QCheckBox, QSpinBox,
+                    QComboBox, QPushButton, QLineEdit, Qt, qconnect, QWidget)
 
 from . import config_util, data, util, save, generate_grid, webview_util
 
@@ -88,6 +88,7 @@ class KanjiGrid:
 
         setup_win = QDialog(mw)
         vertical_layout = QVBoxLayout()
+
         deck_horizontal_layout = QHBoxLayout()
         deckcb = QComboBox()
         deckcb.addItem("*") # * = all decks
@@ -103,12 +104,17 @@ class KanjiGrid:
         deckcb.currentTextChanged.connect(change_did)
         deck_horizontal_layout.addWidget(deckcb)
         vertical_layout.addLayout(deck_horizontal_layout)
-        frm = QGroupBox("Settings")
-        vl.addWidget(frm)
-        il = QVBoxLayout()
-        fl = QHBoxLayout()
-        il.addWidget(QLabel("Field: "))
+
+        frm = QTabWidget()
+        vertical_layout.addWidget(frm)
+
+        #General Tab
+        general_tab = QWidget()
+        general_tab_vertical_layout = QVBoxLayout()
+        general_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
         field_horizontal_layout = QHBoxLayout()
+        general_tab_vertical_layout.addWidget(QLabel("Field: "))
         field = QComboBox()
         field.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         def update_fields_dropdown(deckname):
@@ -144,12 +150,13 @@ class KanjiGrid:
         deckcb.currentTextChanged.connect(update_fields_dropdown)
         update_fields_dropdown(config.did)
         field_horizontal_layout.addWidget(field)
-        il.addLayout(field_horizontal_layout)
+        general_tab_vertical_layout.addLayout(field_horizontal_layout)
+
         stint = QSpinBox()
         stint.setRange(1, 65536)
         stint.setValue(config.interval)
-        il.addWidget(QLabel("Card interval considered strong:"))
-        il.addWidget(stint)
+        general_tab_vertical_layout.addWidget(QLabel("Card interval considered strong:"))
+        general_tab_vertical_layout.addWidget(stint)
 
         groupby = QComboBox()
         groupby.addItems([
@@ -157,16 +164,16 @@ class KanjiGrid:
             *(x.name for x in data.groups),
         ])
         groupby.setCurrentIndex(config.groupby)
-        il.addWidget(QLabel("Group by:"))
-        il.addWidget(groupby)
+        general_tab_vertical_layout.addWidget(QLabel("Group by:"))
+        general_tab_vertical_layout.addWidget(groupby)
 
         sortby = QComboBox()
         sortby.addItems([
             *(x.pretty_value().capitalize() for x in util.SortOrder)
         ])
         sortby.setCurrentIndex(config.sortby)
-        il.addWidget(QLabel("Sort by:"))
-        il.addWidget(sortby)
+        general_tab_vertical_layout.addWidget(QLabel("Sort by:"))
+        general_tab_vertical_layout.addWidget(sortby)
 
         pagelang = QComboBox()
         pagelang.addItems(["ja", "zh","zh-Hans", "zh-Hant", "ko", "vi"])
@@ -176,25 +183,38 @@ class KanjiGrid:
                 pagelang.setCurrentText(data.groups[index].lang)
         groupby.currentTextChanged.connect(update_pagelang_dropdown)
         pagelang.setCurrentText(config.lang)
-        il.addWidget(QLabel("Language:"))
-        il.addWidget(pagelang)
+        general_tab_vertical_layout.addWidget(QLabel("Language:"))
+        general_tab_vertical_layout.addWidget(pagelang)
+
+        shnew = QCheckBox("Show units not yet seen")
+        shnew.setChecked(config.unseen)
+        general_tab_vertical_layout.addWidget(shnew)
+
+        general_tab.setLayout(general_tab_vertical_layout)
+        frm.addTab(general_tab, "General")
+
+        #Advanced Tab
+        advanced_tab = QWidget()
+        advanced_tab_vertical_layout = QVBoxLayout()
+        advanced_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         search_filter = QLineEdit()
         search_filter.setText(config.searchfilter)
         search_filter.setPlaceholderText("e.g. \"is:new\" or \"tag:mining_deck\"")
-        il.addWidget(QLabel("Additional Search Filters:"))
-        il.addWidget(search_filter)
+        advanced_tab_vertical_layout.addWidget(QLabel("Additional Search Filters:"))
+        advanced_tab_vertical_layout.addWidget(search_filter)
 
-        shnew = QCheckBox("Show units not yet seen")
-        shnew.setChecked(config.unseen)
-        il.addWidget(shnew)
-        frm.setLayout(il)
+        advanced_tab.setLayout(advanced_tab_vertical_layout)
+        frm.addTab(advanced_tab, "Advanced")
+
+        #Bottom Buttons
         hl = QHBoxLayout()
         vertical_layout.addLayout(hl)
         gen = QPushButton("Generate", clicked = setup_win.accept)
         hl.addWidget(gen)
         cls = QPushButton("Close", clicked = setup_win.reject)
         hl.addWidget(cls)
+
         setup_win.setLayout(vertical_layout)
         setup_win.resize(500, setup_win.height())
         if setup_win.exec():
