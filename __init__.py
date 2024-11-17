@@ -231,6 +231,7 @@ class KanjiGrid:
             reply = QMessageBox.question(setup_win, "Reset Settings", "Confirm reset settings")
             if reply == QMessageBox.StandardButton.Yes:
                 config_util.reset_config()
+                setup_win.reject()
 
         reset_settings_button = QPushButton("Reset Settings", clicked = lambda _: reset_settings(setup_win))
         advanced_tab_vertical_layout.addWidget(reset_settings_button)
