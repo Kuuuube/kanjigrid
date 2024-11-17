@@ -152,12 +152,6 @@ class KanjiGrid:
         field_horizontal_layout.addWidget(field)
         general_tab_vertical_layout.addLayout(field_horizontal_layout)
 
-        stint = QSpinBox()
-        stint.setRange(1, 65536)
-        stint.setValue(config.interval)
-        general_tab_vertical_layout.addWidget(QLabel("Card interval considered strong:"))
-        general_tab_vertical_layout.addWidget(stint)
-
         groupby = QComboBox()
         groupby.addItems([
             "None",
@@ -197,6 +191,12 @@ class KanjiGrid:
         advanced_tab = QWidget()
         advanced_tab_vertical_layout = QVBoxLayout()
         advanced_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        stint = QSpinBox()
+        stint.setRange(1, 65536)
+        stint.setValue(config.interval)
+        advanced_tab_vertical_layout.addWidget(QLabel("Card interval considered strong:"))
+        advanced_tab_vertical_layout.addWidget(stint)
 
         search_filter = QLineEdit()
         search_filter.setText(config.searchfilter)
