@@ -125,6 +125,8 @@ Changelog compared to the old kanji grid add-on.
 
 - Added option to sort within groupings.
 
+- Moved config values out of `defaults` object to allow Anki to automatically populate missing default settings.
+
 ### Groupings
 
 - Groupings are now contained in individual json files instead of a single python file.
