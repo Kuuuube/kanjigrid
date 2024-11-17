@@ -108,6 +108,7 @@ class KanjiGrid:
         il = QVBoxLayout()
         fl = QHBoxLayout()
         il.addWidget(QLabel("Field: "))
+        field_horizontal_layout = QHBoxLayout()
         field = QComboBox()
         field.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         def update_fields_dropdown(deckname):
@@ -142,8 +143,8 @@ class KanjiGrid:
         field.setEditable(True)
         deckcb.currentTextChanged.connect(update_fields_dropdown)
         update_fields_dropdown(config.did)
-        fl.addWidget(field)
-        il.addLayout(fl)
+        field_horizontal_layout.addWidget(field)
+        il.addLayout(field_horizontal_layout)
         stint = QSpinBox()
         stint.setRange(1, 65536)
         stint.setValue(config.interval)
