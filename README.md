@@ -105,6 +105,10 @@ Changelog compared to the old kanji grid add-on.
 
 - Added context menu items for copying, browsing, and searching when right clicking a kanji tile.
 
+- Setup window now has tabs for `General` and `Advanced` settings.
+
+- Saving and resetting settings can now be done in the setup window.
+
 ### Config and Options
 
 - Config validation and safer loading to help prevent crashes.
