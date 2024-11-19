@@ -30,6 +30,13 @@ config_schema = {
     "searchfilter": ""
 }
 
+def set_config(namespace_config):
+    config = dict(namespace_config.__dict__)
+    for key in list(config.keys()):
+        if key not in config_schema.keys():
+            del config[key]
+    mw.addonManager.writeConfig(__name__, config)
+
 def get_config():
     config = mw.addonManager.getConfig(__name__)
 
@@ -38,6 +45,9 @@ def get_config():
         mw.addonManager.writeConfig(__name__, config)
 
     return validate_config(config)
+
+def reset_config():
+    mw.addonManager.writeConfig(__name__, config_schema)
 
 def validate_config(config):
     for config_schema_key in config_schema.keys():

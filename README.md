@@ -105,6 +105,10 @@ Changelog compared to the old kanji grid add-on.
 
 - Added context menu items for copying, browsing, and searching when right clicking a kanji tile.
 
+- Setup window now has tabs for `General` and `Advanced` settings.
+
+- Saving and resetting settings can now be done in the setup window.
+
 ### Config and Options
 
 - Config validation and safer loading to help prevent crashes.
@@ -120,6 +124,8 @@ Changelog compared to the old kanji grid add-on.
 - Search option when clicking on a kanji is customizeable for each language.
 
 - Added option to sort within groupings.
+
+- Moved config values out of `defaults` object to allow Anki to automatically populate missing default settings.
 
 ### Groupings
 

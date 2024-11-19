@@ -9,9 +9,10 @@ import shlex
 from aqt import mw, gui_hooks
 from aqt.webview import AnkiWebView
 from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
-                    QVBoxLayout, QGroupBox, QLabel, QCheckBox, QSpinBox,
-                    QComboBox, QPushButton, QLineEdit, Qt, 
-                    QDateTimeEdit, QDateTime, QGroupBox, qconnect)
+                    QVBoxLayout, QTabWidget, QLabel, QCheckBox, QSpinBox,
+                    QComboBox, QPushButton, QLineEdit, Qt, qconnect,
+                    QScrollArea, QWidget, QMessageBox, QDateTimeEdit,
+                    QDateTime, QGroupBox)
 
 from . import config_util, data, util, save, generate_grid, webview_util
 
@@ -87,14 +88,15 @@ class KanjiGrid:
 
         data.init_groups()
 
-        swin = QDialog(mw)
-        vl = QVBoxLayout()
-        fl = QHBoxLayout()
+        setup_win = QDialog(mw)
+        vertical_layout = QVBoxLayout()
+
+        deck_horizontal_layout = QHBoxLayout()
         deckcb = QComboBox()
         deckcb.addItem("*") # * = all decks
         deckcb.addItems(sorted(mw.col.decks.all_names()))
         deckcb.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        fl.addWidget(QLabel("Deck: "))
+        deck_horizontal_layout.addWidget(QLabel("Deck: "))
         deckcb.setCurrentText(mw.col.decks.get(config.did)['name'])
         def change_did(deckname):
             if deckname == "*":
@@ -102,13 +104,21 @@ class KanjiGrid:
                 return
             config.did = mw.col.decks.by_name(deckname)['id']
         deckcb.currentTextChanged.connect(change_did)
-        fl.addWidget(deckcb)
-        vl.addLayout(fl)
-        frm = QGroupBox("Settings")
-        vl.addWidget(frm)
-        il = QVBoxLayout()
-        fl = QHBoxLayout()
-        il.addWidget(QLabel("Field: "))
+        deck_horizontal_layout.addWidget(deckcb)
+        vertical_layout.addLayout(deck_horizontal_layout)
+
+        tabs_frame = QTabWidget()
+        vertical_layout.addWidget(tabs_frame)
+
+        #General Tab
+        general_tab = QWidget()
+        general_tab_scroll_area = QScrollArea()
+        general_tab_scroll_area.setWidgetResizable(True)
+        general_tab_vertical_layout = QVBoxLayout()
+        general_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        field_horizontal_layout = QHBoxLayout()
+        general_tab_vertical_layout.addWidget(QLabel("Field: "))
         field = QComboBox()
         field.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         def update_fields_dropdown(deckname):
@@ -143,13 +153,8 @@ class KanjiGrid:
         field.setEditable(True)
         deckcb.currentTextChanged.connect(update_fields_dropdown)
         update_fields_dropdown(config.did)
-        fl.addWidget(field)
-        il.addLayout(fl)
-        stint = QSpinBox()
-        stint.setRange(1, 65536)
-        stint.setValue(config.interval)
-        il.addWidget(QLabel("Card interval considered strong:"))
-        il.addWidget(stint)
+        field_horizontal_layout.addWidget(field)
+        general_tab_vertical_layout.addLayout(field_horizontal_layout)
 
         groupby = QComboBox()
         groupby.addItems([
@@ -157,16 +162,16 @@ class KanjiGrid:
             *(x.name for x in data.groups),
         ])
         groupby.setCurrentIndex(config.groupby)
-        il.addWidget(QLabel("Group by:"))
-        il.addWidget(groupby)
+        general_tab_vertical_layout.addWidget(QLabel("Group by:"))
+        general_tab_vertical_layout.addWidget(groupby)
 
         sortby = QComboBox()
         sortby.addItems([
             *(x.pretty_value().capitalize() for x in util.SortOrder)
         ])
         sortby.setCurrentIndex(config.sortby)
-        il.addWidget(QLabel("Sort by:"))
-        il.addWidget(sortby)
+        general_tab_vertical_layout.addWidget(QLabel("Sort by:"))
+        general_tab_vertical_layout.addWidget(sortby)
 
         pagelang = QComboBox()
         pagelang.addItems(["ja", "zh","zh-Hans", "zh-Hant", "ko", "vi"])
@@ -176,18 +181,35 @@ class KanjiGrid:
                 pagelang.setCurrentText(data.groups[index].lang)
         groupby.currentTextChanged.connect(update_pagelang_dropdown)
         pagelang.setCurrentText(config.lang)
-        il.addWidget(QLabel("Language:"))
-        il.addWidget(pagelang)
+        general_tab_vertical_layout.addWidget(QLabel("Language:"))
+        general_tab_vertical_layout.addWidget(pagelang)
+
+        shnew = QCheckBox("Show units not yet seen")
+        shnew.setChecked(config.unseen)
+        general_tab_vertical_layout.addWidget(shnew)
+
+        general_tab.setLayout(general_tab_vertical_layout)
+        general_tab_scroll_area.setWidget(general_tab)
+        tabs_frame.addTab(general_tab_scroll_area, "General")
+
+        #Advanced Tab
+        advanced_tab = QWidget()
+        advanced_tab_scroll_area = QScrollArea()
+        advanced_tab_scroll_area.setWidgetResizable(True)
+        advanced_tab_vertical_layout = QVBoxLayout()
+        advanced_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        stint = QSpinBox()
+        stint.setRange(1, 65536)
+        stint.setValue(config.interval)
+        advanced_tab_vertical_layout.addWidget(QLabel("Card interval considered strong:"))
+        advanced_tab_vertical_layout.addWidget(stint)
 
         search_filter = QLineEdit()
         search_filter.setText(config.searchfilter)
         search_filter.setPlaceholderText("e.g. \"is:new\" or \"tag:mining_deck\"")
-        il.addWidget(QLabel("Additional Search Filters:"))
-        il.addWidget(search_filter)
-
-        shnew = QCheckBox("Show units not yet seen")
-        shnew.setChecked(config.unseen)
-        il.addWidget(shnew)
+        advanced_tab_vertical_layout.addWidget(QLabel("Additional Search Filters:"))
+        advanced_tab_vertical_layout.addWidget(search_filter)
 
         ttb = QGroupBox("Time travel")
         ttb.setCheckable(True)
@@ -201,24 +223,9 @@ class KanjiGrid:
         ttb_layout.addWidget(QLabel("Note: Generated grid might not match actual past grid exactly"))
 
         ttb.setLayout(ttb_layout)
-        il.addSpacing(5)
-        il.addWidget(ttb)
+        advanced_tab_vertical_layout.addWidget(ttb)
 
-        frm.setLayout(il)
-        hl = QHBoxLayout()
-        vl.addLayout(hl)
-        gen = QPushButton("Generate", clicked=swin.accept)
-        hl.addWidget(gen)
-        cls = QPushButton("Close", clicked=swin.reject)
-        hl.addWidget(cls)
-        swin.setLayout(vl)
-        swin.setTabOrder(gen, cls)
-        swin.setTabOrder(cls, field)
-        swin.setTabOrder(stint, groupby)
-        swin.setTabOrder(groupby, shnew)
-        swin.resize(500, swin.height())
-        if swin.exec():
-            mw.progress.start(immediate=True)
+        def set_config_attributes(config):
             config.pattern = field.currentText().lower()
             config.pattern = shlex.split(config.pattern)
             config.searchfilter = search_filter.text()
@@ -229,6 +236,43 @@ class KanjiGrid:
             config.unseen = shnew.isChecked()
             config.timetravel_enabled = ttb.isChecked()
             config.timetravel_ts = dt.dateTime().toMSecsSinceEpoch()
+            return config
+
+        save_reset_buttons_horizontal_layout = QHBoxLayout()
+        advanced_tab_vertical_layout.addLayout(save_reset_buttons_horizontal_layout)
+
+        def save_settings(config):
+            config_util.set_config(set_config_attributes(config))
+
+        save_settings_button = QPushButton("Save Settings", clicked = lambda _: save_settings(config))
+        save_reset_buttons_horizontal_layout.addWidget(save_settings_button)
+
+        def reset_settings(setup_win):
+            reply = QMessageBox.question(setup_win, "Reset Settings", "Confirm reset settings")
+            if reply == QMessageBox.StandardButton.Yes:
+                config_util.reset_config()
+                setup_win.reject()
+
+        reset_settings_button = QPushButton("Reset Settings", clicked = lambda _: reset_settings(setup_win))
+        save_reset_buttons_horizontal_layout.addWidget(reset_settings_button)
+
+        advanced_tab.setLayout(advanced_tab_vertical_layout)
+        advanced_tab_scroll_area.setWidget(advanced_tab)
+        tabs_frame.addTab(advanced_tab_scroll_area, "Advanced")
+
+        #Bottom Buttons
+        bottom_buttons_horizontal_layout = QHBoxLayout()
+        vertical_layout.addLayout(bottom_buttons_horizontal_layout)
+        generate_button = QPushButton("Generate", clicked = setup_win.accept)
+        bottom_buttons_horizontal_layout.addWidget(generate_button)
+        close_button = QPushButton("Close", clicked = setup_win.reject)
+        bottom_buttons_horizontal_layout.addWidget(close_button)
+
+        setup_win.setLayout(vertical_layout)
+        setup_win.resize(500, 400)
+        if setup_win.exec():
+            mw.progress.start(immediate=True)
+            config = set_config_attributes(config)
             self.makegrid(config)
             mw.progress.finish()
             self.win.show()
