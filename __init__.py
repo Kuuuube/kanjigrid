@@ -231,7 +231,7 @@ class KanjiGrid:
             config.lang = pagelang.currentText()
             config.unseen = shnew.isChecked()
             config.timetravel_enabled = time_travel_default_time.toMSecsSinceEpoch() != time_travel_datetime.dateTime().toMSecsSinceEpoch()
-            config.timetravel_ts = time_travel_datetime.dateTime().toMSecsSinceEpoch()
+            config.timetravel_time = time_travel_datetime.dateTime().toMSecsSinceEpoch()
             return config
 
         save_reset_buttons_horizontal_layout = QHBoxLayout()

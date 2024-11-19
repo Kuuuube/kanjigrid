@@ -46,7 +46,7 @@ def generate(mw, config, units, export = False):
     result_html += "<body>\n"
     result_html += "<div style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</div>\n" % deckname
     if config.timetravel_enabled:
-        date_time = datetime.fromtimestamp(config.timetravel_ts / 1000)
+        date_time = datetime.fromtimestamp(config.timetravel_time / 1000)
         date_time_str = date_time.strftime("%d/%m/%Y %H:%M:%S")
         result_html += f"<p style=\"color: #888;text-align: center\">for {date_time_str}</p>"
     result_html += "<p style=\"text-align: center\">Key</p>"
@@ -140,7 +140,7 @@ def generate(mw, config, units, export = False):
     result_html += "</div></body></html>\n"
     return result_html
 
-def get_revlog(mw, cids, timetravel_ts):
+def get_revlog(mw, cids, timetravel_time):
     # SQLITE_MAX_SQL_LENGTH is 1GB by default
     # so it could handle ~70 million ids
     # but chunk just in case
@@ -151,7 +151,7 @@ def get_revlog(mw, cids, timetravel_ts):
         revlog_rows = mw.col.db.all(f"""
             select cid, max(id), ivl
             from revlog 
-            where id <= {timetravel_ts}
+            where id <= {timetravel_time}
             and cid in {ids2str(chunked_cids)}
             group by cid
         """)
@@ -159,10 +159,10 @@ def get_revlog(mw, cids, timetravel_ts):
 
     return revlog
 
-def timetravel(card, revlog, timetravel_ts):
+def timetravel(card, revlog, timetravel_time):
     if card.id not in revlog:
         # card was not reviewd during the timeframe...
-        if card.id > timetravel_ts:
+        if card.id > timetravel_time:
             # ...and wasn't in deck either, so it shouldn't be counted
             return False
         # ...but was still present in deck,
@@ -192,15 +192,15 @@ def kanjigrid(mw, config):
         cids = mw.col.db.list("select id from cards where did in %s or odid in %s" % (ids2str(dids), ids2str(dids)))
 
     timetravel_enabled = config.timetravel_enabled
-    timetravel_ts = config.timetravel_ts
-    revlog = get_revlog(mw, cids, timetravel_ts) if timetravel_enabled else {}
+    timetravel_time = config.timetravel_time
+    revlog = get_revlog(mw, cids, timetravel_time) if timetravel_enabled else {}
 
     units = dict()
     notes = dict()
     for i in cids:
         card = mw.col.get_card(i)
         # tradeoff between branching and mutating here vs collecting all the cards and then filtermapping 
-        if timetravel_enabled and not timetravel(card, revlog, timetravel_ts):
+        if timetravel_enabled and not timetravel(card, revlog, timetravel_time):
             continue # ignore card
         if card.nid not in notes.keys():
             keys = card.note().keys()
