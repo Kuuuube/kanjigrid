@@ -211,19 +211,19 @@ class KanjiGrid:
         advanced_tab_vertical_layout.addWidget(QLabel("Additional Search Filters:"))
         advanced_tab_vertical_layout.addWidget(search_filter)
 
-        ttb = QGroupBox("Time travel")
-        ttb.setCheckable(True)
-        ttb.setChecked(False)
-        ttb_layout = QVBoxLayout()
+        time_travel_box = QGroupBox("Time travel")
+        time_travel_box.setCheckable(True)
+        time_travel_box.setChecked(False)
+        time_travel_box_layout = QVBoxLayout()
         
-        dt = QDateTimeEdit()
-        dt.setDateTime(QDateTime.currentDateTime())
-        dt.setCalendarPopup(True)
-        ttb_layout.addWidget(dt)
-        ttb_layout.addWidget(QLabel("Note: Generated grid might not match actual past grid exactly"))
+        time_travel_datetime = QDateTimeEdit()
+        time_travel_datetime.setDateTime(QDateTime.currentDateTime())
+        time_travel_datetime.setCalendarPopup(True)
+        time_travel_box_layout.addWidget(time_travel_datetime)
+        time_travel_box_layout.addWidget(QLabel("Note: Generated grid might not match actual past grid exactly"))
 
-        ttb.setLayout(ttb_layout)
-        advanced_tab_vertical_layout.addWidget(ttb)
+        time_travel_box.setLayout(time_travel_box_layout)
+        advanced_tab_vertical_layout.addWidget(time_travel_box)
 
         def set_config_attributes(config):
             config.pattern = field.currentText().lower()
@@ -234,8 +234,8 @@ class KanjiGrid:
             config.sortby = sortby.currentIndex()
             config.lang = pagelang.currentText()
             config.unseen = shnew.isChecked()
-            config.timetravel_enabled = ttb.isChecked()
-            config.timetravel_ts = dt.dateTime().toMSecsSinceEpoch()
+            config.timetravel_enabled = time_travel_box.isChecked()
+            config.timetravel_ts = time_travel_datetime.dateTime().toMSecsSinceEpoch()
             return config
 
         save_reset_buttons_horizontal_layout = QHBoxLayout()
