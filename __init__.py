@@ -217,7 +217,9 @@ class KanjiGrid:
         time_travel_datetime.setCalendarPopup(True)
         advanced_tab_vertical_layout.addWidget(QLabel("Time Travel:"))
         advanced_tab_vertical_layout.addWidget(time_travel_datetime)
-        advanced_tab_vertical_layout.addWidget(QLabel("Note: Generated grid might not match actual past grid exactly"))
+        time_travel_note = QLabel("Generated grid might not match actual past grid exactly")
+        time_travel_note.setStyleSheet("color: gray")
+        advanced_tab_vertical_layout.addWidget(time_travel_note)
 
         def set_config_attributes(config):
             config.pattern = field.currentText().lower()
