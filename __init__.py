@@ -12,7 +12,7 @@ from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QVBoxLayout, QTabWidget, QLabel, QCheckBox, QSpinBox,
                     QComboBox, QPushButton, QLineEdit, Qt, qconnect,
                     QScrollArea, QWidget, QMessageBox, QDateTimeEdit,
-                    QDateTime, QGroupBox)
+                    QDateTime)
 
 from . import config_util, data, util, save, generate_grid, webview_util
 
@@ -211,19 +211,13 @@ class KanjiGrid:
         advanced_tab_vertical_layout.addWidget(QLabel("Additional Search Filters:"))
         advanced_tab_vertical_layout.addWidget(search_filter)
 
-        time_travel_box = QGroupBox("Time travel")
-        time_travel_box.setCheckable(True)
-        time_travel_box.setChecked(False)
-        time_travel_box_layout = QVBoxLayout()
-        
         time_travel_datetime = QDateTimeEdit()
-        time_travel_datetime.setDateTime(QDateTime.currentDateTime())
+        time_travel_default_time = QDateTime.currentDateTime()
+        time_travel_datetime.setDateTime(time_travel_default_time)
         time_travel_datetime.setCalendarPopup(True)
-        time_travel_box_layout.addWidget(time_travel_datetime)
-        time_travel_box_layout.addWidget(QLabel("Note: Generated grid might not match actual past grid exactly"))
-
-        time_travel_box.setLayout(time_travel_box_layout)
-        advanced_tab_vertical_layout.addWidget(time_travel_box)
+        advanced_tab_vertical_layout.addWidget(QLabel("Time Travel:"))
+        advanced_tab_vertical_layout.addWidget(time_travel_datetime)
+        advanced_tab_vertical_layout.addWidget(QLabel("Note: Generated grid might not match actual past grid exactly"))
 
         def set_config_attributes(config):
             config.pattern = field.currentText().lower()
@@ -234,7 +228,7 @@ class KanjiGrid:
             config.sortby = sortby.currentIndex()
             config.lang = pagelang.currentText()
             config.unseen = shnew.isChecked()
-            config.timetravel_enabled = time_travel_box.isChecked()
+            config.timetravel_enabled = time_travel_default_time.toMSecsSinceEpoch() != time_travel_datetime.dateTime().toMSecsSinceEpoch()
             config.timetravel_ts = time_travel_datetime.dateTime().toMSecsSinceEpoch()
             return config
 
