@@ -62,9 +62,15 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 - `saveimagequality` The quality to save the grid at when seleting `Save Image` on the grid. Accepted values are 0-5. WARNING: On large grids using anything except `1` may crash anki.
 
-- `copyonclick` Copies kanji when clicked on instead of searching in a web browser or note browser.
+- `onclickaction` Changes what happens when a kanji character is clicked on.
 
-- `browseonclick` Opens the Anki note browser when clicking on kanji instead of searching in a web browser.
+    - `""`: Does nothing.
+
+    - `"browse"` (Default): Opens the Anki note browser.
+
+    - `"copy"`: Copies the character.
+
+    - `"search"`: Searches the character in a web browser.
 
 - `saveimagedelay` The delay in ms to wait when resizing the image if `saveimagequality` is not 1. Setting this to a higher value may help mitigate crashes.
 

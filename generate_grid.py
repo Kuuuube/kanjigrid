@@ -23,11 +23,11 @@ def generate(mw, config, units, export = False):
         else:
             tile += "\t<div style=\"background:%s;\"%s>" % (bgcolor, context_menu_events)
 
-        if config.copyonclick:
+        if config.onclickaction == "copy":
             tile += "<a style=\"color:" + color + ";cursor: pointer;\">" + char + "</a>"
-        elif config.browseonclick and not export:
+        elif config.onclickaction == "browse" and not export:
             tile += "<a href=\"" + util.get_browse_command(char) + "\" style=\"color:" + color + ";\">" + char + "</a>"
-        else:
+        elif config.onclickaction == "search":
             tile += "<a href=\"" + util.get_search(config, char) + "\" style=\"color:" + color + ";\">" + char + "</a>"
 
         tile += "</div>\n"
@@ -41,7 +41,7 @@ def generate(mw, config, units, export = False):
     result_html  = "<!doctype html><html lang=\"%s\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>" % config.lang
     result_html += "<style type=\"text/css\">body{text-align:center;}.grid-container{display:grid;grid-gap:2px;grid-template-columns:repeat(auto-fit,23px);justify-content:center;" + util.get_font_css(config) + "}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
     result_html += "</head>\n"
-    if config.copyonclick:
+    if config.onclickaction == "copy":
         result_html += "<script>function copyText(text) {const range = document.createRange();const tempElem = document.createElement('div');tempElem.textContent = text;document.body.appendChild(tempElem);range.selectNode(tempElem);const selection = window.getSelection();selection.removeAllRanges();selection.addRange(range);document.execCommand('copy');document.body.removeChild(tempElem);}document.addEventListener('click', function(e) {e.preventDefault();if (e.srcElement.tagName == 'A') {copyText(e.srcElement.textContent);}}, false);</script>"
     result_html += "<body>\n"
     result_html += "<div style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</div>\n" % deckname

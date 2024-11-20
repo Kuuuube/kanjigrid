@@ -1,33 +1,86 @@
 from aqt import mw
 
 config_schema = {
-    "version": 0,
-    "pattern": "",
-    "literal": False,
-    "interval": 180,
-    "groupby": 0,
-    "sortby": 2,
-    "lang": "ja",
-    "unseen": True,
-    "tooltips": True,
-    "kanjionly": True,
-    "saveimagequality": 1,
-    "saveimagedelay": 1000,
-    "copyonclick": False,
-    "browseonclick": True,
-    "jafontcss": "font-family: \"ヒラギノ角ゴ Pro W3\", \"Hiragino Kaku Gothic Pro\", Osaka, \"メイリオ\", Meiryo, \"ＭＳ Ｐゴシック\", \"MS PGothic\", \"MS UI Gothic\", Mincho, sans-serif;",
-    "zhfontcss": "font-family: PingFang SC, Hiragino Sans GB, \"Microsoft YaHei New\", \"Microsoft Yahei\", \"微软雅黑\", 宋体, SimSun, STXihei, \"华文细黑\", sans-serif;",
-    "zhhansfontcss": "font-family: PingFang SC, Hiragino Sans GB, \"Microsoft YaHei New\", \"Microsoft Yahei\", \"微软雅黑\", 宋体, SimSun, STXihei, \"华文细黑\", sans-serif;",
-    "zhhantfontcss": "font-family: \"微軟正黑體\", \"Microsoft JhengHei\", \"Microsoft JhengHei UI\", \"微軟雅黑\", \"Microsoft YaHei\", \"Microsoft YaHei UI\", sans-serif;",
-    "kofontcss": "font-family: \"Nanum Barun Gothic\", \"New Gulim\", \"새굴림\", \"애플 고딕\", \"맑은 고딕\", \"Malgun Gothic\", Dotum, \"돋움\", \"Noto Sans CJK KR\", \"Noto Sans CJK TC\", \"Noto Sans KR\", \"Noto Sans TC\", sans-serif;",
-    "vifontcss": "font-family: \"Han-Nom Gothic\", \"Han Nom Gothic\", sans-serif;",
-    "jasearch": "https://jisho.org/search/%s %23kanji",
-    "zhsearch": "",
-    "zhhanssearch": "",
-    "zhhantsearch": "",
-    "kosearch": "",
-    "visearch": "",
-    "searchfilter": ""
+    "version": {
+        "default": 0,
+    },
+    "pattern": {
+        "default": "",
+    },
+    "literal": {
+        "default": False,
+    },
+    "interval": {
+        "default": 180,
+    },
+    "groupby": {
+        "default": 0,
+    },
+    "sortby": {
+        "default": 2,
+        "enum": range(0, 4)
+    },
+    "lang": {
+        "default": "ja",
+    },
+    "unseen": {
+        "default": True,
+    },
+    "tooltips": {
+        "default": True,
+    },
+    "kanjionly": {
+        "default": True,
+    },
+    "saveimagequality": {
+        "default": 1,
+    },
+    "saveimagedelay": {
+        "default": 1000,
+    },
+    "onclickaction": {
+        "default": "browse",
+        "enum": ["", "browse", "copy", "search"],
+    },
+    "jafontcss": {
+        "default": "font-family: \"ヒラギノ角ゴ Pro W3\", \"Hiragino Kaku Gothic Pro\", Osaka, \"メイリオ\", Meiryo, \"ＭＳ Ｐゴシック\", \"MS PGothic\", \"MS UI Gothic\", Mincho, sans-serif;",
+    },
+    "zhfontcss": {
+        "default": "font-family: PingFang SC, Hiragino Sans GB, \"Microsoft YaHei New\", \"Microsoft Yahei\", \"微软雅黑\", 宋体, SimSun, STXihei, \"华文细黑\", sans-serif;",
+    },
+    "zhhansfontcss": {
+        "default": "font-family: PingFang SC, Hiragino Sans GB, \"Microsoft YaHei New\", \"Microsoft Yahei\", \"微软雅黑\", 宋体, SimSun, STXihei, \"华文细黑\", sans-serif;",
+    },
+    "zhhantfontcss": {
+        "default": "font-family: \"微軟正黑體\", \"Microsoft JhengHei\", \"Microsoft JhengHei UI\", \"微軟雅黑\", \"Microsoft YaHei\", \"Microsoft YaHei UI\", sans-serif;",
+    },
+    "kofontcss": {
+        "default": "font-family: \"Nanum Barun Gothic\", \"New Gulim\", \"새굴림\", \"애플 고딕\", \"맑은 고딕\", \"Malgun Gothic\", Dotum, \"돋움\", \"Noto Sans CJK KR\", \"Noto Sans CJK TC\", \"Noto Sans KR\", \"Noto Sans TC\", sans-serif;",
+    },
+    "vifontcss": {
+        "default": "font-family: \"Han-Nom Gothic\", \"Han Nom Gothic\", sans-serif;",
+    },
+    "jasearch": {
+        "default": "https://jisho.org/search/%s %23kanji",
+    },
+    "zhsearch": {
+        "default": "",
+    },
+    "zhhanssearch": {
+        "default": "",
+    },
+    "zhhantsearch": {
+        "default": "",
+    },
+    "kosearch": {
+        "default": "",
+    },
+    "visearch": {
+        "default": "",
+    },
+    "searchfilter": {
+        "default": ""
+    },
 }
 
 def set_config(namespace_config):
@@ -52,7 +105,11 @@ def reset_config():
 def validate_config(config):
     for config_schema_key in config_schema.keys():
         if config_schema_key in config.keys():
-            if type(config_schema[config_schema_key]) is type(config[config_schema_key]):
-                continue
-        config[config_schema_key] = config_schema[config_schema_key]
+            if type(config_schema[config_schema_key]["default"]) is type(config[config_schema_key]):
+                if "enum" in config_schema[config_schema_key]:
+                    if config[config_schema_key] in config_schema[config_schema_key]["enum"]:
+                        continue
+                else:
+                    continue
+        config[config_schema_key] = config_schema[config_schema_key]["default"]
     return config
