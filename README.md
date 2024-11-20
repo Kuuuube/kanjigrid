@@ -42,7 +42,12 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
     `Tools > Add-ons > Kanji Grid Kuuube > Config`, `Restore Defaults`, `Save`, Restart Anki.
 
-## Config Values
+## Config
+
+Documentation for the Kanji Grid config.
+
+<details>
+<summary>Config Keys and Values</summary>
 
 - `pattern` The default text in the `Field` dropdown box. Controls which field(s) to look for kanji in. Defaults to the first field of the selected deck if no value is found.
 
@@ -79,6 +84,8 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 - `jasearch` `zhsearch` `zhhanssearch` `zhhantsearch` `kosearch` `visearch` The search option to provide for the respective language. Use `%s` to define the kanji's position in the search string.
 
 - `searchfilter` The default setting for `Additional Search Filters`. This is appended to the existing filtering and must use the same format as [Anki's Browser Searching](https://docs.ankiweb.net/searching.html).
+
+</details>
 
 ## Improvements and Bug Fixes
 
