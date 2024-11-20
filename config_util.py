@@ -2,7 +2,7 @@ from aqt import mw
 
 config_schema = {
     "version": {
-        "default": 0,
+        "default": 1,
     },
     "pattern": {
         "default": "",
@@ -97,6 +97,10 @@ def get_config():
         config = config["defaults"]
         mw.addonManager.writeConfig(__name__, config)
 
+    if config_schema["version"]["default"] > config["version"]:
+        config = migrate_config(config)
+        mw.addonManager.writeConfig(__name__, config)
+
     return validate_config(config)
 
 def reset_config():
@@ -112,4 +116,25 @@ def validate_config(config):
                 else:
                     continue
         config[config_schema_key] = config_schema[config_schema_key]["default"]
+    return config
+
+def migrate_config(config):
+    config_updates = [config_update_1]
+    if len(config_updates) > config["version"]:
+        for config_update in config_updates[config["version"]:]:
+            config = config_update(config)
+        config["version"] = config_schema["version"]["default"]
+    return config
+
+def config_update_1(config):
+    if "browseonclick" in config and "copyonclick" in config:
+        if not config["browseonclick"] and not config["copyonclick"]:
+            config["onclickaction"] = "search"
+        elif config["copyonclick"]:
+            config["onclickaction"] = "copy"
+        else:
+            config["onclickaction"] = "browse"
+
+        del config["browseonclick"]
+        del config["copyonclick"]
     return config
