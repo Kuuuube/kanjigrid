@@ -11,7 +11,8 @@ from aqt.webview import AnkiWebView
 from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QVBoxLayout, QTabWidget, QLabel, QCheckBox, QSpinBox,
                     QComboBox, QPushButton, QLineEdit, Qt, qconnect,
-                    QScrollArea, QWidget, QMessageBox)
+                    QScrollArea, QWidget, QMessageBox, QDateTimeEdit,
+                    QDateTime)
 
 from . import config_util, data, util, save, generate_grid, webview_util
 
@@ -210,6 +211,16 @@ class KanjiGrid:
         advanced_tab_vertical_layout.addWidget(QLabel("Additional Search Filters:"))
         advanced_tab_vertical_layout.addWidget(search_filter)
 
+        time_travel_datetime = QDateTimeEdit()
+        time_travel_default_time = QDateTime.currentDateTime()
+        time_travel_datetime.setDateTime(time_travel_default_time)
+        time_travel_datetime.setCalendarPopup(True)
+        advanced_tab_vertical_layout.addWidget(QLabel("Time Travel:"))
+        advanced_tab_vertical_layout.addWidget(time_travel_datetime)
+        time_travel_note = QLabel("Generated grid might not match actual past grid exactly")
+        time_travel_note.setStyleSheet("color: gray")
+        advanced_tab_vertical_layout.addWidget(time_travel_note)
+
         def set_config_attributes(config):
             config.pattern = field.currentText().lower()
             config.pattern = shlex.split(config.pattern)
@@ -219,6 +230,8 @@ class KanjiGrid:
             config.sortby = sortby.currentIndex()
             config.lang = pagelang.currentText()
             config.unseen = shnew.isChecked()
+            config.timetravel_enabled = time_travel_default_time.toMSecsSinceEpoch() != time_travel_datetime.dateTime().toMSecsSinceEpoch()
+            config.timetravel_time = time_travel_datetime.dateTime().toMSecsSinceEpoch()
             return config
 
         save_reset_buttons_horizontal_layout = QHBoxLayout()
