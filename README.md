@@ -140,6 +140,8 @@ Changelog compared to the old kanji grid add-on.
 
 - Moved config values out of `defaults` object to allow Anki to automatically populate missing default settings.
 
+- Added Time Travel option to view what a Kanji Grid looked like in the past.
+
 ### Groupings
 
 - Groupings are now contained in individual json files instead of a single python file.
