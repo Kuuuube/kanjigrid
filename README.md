@@ -34,6 +34,8 @@ Kanji Grid for Anki 23.10+ with improvements and bug fixes.
 
 ## Known Issues
 
+Before troubleshooting your issue, restart Anki. Especially after updating addons, Anki can break if you do not restart.
+
 1. On Linux, some users have experienced issues with crashing when generating the grid. If this happens, try changing Anki to `Vulkan` or `Software` renderer.
 
     `Tools` > `Preferences` > `Appearance` > `Video driver` > `Vulkan` or `Software`
