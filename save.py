@@ -96,10 +96,18 @@ def savetimelapsejson(mw, win, config, deckname, time_start, time_end, time_step
         with open(fileName, 'w', encoding='utf-8') as fileOut:
             html_list = []
             config.timetravel_enabled = True
-            for current_time in range(time_start, time_end, time_step):
+
+            timelapse_range = list(range(time_start, time_end, time_step))
+            if time_start not in timelapse_range:
+                timelapse_range.append(time_start)
+            if time_end not in timelapse_range:
+                timelapse_range.append(time_end)
+
+            for current_time in timelapse_range:
                 config.timetravel_time = current_time
                 units = generate_grid.kanjigrid(mw, config)
                 html_list.append(generate_grid.generate(mw, config, units, export = True))
+
             json_dump = json.dumps(html_list, indent=4)
             fileOut.write(json_dump)
         mw.progress.finish()
