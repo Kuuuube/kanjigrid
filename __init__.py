@@ -250,7 +250,7 @@ class KanjiGrid:
         timelapse_end_time.setCalendarPopup(True)
         timelapse_step_length = QLineEdit()
         timelapse_step_length.setText("10")
-        generate_timelapse_button = QPushButton("Generate Timelapse", clicked = lambda _: generate_timelapse(config))
+        generate_timelapse_button = QPushButton("Generate Timelapse Data", clicked = lambda _: generate_timelapse(config))
         advanced_tab_vertical_layout.addWidget(QLabel("Timelapse:"))
         timelapse_dates_horizontal_layout = QHBoxLayout()
         timelapse_dates_horizontal_layout.addWidget(timelapse_start_time)
