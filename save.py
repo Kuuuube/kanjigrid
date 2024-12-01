@@ -87,6 +87,24 @@ def savejson(mw, win, config, deckname, units):
         mw.progress.finish()
         showInfo("JSON saved to %s!" % os.path.abspath(fileOut.name))
 
+def savetimelapsejson(mw, win, config, deckname, time_start, time_end, time_step):
+    fileName = QFileDialog.getSaveFileName(win, "Save Timelapse Data", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".json", "JSON (*.json)")[0]
+    if fileName != "":
+        mw.progress.start(immediate=True)
+        if ".json" not in fileName:
+            fileName += ".json"
+        with open(fileName, 'w', encoding='utf-8') as fileOut:
+            html_list = []
+            config.timetravel_enabled = True
+            for current_time in range(time_start, time_end, time_step):
+                config.timetravel_time = current_time
+                units = generate_grid.kanjigrid(mw, config)
+                html_list.append(generate_grid.generate(mw, config, units, export = True))
+            json_dump = json.dumps(html_list, indent=4)
+            fileOut.write(json_dump)
+        mw.progress.finish()
+        showInfo("Timelapse JSON saved to %s!" % os.path.abspath(fileOut.name))
+
 def savetxt(mw, win, config, deckname, units):
     fileName = QFileDialog.getSaveFileName(win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".txt", "TXT (*.txt)")[0]
     if fileName != "":
