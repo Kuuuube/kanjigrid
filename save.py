@@ -2,6 +2,7 @@ import os
 import json
 import datetime
 import re
+import threading
 from aqt.utils import showInfo, showCritical
 from aqt.qt import (QStandardPaths, QFileDialog, QTimer, QPageLayout, QPageSize,
                     QMarginsF)
@@ -18,12 +19,16 @@ def savehtml(mw, win, config, deckname):
         mw.progress.start(immediate=True)
         if ".htm" not in fileName:
             fileName += ".html"
-        with open(fileName, 'w', encoding='utf-8') as fileOut:
-            units = generate_grid.kanjigrid(mw, config)
-            generated_html = generate_grid.generate(mw, config, units, export = True)
-            fileOut.write(generated_html)
-        mw.progress.finish()
-        showInfo("Page saved to %s!" % os.path.abspath(fileOut.name))
+
+        def save(fileName):
+            with open(fileName, 'w', encoding='utf-8') as fileOut:
+                units = generate_grid.kanjigrid(mw, config)
+                generated_html = generate_grid.generate(mw, config, units, export = True)
+                fileOut.write(generated_html)
+            mw.progress.finish()
+
+        threading.Thread(target = lambda: save(fileName)).start()
+        showInfo("HTML saved to %s!" % os.path.abspath(fileName))
 
 def savepng(wv, win, config, deckname):
     oldsize = wv.size()
@@ -81,11 +86,15 @@ def savejson(mw, win, config, deckname, units):
         mw.progress.start(immediate=True)
         if ".json" not in fileName:
             fileName += ".json"
-        with open(fileName, 'w', encoding='utf-8') as fileOut:
-            json_dump = json.dumps({'units':units, 'config':config}, default=lambda x: x.__dict__, indent=4)
-            fileOut.write(json_dump)
-        mw.progress.finish()
-        showInfo("JSON saved to %s!" % os.path.abspath(fileOut.name))
+
+        def save(fileName):
+            with open(fileName, 'w', encoding='utf-8') as fileOut:
+                json_dump = json.dumps({'units':units, 'config':config}, default=lambda x: x.__dict__, indent=4)
+                fileOut.write(json_dump)
+            mw.progress.finish()
+
+        threading.Thread(target = lambda: save(fileName)).start()
+        showInfo("JSON saved to %s!" % os.path.abspath(fileName))
 
 def savetxt(mw, win, config, deckname, units):
     fileName = QFileDialog.getSaveFileName(win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".txt", "TXT (*.txt)")[0]
@@ -93,10 +102,14 @@ def savetxt(mw, win, config, deckname, units):
         mw.progress.start(immediate=True)
         if ".txt" not in fileName:
             fileName += ".txt"
-        with open(fileName, 'w', encoding='utf-8') as fileOut:
-            fileOut.write("".join(units.keys()))
-        mw.progress.finish()
-        showInfo("TXT saved to %s!" % os.path.abspath(fileOut.name))
+
+        def save(fileName):
+            with open(fileName, 'w', encoding='utf-8') as fileOut:
+                fileOut.write("".join(units.keys()))
+            mw.progress.finish()
+
+        threading.Thread(target = lambda: save(fileName)).start()
+        showInfo("TXT saved to %s!" % os.path.abspath(fileName))
 
 def savetimelapsejson(mw, win, config, deckname, time_start, time_end, time_step):
     fileName = QFileDialog.getSaveFileName(win, "Save Timelapse Data", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".json", "JSON (*.json)")[0]
@@ -104,22 +117,26 @@ def savetimelapsejson(mw, win, config, deckname, time_start, time_end, time_step
         mw.progress.start(immediate=True)
         if ".json" not in fileName:
             fileName += ".json"
-        with open(fileName, 'w', encoding='utf-8') as fileOut:
-            html_list = []
-            config.timetravel_enabled = True
 
-            timelapse_range = list(range(time_start, time_end, time_step))
-            if time_start not in timelapse_range:
-                timelapse_range.append(time_start)
-            if time_end not in timelapse_range:
-                timelapse_range.append(time_end)
+        def save(fileName):
+            with open(fileName, 'w', encoding='utf-8') as fileOut:
+                html_list = []
+                config.timetravel_enabled = True
 
-            for current_time in timelapse_range:
-                config.timetravel_time = current_time
-                units = generate_grid.kanjigrid(mw, config)
-                html_list.append(generate_grid.generate(mw, config, units, export = True))
+                timelapse_range = list(range(time_start, time_end, time_step))
+                if time_start not in timelapse_range:
+                    timelapse_range.append(time_start)
+                if time_end not in timelapse_range:
+                    timelapse_range.append(time_end)
 
-            json_dump = json.dumps(html_list, indent=4)
-            fileOut.write(json_dump)
-        mw.progress.finish()
-        showInfo("Timelapse JSON saved to %s!" % os.path.abspath(fileOut.name))
+                for current_time in timelapse_range:
+                    config.timetravel_time = current_time
+                    units = generate_grid.kanjigrid(mw, config)
+                    html_list.append(generate_grid.generate(mw, config, units, export = True))
+
+                json_dump = json.dumps(html_list, indent=4)
+                fileOut.write(json_dump)
+            mw.progress.finish()
+
+        threading.Thread(target = lambda: save(fileName)).start()
+        showInfo("Timelapse JSON saved to %s!" % os.path.abspath(fileName))
