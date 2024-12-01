@@ -238,7 +238,8 @@ class KanjiGrid:
             deckname = config.did
             if config.did != "*":
                 deckname = mw.col.decks.name(config.did)
-            save.savetimelapsejson(mw, mw, set_config_attributes(config), deckname, timelapse_start_time.dateTime().toMSecsSinceEpoch(), timelapse_end_time.dateTime().toMSecsSinceEpoch(), int(timelapse_step_length.text()))
+            step_size = int(timelapse_step_length.text()) * 86400000
+            save.savetimelapsejson(mw, mw, set_config_attributes(config), deckname, timelapse_start_time.dateTime().toMSecsSinceEpoch(), timelapse_end_time.dateTime().toMSecsSinceEpoch(), step_size)
 
         timelapse_default_time = QDateTime.currentDateTime()
         timelapse_start_time = QDateTimeEdit()
@@ -248,7 +249,7 @@ class KanjiGrid:
         timelapse_end_time.setDateTime(timelapse_default_time)
         timelapse_end_time.setCalendarPopup(True)
         timelapse_step_length = QLineEdit()
-        timelapse_step_length.setText("86400000")
+        timelapse_step_length.setText("10")
         generate_timelapse_button = QPushButton("Generate Timelapse", clicked = lambda _: generate_timelapse(config))
         advanced_tab_vertical_layout.addWidget(QLabel("Timelapse:"))
         timelapse_dates_horizontal_layout = QHBoxLayout()
@@ -256,7 +257,7 @@ class KanjiGrid:
         timelapse_dates_horizontal_layout.addWidget(timelapse_end_time)
         advanced_tab_vertical_layout.addLayout(timelapse_dates_horizontal_layout)
         timelapse_steps_horizontal_layout = QHBoxLayout()
-        timelapse_steps_horizontal_layout.addWidget(QLabel("Step size:"))
+        timelapse_steps_horizontal_layout.addWidget(QLabel("Step size (days):"))
         timelapse_steps_horizontal_layout.addWidget(timelapse_step_length)
         advanced_tab_vertical_layout.addLayout(timelapse_steps_horizontal_layout)
         advanced_tab_vertical_layout.addWidget(generate_timelapse_button)
