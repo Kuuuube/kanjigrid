@@ -261,6 +261,9 @@ class KanjiGrid:
         timelapse_steps_horizontal_layout.addWidget(timelapse_step_length)
         advanced_tab_vertical_layout.addLayout(timelapse_steps_horizontal_layout)
         advanced_tab_vertical_layout.addWidget(generate_timelapse_button)
+        timelapse_note = QLabel("Timelapse data requires external tools to process")
+        timelapse_note.setStyleSheet("color: gray")
+        advanced_tab_vertical_layout.addWidget(timelapse_note)
 
         save_reset_buttons_horizontal_layout = QHBoxLayout()
         advanced_tab_vertical_layout.addLayout(save_reset_buttons_horizontal_layout)
