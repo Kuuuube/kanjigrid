@@ -87,6 +87,17 @@ def savejson(mw, win, config, deckname, units):
         mw.progress.finish()
         showInfo("JSON saved to %s!" % os.path.abspath(fileOut.name))
 
+def savetxt(mw, win, config, deckname, units):
+    fileName = QFileDialog.getSaveFileName(win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".txt", "TXT (*.txt)")[0]
+    if fileName != "":
+        mw.progress.start(immediate=True)
+        if ".txt" not in fileName:
+            fileName += ".txt"
+        with open(fileName, 'w', encoding='utf-8') as fileOut:
+            fileOut.write("".join(units.keys()))
+        mw.progress.finish()
+        showInfo("TXT saved to %s!" % os.path.abspath(fileOut.name))
+
 def savetimelapsejson(mw, win, config, deckname, time_start, time_end, time_step):
     fileName = QFileDialog.getSaveFileName(win, "Save Timelapse Data", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".json", "JSON (*.json)")[0]
     if fileName != "":
@@ -112,14 +123,3 @@ def savetimelapsejson(mw, win, config, deckname, time_start, time_end, time_step
             fileOut.write(json_dump)
         mw.progress.finish()
         showInfo("Timelapse JSON saved to %s!" % os.path.abspath(fileOut.name))
-
-def savetxt(mw, win, config, deckname, units):
-    fileName = QFileDialog.getSaveFileName(win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".txt", "TXT (*.txt)")[0]
-    if fileName != "":
-        mw.progress.start(immediate=True)
-        if ".txt" not in fileName:
-            fileName += ".txt"
-        with open(fileName, 'w', encoding='utf-8') as fileOut:
-            fileOut.write("".join(units.keys()))
-        mw.progress.finish()
-        showInfo("TXT saved to %s!" % os.path.abspath(fileOut.name))
