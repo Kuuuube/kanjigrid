@@ -42,9 +42,12 @@ def generate(mw, config, units, export = False):
 
     result_html  = "<!doctype html><html lang=\"%s\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>" % config.lang
     result_html += "<style type=\"text/css\">body{text-align:center;}.grid-container{display:grid;grid-gap:2px;grid-template-columns:repeat(auto-fit,23px);justify-content:center;" + util.get_font_css(config) + "}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
-    result_html += "</head>\n"
     if config.onclickaction == "copy":
         result_html += "<script>function copyText(text) {const range = document.createRange();const tempElem = document.createElement('div');tempElem.textContent = text;document.body.appendChild(tempElem);range.selectNode(tempElem);const selection = window.getSelection();selection.removeAllRanges();selection.addRange(range);document.execCommand('copy');document.body.removeChild(tempElem);}document.addEventListener('click', function(e) {e.preventDefault();if (e.srcElement.tagName == 'A') {copyText(e.srcElement.textContent);}}, false);</script>"
+    if not export:
+        result_html += f"<style type=\"text/css\">{SEARCH_BLINK_CSS_SNIPPET}</style>"        
+        result_html += f"<script>{SEARCH_BLINK_JS_SNIPPET}</script>"
+    result_html += "</head>\n"
     result_html += "<body>\n"
     result_html += "<div style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</div>\n" % deckname
     if config.timetravel_enabled:
@@ -220,3 +223,33 @@ def kanjigrid(mw, config):
             for ch in unitKey:
                 util.addUnitData(units, ch, i, card, config.kanjionly)
     return units
+
+SEARCH_BLINK_CSS_SNIPPET = """
+.blink {
+  animation: blink 0.2s ease-in-out;
+  animation-iteration-count: 3;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+""".strip()
+
+SEARCH_BLINK_JS_SNIPPET = """
+function blinkChar(char) {
+  /* https://stackoverflow.com/questions/3813294/how-to-get-element-by-innertext */
+  const xpath = "//a[text()='" + char + "']";
+  /* this only considers the first matching element, so it assumes the grid kanji are unique */
+  const matchingElement = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+  if (matchingElement === null)
+    return false;
+  matchingElement.classList.add("blink");
+  /* cleanup anim class */
+  matchingElement.addEventListener("animationend", function() {
+    matchingElement.classList.remove("blink");
+  }, { once: true });
+  return true;
+}
+""".strip()
