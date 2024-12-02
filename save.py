@@ -11,7 +11,7 @@ from . import generate_grid
 
 def get_filename(name):
     current_date = datetime.datetime.now().strftime("%Y_%m_%d")
-    return re.sub("(\s|<|>|:|\"|/|\\\|\||\?|\*)", "_", name) + "_" + current_date
+    return re.sub(r"(\s|<|>|:|\"|/|\\|\||\?|\*)", "_", name) + "_" + current_date
 
 def epoch_ms_to_date(epoch):
     # datetime wants epoch in seconds not miliseconds
