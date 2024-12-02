@@ -2,7 +2,6 @@ import os
 import json
 import datetime
 import re
-import threading
 from aqt.utils import showInfo, showCritical
 from aqt.operations import QueryOp
 from aqt.qt import (QStandardPaths, QFileDialog, QTimer, QPageLayout, QPageSize,
