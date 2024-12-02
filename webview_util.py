@@ -52,7 +52,7 @@ def on_find_cmd(wv: AnkiWebView):
     
     # qt handles scrolling to, scrollbar indicator and opening the <details> block
     # there's an issue with findText where it sometimes doesn't scroll up when the kanji is found upwards/backwards
-    # calling findText twice, althogh hacky, makes it reliably scroll up
+    # calling findText twice, although hacky, makes it reliably scroll up
     wv.findText(char)
     wv.findText(char, resultCallback=findTextCallback)
 
