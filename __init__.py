@@ -298,6 +298,7 @@ class KanjiGrid:
         data_tab_vertical_layout.addWidget(timelapse_note)
 
         save_reset_buttons_horizontal_layout = QHBoxLayout()
+        data_tab_vertical_layout.addWidget(QLabel("Manage settings:"))
         data_tab_vertical_layout.addLayout(save_reset_buttons_horizontal_layout)
 
         def save_settings(config):
