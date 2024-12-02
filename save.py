@@ -14,7 +14,7 @@ def get_filename(name):
     return re.sub(r"(\s|<|>|:|\"|/|\\|\||\?|\*)", "_", name) + "_" + current_date
 
 def epoch_ms_to_date(epoch):
-    # datetime wants epoch in seconds not miliseconds
+    # datetime wants epoch in seconds not milliseconds
     return datetime.datetime.fromtimestamp(epoch / 1000).strftime("%Y_%m_%d")
 
 def savehtml(mw, win, config, deckname):
