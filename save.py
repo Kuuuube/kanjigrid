@@ -4,6 +4,7 @@ import datetime
 import re
 import threading
 from aqt.utils import showInfo, showCritical
+from aqt.operations import QueryOp
 from aqt.qt import (QStandardPaths, QFileDialog, QTimer, QPageLayout, QPageSize,
                     QMarginsF)
 
@@ -29,10 +30,12 @@ def savehtml(mw, win, config, deckname):
                 units = generate_grid.kanjigrid(mw, config)
                 generated_html = generate_grid.generate(mw, config, units, export = True)
                 fileOut.write(generated_html)
-            mw.progress.finish()
 
-        threading.Thread(target = lambda: save(fileName)).start()
-        showInfo("HTML saved to %s!" % os.path.abspath(fileName))
+        def on_done(fileName):
+            mw.progress.finish()
+            showInfo("HTML saved to %s!" % os.path.abspath(fileName))
+
+        QueryOp(parent = win, op = lambda _: save(fileName), success = lambda _: on_done(fileName)).run_in_background()
 
 def savepng(wv, win, config, deckname):
     oldsize = wv.size()
@@ -95,10 +98,12 @@ def savejson(mw, win, config, deckname, units):
             with open(fileName, 'w', encoding='utf-8') as fileOut:
                 json_dump = json.dumps({'units':units, 'config':config}, default=lambda x: x.__dict__, indent=4)
                 fileOut.write(json_dump)
-            mw.progress.finish()
 
-        threading.Thread(target = lambda: save(fileName)).start()
-        showInfo("JSON saved to %s!" % os.path.abspath(fileName))
+        def on_done(fileName):
+            mw.progress.finish()
+            showInfo("JSON saved to %s!" % os.path.abspath(fileName))
+
+        QueryOp(parent = win, op = lambda _: save(fileName), success = lambda _: on_done(fileName)).run_in_background()
 
 def savetxt(mw, win, config, deckname, units):
     fileName = QFileDialog.getSaveFileName(win, "Save Page", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/" + get_filename(deckname) + ".txt", "TXT (*.txt)")[0]
@@ -110,10 +115,12 @@ def savetxt(mw, win, config, deckname, units):
         def save(fileName):
             with open(fileName, 'w', encoding='utf-8') as fileOut:
                 fileOut.write("".join(units.keys()))
-            mw.progress.finish()
 
-        threading.Thread(target = lambda: save(fileName)).start()
-        showInfo("TXT saved to %s!" % os.path.abspath(fileName))
+        def on_done(fileName):
+            mw.progress.finish()
+            showInfo("TXT saved to %s!" % os.path.abspath(fileName))
+
+        QueryOp(parent = win, op = lambda _: save(fileName), success = lambda _: on_done(fileName)).run_in_background()
 
 def savetimelapsejson(mw, win, config, deckname, time_start, time_end, time_step):
     fileName = QFileDialog.getSaveFileName(win, "Save Timelapse Data", QStandardPaths.standardLocations(QStandardPaths.StandardLocation.DesktopLocation)[0] + "/timelapse_" + epoch_ms_to_date(time_end) + "_" + epoch_ms_to_date(time_end) + "_" + "{0:.2g}".format(time_step / 86400000) + "d_" + get_filename(deckname) + ".json", "JSON (*.json)")[0]
@@ -140,7 +147,10 @@ def savetimelapsejson(mw, win, config, deckname, time_start, time_end, time_step
 
                 json_dump = json.dumps(html_list, indent=4)
                 fileOut.write(json_dump)
-            mw.progress.finish()
 
-        threading.Thread(target = lambda: save(fileName)).start()
-        showInfo("Timelapse JSON saved to %s!" % os.path.abspath(fileName))
+        def on_done(fileName):
+            mw.progress.finish()
+            showInfo("Timelapse JSON saved to %s!" % os.path.abspath(fileName))
+
+        QueryOp(parent = win, op = lambda _: save(fileName), success = lambda _: on_done(fileName)).run_in_background()
+
