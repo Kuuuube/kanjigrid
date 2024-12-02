@@ -245,6 +245,42 @@ class KanjiGrid:
             config.timetravel_time = time_travel_datetime.dateTime().toMSecsSinceEpoch()
             return config
 
+        data_tab_vertical_layout.addWidget(QLabel("Save grid without rendering:"))
+        save_grid_buttons_horizontal_layout = QHBoxLayout()
+        data_tab_vertical_layout.addLayout(save_grid_buttons_horizontal_layout)
+
+        def save_html_grid(config):
+            deckname = config.did
+            if config.did != "*":
+                deckname = mw.col.decks.name(config.did)
+            config_util.set_config(set_config_attributes(config))
+            save.savehtml(mw, mw, set_config_attributes(config), deckname)
+
+        save_html_button = QPushButton("Save HTML", clicked = lambda _: save_html_grid(config))
+        save_grid_buttons_horizontal_layout.addWidget(save_html_button)
+
+        def save_json_grid(config):
+            deckname = config.did
+            if config.did != "*":
+                deckname = mw.col.decks.name(config.did)
+            config_util.set_config(set_config_attributes(config))
+            units = generate_grid.kanjigrid(mw, config)
+            save.savejson(mw, mw, set_config_attributes(config), deckname, units)
+
+        save_json_button = QPushButton("Save JSON", clicked = lambda _: save_json_grid(config))
+        save_grid_buttons_horizontal_layout.addWidget(save_json_button)
+
+        def save_txt_grid(config):
+            deckname = config.did
+            if config.did != "*":
+                deckname = mw.col.decks.name(config.did)
+            config_util.set_config(set_config_attributes(config))
+            units = generate_grid.kanjigrid(mw, config)
+            save.savetxt(mw, mw, set_config_attributes(config), deckname, units)
+
+        save_txt_button = QPushButton("Save TXT", clicked = lambda _: save_txt_grid(config))
+        save_grid_buttons_horizontal_layout.addWidget(save_txt_button)
+
         def generate_timelapse(config):
             deckname = config.did
             if config.did != "*":
