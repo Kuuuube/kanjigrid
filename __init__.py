@@ -221,6 +221,17 @@ class KanjiGrid:
         time_travel_note.setStyleSheet("color: gray")
         advanced_tab_vertical_layout.addWidget(time_travel_note)
 
+        advanced_tab.setLayout(advanced_tab_vertical_layout)
+        advanced_tab_scroll_area.setWidget(advanced_tab)
+        tabs_frame.addTab(advanced_tab_scroll_area, "Advanced")
+
+        #Data Tab
+        data_tab = QWidget()
+        data_tab_scroll_area = QScrollArea()
+        data_tab_scroll_area.setWidgetResizable(True)
+        data_tab_vertical_layout = QVBoxLayout()
+        data_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
         def set_config_attributes(config):
             config.pattern = field.currentText().lower()
             config.pattern = shlex.split(config.pattern)
@@ -251,22 +262,22 @@ class KanjiGrid:
         timelapse_step_length = QLineEdit()
         timelapse_step_length.setText("10")
         generate_timelapse_button = QPushButton("Generate Timelapse Data", clicked = lambda _: generate_timelapse(config))
-        advanced_tab_vertical_layout.addWidget(QLabel("Timelapse:"))
+        data_tab_vertical_layout.addWidget(QLabel("Timelapse:"))
         timelapse_dates_horizontal_layout = QHBoxLayout()
         timelapse_dates_horizontal_layout.addWidget(timelapse_start_time)
         timelapse_dates_horizontal_layout.addWidget(timelapse_end_time)
-        advanced_tab_vertical_layout.addLayout(timelapse_dates_horizontal_layout)
+        data_tab_vertical_layout.addLayout(timelapse_dates_horizontal_layout)
         timelapse_steps_horizontal_layout = QHBoxLayout()
         timelapse_steps_horizontal_layout.addWidget(QLabel("Step size (days):"))
         timelapse_steps_horizontal_layout.addWidget(timelapse_step_length)
-        advanced_tab_vertical_layout.addLayout(timelapse_steps_horizontal_layout)
-        advanced_tab_vertical_layout.addWidget(generate_timelapse_button)
+        data_tab_vertical_layout.addLayout(timelapse_steps_horizontal_layout)
+        data_tab_vertical_layout.addWidget(generate_timelapse_button)
         timelapse_note = QLabel("Timelapse data requires external tools to process")
         timelapse_note.setStyleSheet("color: gray")
-        advanced_tab_vertical_layout.addWidget(timelapse_note)
+        data_tab_vertical_layout.addWidget(timelapse_note)
 
         save_reset_buttons_horizontal_layout = QHBoxLayout()
-        advanced_tab_vertical_layout.addLayout(save_reset_buttons_horizontal_layout)
+        data_tab_vertical_layout.addLayout(save_reset_buttons_horizontal_layout)
 
         def save_settings(config):
             config_util.set_config(set_config_attributes(config))
@@ -283,9 +294,9 @@ class KanjiGrid:
         reset_settings_button = QPushButton("Reset Settings", clicked = lambda _: reset_settings(setup_win))
         save_reset_buttons_horizontal_layout.addWidget(reset_settings_button)
 
-        advanced_tab.setLayout(advanced_tab_vertical_layout)
-        advanced_tab_scroll_area.setWidget(advanced_tab)
-        tabs_frame.addTab(advanced_tab_scroll_area, "Advanced")
+        data_tab.setLayout(data_tab_vertical_layout)
+        data_tab_scroll_area.setWidget(data_tab)
+        tabs_frame.addTab(data_tab_scroll_area, "Data")
 
         #Bottom Buttons
         bottom_buttons_horizontal_layout = QHBoxLayout()
