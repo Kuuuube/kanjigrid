@@ -76,11 +76,8 @@ class KanjiGrid:
 
     def makegrid(self, config):
         units = generate_grid.kanjigrid(mw, config)
-        deckname = config.did
-        if config.did != "*":
-            deckname = mw.col.decks.name(config.did)
         if units is not None:
-            self.displaygrid(config, deckname, units)
+            self.displaygrid(config, util.get_deck_name(mw, config), units)
 
     def setup(self):
         config = types.SimpleNamespace(**config_util.get_config())
@@ -250,43 +247,31 @@ class KanjiGrid:
         data_tab_vertical_layout.addLayout(save_grid_buttons_horizontal_layout)
 
         def save_html_grid(config):
-            deckname = config.did
-            if config.did != "*":
-                deckname = mw.col.decks.name(config.did)
             config_util.set_config(set_config_attributes(config))
-            save.savehtml(mw, mw, set_config_attributes(config), deckname)
+            save.savehtml(mw, mw, set_config_attributes(config), util.get_deck_name(mw, config))
 
         save_html_button = QPushButton("Save HTML", clicked = lambda _: save_html_grid(config))
         save_grid_buttons_horizontal_layout.addWidget(save_html_button)
 
         def save_json_grid(config):
-            deckname = config.did
-            if config.did != "*":
-                deckname = mw.col.decks.name(config.did)
             config_util.set_config(set_config_attributes(config))
             units = generate_grid.kanjigrid(mw, config)
-            save.savejson(mw, mw, set_config_attributes(config), deckname, units)
+            save.savejson(mw, mw, set_config_attributes(config), util.get_deck_name(mw, config), units)
 
         save_json_button = QPushButton("Save JSON", clicked = lambda _: save_json_grid(config))
         save_grid_buttons_horizontal_layout.addWidget(save_json_button)
 
         def save_txt_grid(config):
-            deckname = config.did
-            if config.did != "*":
-                deckname = mw.col.decks.name(config.did)
             config_util.set_config(set_config_attributes(config))
             units = generate_grid.kanjigrid(mw, config)
-            save.savetxt(mw, mw, set_config_attributes(config), deckname, units)
+            save.savetxt(mw, mw, set_config_attributes(config), util.get_deck_name(mw, config), units)
 
         save_txt_button = QPushButton("Save TXT", clicked = lambda _: save_txt_grid(config))
         save_grid_buttons_horizontal_layout.addWidget(save_txt_button)
 
         def generate_timelapse(config):
-            deckname = config.did
-            if config.did != "*":
-                deckname = mw.col.decks.name(config.did)
             step_size = int(float(timelapse_step_length.text()) * 86400000)
-            save.savetimelapsejson(mw, mw, set_config_attributes(config), deckname, timelapse_start_time.dateTime().toMSecsSinceEpoch(), timelapse_end_time.dateTime().toMSecsSinceEpoch(), step_size)
+            save.savetimelapsejson(mw, mw, set_config_attributes(config), util.get_deck_name(mw, config), timelapse_start_time.dateTime().toMSecsSinceEpoch(), timelapse_end_time.dateTime().toMSecsSinceEpoch(), step_size)
 
         timelapse_default_time = QDateTime.currentDateTime()
         timelapse_start_time = QDateTimeEdit()

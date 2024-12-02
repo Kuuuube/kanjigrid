@@ -134,3 +134,9 @@ def safe_unicodedata_name(char, default = ""):
         return unicodedata.name(char)
     except Exception:
         return default
+
+def get_deck_name(mw, config):
+    deckname = config.did
+    if config.did != "*":
+        deckname = mw.col.decks.name(config.did)
+    return deckname
