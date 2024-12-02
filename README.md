@@ -89,6 +89,10 @@ Documentation for the Kanji Grid config.
 
 </details>
 
+## Timelapse Data
+
+See: [Kanjigrid Timelapse](https://github.com/Kuuuube/kanjigrid-timelapse).
+
 ## Improvements and Bug Fixes
 
 Changelog compared to the old kanji grid add-on.
