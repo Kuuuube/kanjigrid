@@ -120,7 +120,7 @@ Changelog compared to the old kanji grid add-on.
 
 - Added context menu items for copying, browsing, and searching when right clicking a kanji tile.
 
-- Setup window now has tabs for `General` and `Advanced` settings.
+- Setup window now has tabs for `General`, `Advanced`, and `Data` settings.
 
 - Saving and resetting settings can now be done in the setup window.
 
@@ -183,6 +183,12 @@ Changelog compared to the old kanji grid add-on.
 - Filename is autofilled with deck name and date when saving.
 
 - Added option to save all kanji as TXT.
+
+- Exporting runs in a background thread to prevent freezing the ui. (Except for `Save Image` which directly uses the ui to generate the image)
+
+- Some exporting options can be used without rendering the grid.
+
+- Added `Generate Timelapse Data` option to generate grid data between a range of dates for processing in an external program.
 
 </details>
 
