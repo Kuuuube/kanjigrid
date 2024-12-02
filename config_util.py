@@ -104,7 +104,8 @@ def get_config():
     return validate_config(config)
 
 def reset_config():
-    mw.addonManager.writeConfig(__name__, config_schema)
+    default_config = dict(map(lambda item: (item[0], item[1]["default"]), config_schema.items()))
+    mw.addonManager.writeConfig(__name__, default_config)
 
 def validate_config(config):
     for config_schema_key in config_schema.keys():
