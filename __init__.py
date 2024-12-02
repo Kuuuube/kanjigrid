@@ -238,7 +238,7 @@ class KanjiGrid:
             deckname = config.did
             if config.did != "*":
                 deckname = mw.col.decks.name(config.did)
-            step_size = int(timelapse_step_length.text()) * 86400000
+            step_size = int(float(timelapse_step_length.text()) * 86400000)
             save.savetimelapsejson(mw, mw, set_config_attributes(config), deckname, timelapse_start_time.dateTime().toMSecsSinceEpoch(), timelapse_end_time.dateTime().toMSecsSinceEpoch(), step_size)
 
         timelapse_default_time = QDateTime.currentDateTime()
