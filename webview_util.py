@@ -44,11 +44,16 @@ def on_find_cmd(wv: AnkiWebView):
     
     def findTextCallback(found):
         if found:
+            # doesn't seem to be a way to style the text highlighting
+            # and it be hard to spot, so make the target blink
             wv.eval(f"blinkChar('{char}');")
         else:
             tooltip(f"\"{char}\" not found in grid.")
     
     # qt handles scrolling to, scrollbar indicator and opening the <details> block
+    # there's an issue with findText where it sometimes doesn't scroll up when the kanji is found upwards/backwards
+    # calling findText twice, althogh hacky, makes it reliably scroll up
+    wv.findText(char)
     wv.findText(char, resultCallback=findTextCallback)
 
 def add_webview_context_menu_items(wv, expected_wv, menu, config, deckname, char):
