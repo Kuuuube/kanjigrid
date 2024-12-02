@@ -24,7 +24,7 @@ def on_copy_cmd(char):
     QApplication.clipboard().setText(char)
 
 def on_browse_cmd(char, config, deckname):
-    open_note_browser(deckname, config.pattern, config.searchfilter, char)
+    open_note_browser(deckname, config.fieldslist, config.searchfilter, char)
 
 def on_search_cmd(char, wv, config):
     open_search_link(wv, config, char)

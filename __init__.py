@@ -230,8 +230,7 @@ class KanjiGrid:
         data_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         def set_config_attributes(config):
-            config.pattern = field.currentText().lower()
-            config.pattern = shlex.split(config.pattern)
+            config.fieldslist = shlex.split(field.currentText().lower())
             config.searchfilter = search_filter.text()
             config.interval = strong_interval.value()
             config.groupby = groupby.currentIndex()

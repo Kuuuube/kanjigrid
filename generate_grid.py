@@ -188,8 +188,8 @@ def kanjigrid(mw, config):
     cids = []
     #mw.col.find_cards and mw.col.db.list sort differently
     #mw.col.db.list is kept due to some users being very picky about the order of kanji when using `Sort by: None`
-    if len(config.searchfilter) > 0 and len(config.pattern) > 0 and len(dids) > 0:
-        cids = mw.col.find_cards("(" + util.make_query(dids, config.pattern) + ") " + config.searchfilter)
+    if len(config.searchfilter) > 0 and len(config.fieldslist) > 0 and len(dids) > 0:
+        cids = mw.col.find_cards("(" + util.make_query(dids, config.fieldslist) + ") " + config.searchfilter)
     else:
         cids = mw.col.db.list("select id from cards where did in %s or odid in %s" % (ids2str(dids), ids2str(dids)))
 
@@ -208,7 +208,7 @@ def kanjigrid(mw, config):
             keys = card.note().keys()
             unitKey = set()
             matches = operator.eq
-            for keyword in config.pattern:
+            for keyword in config.fieldslist:
                 for key in keys:
                     if matches(key.lower(), keyword):
                         unitKey.update(set(card.note()[key]))
