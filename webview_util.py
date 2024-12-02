@@ -1,6 +1,7 @@
 from aqt import mw, dialogs
 from aqt.qt import qconnect, QApplication
 from aqt.utils import tooltip
+from aqt.webview import AnkiWebView
 
 from . import util
 
@@ -30,7 +31,7 @@ def on_browse_cmd(char, config, deckname):
 def on_search_cmd(char, wv, config):
     open_search_link(wv, config, char)
 
-def on_find_cmd(wv):
+def on_find_cmd(wv: AnkiWebView):
     char = QApplication.clipboard().text().strip()
 
     # limit searches to kanji to prevent findText from highlighting UI text in the page
@@ -41,17 +42,14 @@ def on_find_cmd(wv):
         tooltip(f"\"{tooltip_char}\" is not valid kanji.")
         return
     
+    def findTextCallback(found):
+        if found:
+            wv.eval(f"blinkChar('{char}');")
+        else:
+            tooltip(f"\"{char}\" not found in grid.")
+    
     # qt handles scrolling to, scrollbar indicator and opening the <details> block
-    wv.findText(char)
-
-    def blinkCharCallback(found: bool):
-        # findText doesn't tell us if it did anything, so we rely on blinkChar's ret
-        if not found:
-          tooltip(f"\"{char}\" not found in grid.")
-
-    # doesn't seem to be a way to style the text highlighting
-    # and it be hard to spot, so make the target blink
-    wv.evalWithCallback(f"blinkChar('{char}');", blinkCharCallback)
+    wv.findText(char, resultCallback=findTextCallback)
 
 def add_webview_context_menu_items(wv, expected_wv, menu, config, deckname, char):
     # hook is active while kanjigrid is open, and right clicking on the main window (deck list) will also trigger this, so check wv
