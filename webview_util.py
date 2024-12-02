@@ -31,7 +31,7 @@ def on_search_cmd(char, wv, config):
     open_search_link(wv, config, char)
 
 def on_find_cmd(wv):
-    char = QApplication.clipboard().text()
+    char = QApplication.clipboard().text().strip()
 
     # limit searches to kanji to prevent findText from highlighting UI text in the page
     if not util.isKanji(char):
