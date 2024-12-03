@@ -45,8 +45,8 @@ def generate(mw, config, units, export = False):
     if config.onclickaction == "copy":
         result_html += "<script>function copyText(text) {const range = document.createRange();const tempElem = document.createElement('div');tempElem.textContent = text;document.body.appendChild(tempElem);range.selectNode(tempElem);const selection = window.getSelection();selection.removeAllRanges();selection.addRange(range);document.execCommand('copy');document.body.removeChild(tempElem);}document.addEventListener('click', function(e) {e.preventDefault();if (e.srcElement.tagName == 'A') {copyText(e.srcElement.textContent);}}, false);</script>"
     if not export:
-        result_html += f"<style type=\"text/css\">{SEARCH_BLINK_CSS_SNIPPET}</style>"        
-        result_html += f"<script>{SEARCH_BLINK_JS_SNIPPET}</script>"
+        result_html += f"<style type=\"text/css\">{SEARCH_CSS_SNIPPET}</style>"        
+        result_html += f"<script>{SEARCH_JS_SNIPPET}</script>"
     result_html += "</head>\n"
     result_html += "<body>\n"
     result_html += "<div style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</div>\n" % deckname
@@ -224,32 +224,42 @@ def kanjigrid(mw, config):
                 util.addUnitData(units, ch, i, card, config.kanjionly)
     return units
 
-SEARCH_BLINK_CSS_SNIPPET = """
-.blink {
-  animation: blink 0.2s ease-in-out;
-  animation-iteration-count: 3;
-}
-
-@keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0; }
-  100% { opacity: 1; }
+SEARCH_CSS_SNIPPET = """
+a.highlight {
+  background: black;
+  color: white !important;
 }
 """.strip()
 
-SEARCH_BLINK_JS_SNIPPET = """
-function blinkChar(char) {
+SEARCH_JS_SNIPPET = """
+function findChar(char) {
+  /* for styling the match */
+  const HIGHLIGHT_CLASS = "highlight"
+
+  /* clear the previous match's highlight (if any) */
+  const prevMatchingElem = document.querySelector(`.${HIGHLIGHT_CLASS}`);
+  if (prevMatchingElem !== null)
+    prevMatchingElem.classList.remove(HIGHLIGHT_CLASS);
+
   /* https://stackoverflow.com/questions/3813294/how-to-get-element-by-innertext */
   const xpath = "//a[text()='" + char + "']";
+
   /* this only considers the first matching element, so it assumes the grid kanji are unique */
   const matchingElement = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
   if (matchingElement === null)
     return false;
-  matchingElement.classList.add("blink");
-  /* cleanup anim class */
-  matchingElement.addEventListener("animationend", function() {
-    matchingElement.classList.remove("blink");
-  }, { once: true });
+
+  /* we need to open the enclosing <details> block first (if any), or scrollIntoView won't work */
+  let parentDetailsElem = matchingElement.closest('details');
+  if (parentDetailsElem !== null)
+    parentDetailsElem.open = true;
+
+  matchingElement.classList.add(HIGHLIGHT_CLASS);
+
+  /* scroll to match */
+  matchingElement.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  /* ret value indicates whether a match was found */
   return true;
 }
 """.strip()
