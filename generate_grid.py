@@ -225,17 +225,18 @@ def kanjigrid(mw, config):
     return units
 
 SEARCH_CSS_SNIPPET = """
-div.highlight, a.highlight {
-  background: black !important;
+.grid-item.highlight {
+  background: black !important; /* override item's inline interval colour */
 }
-div.highlight > a, a.highlight {
-  color: white !important;
+
+.grid-item.highlight > a {
+  color: white !important; /* override inline style */
 }
 """.strip()
 
 SEARCH_JS_SNIPPET = """
 function findChar(char) {
-  /* for styling the match */
+  const GRID_ITEM_CLASS = "grid-item"
   const HIGHLIGHT_CLASS = "highlight"
 
   /* clear the previous match's highlight (if any) */
@@ -243,11 +244,10 @@ function findChar(char) {
   if (prevMatchingElem !== null)
     prevMatchingElem.classList.remove(HIGHLIGHT_CLASS);
 
-  /* https://stackoverflow.com/questions/3813294/how-to-get-element-by-innertext */
-  const xpath = "//a[text()='" + char + "']";
-
-  /* this only considers the first matching element, so it assumes the grid kanji are unique */
+  /* selects the first matching grid item, so it assumes the grid kanji are unique */
+  const xpath = `//*[contains(@class, '${GRID_ITEM_CLASS}')][.//a[text()='${char}']]`;
   const matchingElement = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+
   if (matchingElement === null)
     return false;
 
@@ -256,14 +256,8 @@ function findChar(char) {
   if (parentDetailsElem !== null)
     parentDetailsElem.open = true;
 
-  const parentDiv = matchingElement.parentElement;
-  if (parentDiv !== null) {
-    /* add our own highlight style to the current match */
-    parentDiv.classList.add(HIGHLIGHT_CLASS)
-  } else {
-    /* fallback to highlighting the link (this should never happen) */
-    matchingElement.classList.add(HIGHLIGHT_CLASS);
-  }
+  /* add our own highlight style to the current match */
+  matchingElement.classList.add(HIGHLIGHT_CLASS);
 
   /* scroll to match */
   matchingElement.scrollIntoView({ behavior: "smooth", block: "center" });
