@@ -225,8 +225,10 @@ def kanjigrid(mw, config):
     return units
 
 SEARCH_CSS_SNIPPET = """
-a.highlight {
-  background: black;
+div.highlight, a.highlight {
+  background: black !important;
+}
+div.highlight > a, a.highlight {
   color: white !important;
 }
 """.strip()
@@ -254,7 +256,14 @@ function findChar(char) {
   if (parentDetailsElem !== null)
     parentDetailsElem.open = true;
 
-  matchingElement.classList.add(HIGHLIGHT_CLASS);
+  const parentDiv = matchingElement.parentElement;
+  if (parentDiv !== null) {
+    /* add our own highlight style to the current match */
+    parentDiv.classList.add(HIGHLIGHT_CLASS)
+  } else {
+    /* fallback to highlighting the link (this should never happen) */
+    matchingElement.classList.add(HIGHLIGHT_CLASS);
+  }
 
   /* scroll to match */
   matchingElement.scrollIntoView({ behavior: "smooth", block: "center" });
