@@ -21,7 +21,7 @@ def generate(mw, config, units, export = False):
                 tooltip += " | Avg Interval: " + str("{:.2f}".format(avg_interval)) + " | Score: " + str("{:.2f}".format(util.scoreAdjust(avg_interval / config.interval)))
             tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\"%s>" % (bgcolor, tooltip, context_menu_events)
         else:
-            tile += "\t<div style=\"background:%s;\"%s>" % (bgcolor, context_menu_events)
+            tile += "\t<div class=\"grid-item\" style=\"background:%s;\"%s>" % (bgcolor, context_menu_events)
 
         if config.onclickaction == "copy":
             tile += "<a style=\"color:" + color + ";cursor: pointer;\">" + char + "</a>"
@@ -236,8 +236,8 @@ SEARCH_CSS_SNIPPET = """
 
 SEARCH_JS_SNIPPET = """
 function findChar(char) {
-  const GRID_ITEM_CLASS = "grid-item"
-  const HIGHLIGHT_CLASS = "highlight"
+  const GRID_ITEM_CLASS = "grid-item";
+  const HIGHLIGHT_CLASS = "highlight";
 
   /* clear the previous match's highlight (if any) */
   const prevMatchingElem = document.querySelector(`.${HIGHLIGHT_CLASS}`);
