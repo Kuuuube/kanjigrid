@@ -2,6 +2,7 @@ import re
 import unicodedata
 import collections
 import enum
+from colorsys import hsv_to_rgb
 
 from . import data
 
@@ -55,24 +56,8 @@ def addDataFromCard(unit, idx, card):
 def hsvrgbstr(h, s=0.8, v=0.9):
     def _256(x):
         return round(x * 256)
-    i = int(h*6.0)
-    f = (h*6.0) - i
-    p = v*(1.0 - s)
-    q = v*(1.0 - s*f)
-    t = v*(1.0 - s*(1.0-f))
-    i = i % 6
-    if i == 0:
-            return "#%0.2X%0.2X%0.2X" % (_256(v), _256(t), _256(p))
-    if i == 1:
-            return "#%0.2X%0.2X%0.2X" % (_256(q), _256(v), _256(p))
-    if i == 2:
-            return "#%0.2X%0.2X%0.2X" % (_256(p), _256(v), _256(t))
-    if i == 3:
-            return "#%0.2X%0.2X%0.2X" % (_256(p), _256(q), _256(v))
-    if i == 4:
-            return "#%0.2X%0.2X%0.2X" % (_256(t), _256(p), _256(v))
-    if i == 5:
-            return "#%0.2X%0.2X%0.2X" % (_256(v), _256(p), _256(q))
+    r, g, b = hsv_to_rgb(h, s, v)
+    return "#%0.2X%0.2X%0.2X" % (_256(r), _256(g), _256(b))
 
 def get_background_color(avg_interval, config_interval, count, missing = False):
     if count != 0:
