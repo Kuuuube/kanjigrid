@@ -30,7 +30,7 @@ def generate(mw, config, units, export = False):
         elif config.onclickaction == "search":
             tile += "<a href=\"" + util.get_search(config, char) + "\" style=\"color:" + color + ";\">" + char + "</a>"
         else:
-            tile += "<span style=\"color:" + color + "\">" + char + "</span>"
+            tile += "<a style=\"color:" + color + "\">" + char + "</a>"
 
         tile += "</div>\n"
 
