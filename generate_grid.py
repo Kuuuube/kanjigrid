@@ -253,21 +253,24 @@ function findChar(char) {
 
   /* clear the previous match's highlight (if any) */
   const prevMatchingElem = document.querySelector(`.${HIGHLIGHT_CLASS}`);
-  if (prevMatchingElem !== null)
+  if (prevMatchingElem !== null) {
     prevMatchingElem.classList.remove(HIGHLIGHT_CLASS);
+  }
 
   /* selects the first matching grid item, so it assumes the grid kanji are unique */
   /* according to mdn, more specific xpath exprs are faster, esp. on larger grids */
   const xpath = `.//div[contains(@class, '${GRID_ITEM_CLASS}')][*[.='${char}']]`;
   const matchingElement = document.evaluate(xpath, document.body, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
-  if (matchingElement === null)
+  if (matchingElement === null) {
     return false;
+  }
 
   /* we need to open the enclosing <details> block first (if any), or scrollIntoView won't work */
   const parentDetailsElem = matchingElement.closest('details');
-  if (parentDetailsElem !== null)
+  if (parentDetailsElem !== null) {
     parentDetailsElem.open = true;
+  }
 
   /* add our own highlight style to the current match */
   matchingElement.classList.add(HIGHLIGHT_CLASS);
