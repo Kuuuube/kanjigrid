@@ -257,7 +257,8 @@ function findChar(char) {
     prevMatchingElem.classList.remove(HIGHLIGHT_CLASS);
 
   /* selects the first matching grid item, so it assumes the grid kanji are unique */
-  const xpath = `//*[contains(@class, '${GRID_ITEM_CLASS}')][.//a[text()='${char}']]`;
+  /* according to mdn, more specific xpath exprs are faster, esp. on larger grids */
+  const xpath = `//div[contains(@class, '${GRID_ITEM_CLASS}')][./a[.='${char}']]`;
   const matchingElement = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
   if (matchingElement === null)
