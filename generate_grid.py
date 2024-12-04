@@ -229,7 +229,7 @@ SEARCH_CSS_SNIPPET = """
   background: black !important; /* override item's inline interval colour */
 }
 
-.grid-item.highlight > a {
+.grid-item.highlight > * {
   color: white !important; /* override inline style */
 }
 
