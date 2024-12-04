@@ -34,7 +34,7 @@ def on_search_cmd(char, wv, config):
 def on_find_cmd(wv: AnkiWebView):
     char = QApplication.clipboard().text().strip()
 
-    # limit searches to kanji to prevent findText from highlighting UI text in the page
+    # limit searches to kanji to prevent js injection
     if not util.isKanji(char):
         # truncate in case there's random garbage in the clipboard
         LEN_LIMIT = 20
