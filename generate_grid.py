@@ -30,7 +30,7 @@ def generate(mw, config, units, export = False):
         elif config.onclickaction == "search":
             tile += "<a href=\"" + util.get_search(config, char) + "\" style=\"color:" + color + ";\">" + char + "</a>"
         else:
-            tile += "<a style=\"color:" + color + "\">" + char + "</a>"
+            tile += "<span style=\"color:" + color + "\">" + char + "</span>"
 
         tile += "</div>\n"
 
@@ -258,8 +258,8 @@ function findChar(char) {
 
   /* selects the first matching grid item, so it assumes the grid kanji are unique */
   /* according to mdn, more specific xpath exprs are faster, esp. on larger grids */
-  const xpath = `//div[contains(@class, '${GRID_ITEM_CLASS}')][./a[.='${char}']]`;
-  const matchingElement = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+  const xpath = `.//div[contains(@class, '${GRID_ITEM_CLASS}')][*[.='${char}']]`;
+  const matchingElement = document.evaluate(xpath, document.body, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 
   if (matchingElement === null)
     return false;
