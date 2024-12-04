@@ -21,7 +21,7 @@ def generate(mw, config, units, export = False):
                 tooltip += " | Avg Interval: " + str("{:.2f}".format(avg_interval)) + " | Score: " + str("{:.2f}".format(util.scoreAdjust(avg_interval / config.interval)))
             tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\"%s>" % (bgcolor, tooltip, context_menu_events)
         else:
-            tile += "\t<div style=\"background:%s;\"%s>" % (bgcolor, context_menu_events)
+            tile += "\t<div class=\"grid-item\" style=\"background:%s;\"%s>" % (bgcolor, context_menu_events)
 
         if config.onclickaction == "copy":
             tile += "<a style=\"color:" + color + ";cursor: pointer;\">" + char + "</a>"
@@ -42,9 +42,12 @@ def generate(mw, config, units, export = False):
 
     result_html  = "<!doctype html><html lang=\"%s\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>" % config.lang
     result_html += "<style type=\"text/css\">body{text-align:center;}.grid-container{display:grid;grid-gap:2px;grid-template-columns:repeat(auto-fit,23px);justify-content:center;" + util.get_font_css(config) + "}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
-    result_html += "</head>\n"
     if config.onclickaction == "copy":
         result_html += "<script>function copyText(text) {const range = document.createRange();const tempElem = document.createElement('div');tempElem.textContent = text;document.body.appendChild(tempElem);range.selectNode(tempElem);const selection = window.getSelection();selection.removeAllRanges();selection.addRange(range);document.execCommand('copy');document.body.removeChild(tempElem);}document.addEventListener('click', function(e) {e.preventDefault();if (e.srcElement.tagName == 'A') {copyText(e.srcElement.textContent);}}, false);</script>"
+    if not export:
+        result_html += f"<style type=\"text/css\">{SEARCH_CSS_SNIPPET}</style>"        
+        result_html += f"<script>{SEARCH_JS_SNIPPET}</script>"
+    result_html += "</head>\n"
     result_html += "<body>\n"
     result_html += "<div style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</div>\n" % deckname
     if config.timetravel_enabled:
@@ -220,3 +223,68 @@ def kanjigrid(mw, config):
             for ch in unitKey:
                 util.addUnitData(units, ch, i, card, config.kanjionly)
     return units
+
+SEARCH_CSS_SNIPPET = """
+.grid-item.highlight {
+  background: black !important; /* override item's inline interval colour */
+}
+
+.grid-item.highlight > * {
+  color: white !important; /* override inline style */
+}
+
+.blink {
+  animation: blink 0.2s ease-in-out;
+  animation-iteration-count: 2;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+""".strip()
+
+SEARCH_JS_SNIPPET = """
+function findChar(char) {
+  const GRID_ITEM_CLASS = "grid-item";
+  const HIGHLIGHT_CLASS = "highlight";
+  const ANIM_CLASS = "blink";
+
+  /* clear the previous match's highlight (if any) */
+  const prevMatchingElem = document.querySelector(`.${HIGHLIGHT_CLASS}`);
+  if (prevMatchingElem !== null) {
+    prevMatchingElem.classList.remove(HIGHLIGHT_CLASS);
+  }
+
+  /* selects the first matching grid item, so it assumes the grid kanji are unique */
+  /* according to mdn, more specific xpath exprs are faster, esp. on larger grids */
+  const xpath = `.//div[contains(@class, '${GRID_ITEM_CLASS}')][*[.='${char}']]`;
+  const matchingElement = document.evaluate(xpath, document.body, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+
+  if (matchingElement === null) {
+    return false;
+  }
+
+  /* we need to open the enclosing <details> block first (if any), or scrollIntoView won't work */
+  const parentDetailsElem = matchingElement.closest('details');
+  if (parentDetailsElem !== null) {
+    parentDetailsElem.open = true;
+  }
+
+  /* add our own highlight style to the current match */
+  matchingElement.classList.add(HIGHLIGHT_CLASS);
+
+  /* scroll to match */
+  matchingElement.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  /* blink anim with cleanup */
+  matchingElement.classList.add(ANIM_CLASS);
+  matchingElement.addEventListener("animationend", function() {
+    matchingElement.classList.remove(ANIM_CLASS);
+  }, { once: true });
+
+  /* ret value indicates whether a match was found */
+  return true;
+}
+""".strip()
