@@ -62,5 +62,5 @@ def add_webview_context_menu_items(wv, expected_wv, menu, config, deckname, char
         search_action = menu.addAction(f"Search online for {char}")
         qconnect(search_action.triggered, lambda: on_search_cmd(char, wv, config))
     else:
-        find_action = menu.addAction(f"Find copied kanji")
+        find_action = menu.addAction("Find copied kanji")
         qconnect(find_action.triggered, lambda: on_find_cmd(wv))
