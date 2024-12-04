@@ -232,12 +232,24 @@ SEARCH_CSS_SNIPPET = """
 .grid-item.highlight > a {
   color: white !important; /* override inline style */
 }
+
+.blink {
+  animation: blink 0.2s ease-in-out;
+  animation-iteration-count: 2;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
 """.strip()
 
 SEARCH_JS_SNIPPET = """
 function findChar(char) {
   const GRID_ITEM_CLASS = "grid-item";
   const HIGHLIGHT_CLASS = "highlight";
+  const ANIM_CLASS = "blink";
 
   /* clear the previous match's highlight (if any) */
   const prevMatchingElem = document.querySelector(`.${HIGHLIGHT_CLASS}`);
@@ -252,7 +264,7 @@ function findChar(char) {
     return false;
 
   /* we need to open the enclosing <details> block first (if any), or scrollIntoView won't work */
-  let parentDetailsElem = matchingElement.closest('details');
+  const parentDetailsElem = matchingElement.closest('details');
   if (parentDetailsElem !== null)
     parentDetailsElem.open = true;
 
@@ -261,6 +273,12 @@ function findChar(char) {
 
   /* scroll to match */
   matchingElement.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  /* blink anim with cleanup */
+  matchingElement.classList.add(ANIM_CLASS);
+  matchingElement.addEventListener("animationend", function() {
+    matchingElement.classList.remove(ANIM_CLASS);
+  }, { once: true });
 
   /* ret value indicates whether a match was found */
   return true;
