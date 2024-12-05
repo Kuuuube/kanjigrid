@@ -128,6 +128,8 @@ Changelog compared to the old kanji grid add-on.
 
 - Saving and resetting settings can now be done in the setup window.
 
+- Added option to find kanji on clipboard while in grid.
+
 ### Config and Options
 
 - Config validation and safer loading to help prevent crashes.
@@ -210,6 +212,8 @@ Changelog compared to the old kanji grid add-on.
 - Added missing characters (mostly kyujitai) to Kanji Kentei Levels.
 
 - Fixed a memory leak due to not cleaning up old webviews.
+
+- Fixed mislabeled and missing RTK kanji lists.
 
 </details>
 
