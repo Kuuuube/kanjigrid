@@ -44,6 +44,10 @@ Before troubleshooting your issue, restart Anki. Especially after updating addon
 
     `Tools > Add-ons > Kanji Grid Kuuube > Config`, `Restore Defaults`, `Save`, Restart Anki.
 
+3. `Kanji Grid` versions uploaded by other developers cannot be installed at the same time as `Kanji Grid Kuuube`.
+
+    `Tools` > `Add-ons` > Select the intruding `Kanji Grid` add-on > `Delete`
+
 ## Config
 
 Documentation for the Kanji Grid config.
