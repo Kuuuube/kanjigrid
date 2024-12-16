@@ -43,7 +43,7 @@ def generate(mw, config, units, export = False):
     result_html  = "<!doctype html><html lang=\"%s\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>" % config.lang
     result_html += "<style type=\"text/css\">body{text-align:center;}.grid-container{display:grid;grid-gap:2px;grid-template-columns:repeat(auto-fit,23px);justify-content:center;" + util.get_font_css(config) + "}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
     if config.onclickaction == "copy":
-        result_html += "<script>function copyText(text) {const range = document.createRange();const tempElem = document.createElement('div');tempElem.textContent = text;document.body.appendChild(tempElem);range.selectNode(tempElem);const selection = window.getSelection();selection.removeAllRanges();selection.addRange(range);document.execCommand('copy');document.body.removeChild(tempElem);}document.addEventListener('click', function(e) {e.preventDefault();if (e.srcElement.tagName == 'A') {copyText(e.srcElement.textContent);}}, false);</script>"
+        result_html += COPY_JS_SNIPPET
     if not export:
         result_html += f"<style type=\"text/css\">{SEARCH_CSS_SNIPPET}</style>"        
         result_html += f"<script>{SEARCH_JS_SNIPPET}</script>"
@@ -287,4 +287,27 @@ function findChar(char) {
   /* ret value indicates whether a match was found */
   return true;
 }
+""".strip()
+
+COPY_JS_SNIPPET = """
+<script>
+    function copyText(text) {
+        const range = document.createRange();
+        const tempElem = document.createElement('div');
+        tempElem.textContent = text;
+        document.body.appendChild(tempElem);
+        range.selectNode(tempElem);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand('copy');
+        document.body.removeChild(tempElem);
+    }
+    document.addEventListener('click', function(e) {
+        if (e.srcElement.tagName == 'A') {
+            e.preventDefault();
+            copyText(e.srcElement.textContent);
+        }
+    }, false);
+</script>
 """.strip()
