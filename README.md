@@ -174,6 +174,10 @@ Changelog compared to the old kanji grid add-on.
 
 - Added Words.hk Frequency List grouping.
 
+- Added Duolingo Kanji grouping.
+
+- Updated Kanji Kentei Level grouping to match latest data from Jitenon.
+
 - Renamed `Probably Chinese` Kanji Kentei Level sort category to `Non-Kanji Kentei`.
 
 - Removed `Missing Kanji` in groupings when there are no missing kanji.
