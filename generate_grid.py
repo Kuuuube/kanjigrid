@@ -105,7 +105,7 @@ def generate(mw, config, units, export = False):
                     table += "<details><summary>Missing kanji</summary><div class=\"grid-container\">\n"
                     for element in unseen_kanji:
                         table += element
-                table += "</div></details>\n"
+                    table += "</div></details>\n"
             result_html += "<h4 style=\"color:#888;\">" + str(count_found) + " of " + str(total_count) + " Found - " + "{:.2f}".format(round(count_found / (total_count if total_count > 0 else 1) * 100, 2)) + "%, " + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
             result_html += table
 
