@@ -29,7 +29,7 @@ def load_from_folder(groups, path):
             groups.append(KanjiGroups(grouping_json["name"], grouping_json["source"], grouping_json["lang"], grouping_json["data"]))
         except Exception:
             # rethrow with msg in case a custom file in user_files is outdated
-            raise Exception(f"Failed to load Kanji Grid data file \"{file}\". It might be corrupted or outdated.")
+            raise Exception(f"Failed to load Kanji Grid data file \"{filepath}\". It might be corrupted or outdated.")
 
 
 def init_groups():
