@@ -93,6 +93,14 @@ Documentation for the Kanji Grid config.
 
 </details>
 
+## Custom Groupings
+
+Extra options can be added to the `Group by` dropdown by adding the data files to Kanji Grid Kuuube.
+
+User-defined groupings should be added in `/user_files/data/`. Do not place files in the main `/data/` folder as these files will be deleted when the addon is updated.
+
+If you have created a grouping that you think is generally useful to users of the target language, please make a [pull request](https://github.com/Kuuuube/kanjigrid/pulls) on github with your additions. Groupings that are only useful to niche communities or individual users will not be accepted.
+
 ## Timelapse Data
 
 See: [Kanjigrid Timelapse](https://github.com/Kuuuube/kanjigrid-timelapse).
