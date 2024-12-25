@@ -154,6 +154,8 @@ Changelog compared to the old kanji grid add-on.
 
 - Added Time Travel option to view what a Kanji Grid looked like in the past.
 
+- Added support for `user_files` folder for users to add custom groupings without getting wiped on updates.
+
 ### Groupings
 
 - Groupings are now contained in individual json files instead of a single python file.
