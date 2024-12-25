@@ -39,8 +39,10 @@ def init_groups():
     cwd = os.path.dirname(__file__)
     data_folder = cwd + "/data"
     load_from_folder(groups, data_folder)
-    # user_files persists through addon updates
+
+    # user_files persists across addon updates
     user_files_folder = cwd + "/user_files"
-    load_from_folder(groups, user_files_folder)
+    if os.path.exists(user_files_folder):
+        load_from_folder(groups, user_files_folder)
 
     groups.sort(key = lambda group: group.name)
