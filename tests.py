@@ -12,3 +12,7 @@ def test_config_update():
     config_current_string = json.dumps(config_current, sort_keys = True, indent = 4)
 
     assert(config_migrated_string == config_current_string)
+
+def test_data_load():
+    import data
+    data.load_from_folder(data.groups, "./data")
