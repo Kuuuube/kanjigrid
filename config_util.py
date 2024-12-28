@@ -1,5 +1,3 @@
-from aqt import mw
-
 config_schema = {
     "version": {
         "default": 1,
@@ -83,14 +81,14 @@ config_schema = {
     },
 }
 
-def set_config(namespace_config):
+def set_config(mw, namespace_config):
     config = dict(namespace_config.__dict__)
     for key in list(config.keys()):
         if key not in config_schema.keys():
             del config[key]
     mw.addonManager.writeConfig(__name__, config)
 
-def get_config():
+def get_config(mw):
     config = mw.addonManager.getConfig(__name__)
 
     if "defaults" in config: #migrate legacy configs that nested settings inside "defaults"
@@ -103,7 +101,7 @@ def get_config():
 
     return validate_config(config)
 
-def reset_config():
+def reset_config(mw):
     default_config = dict(map(lambda item: (item[0], item[1]["default"]), config_schema.items()))
     mw.addonManager.writeConfig(__name__, default_config)
 
