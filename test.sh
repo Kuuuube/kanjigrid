@@ -1,1 +1,1 @@
-pytest tests.py -vv
+python -m pytest tests.py -vv
