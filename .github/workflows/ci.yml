@@ -17,6 +17,6 @@ jobs:
         with:
           python-version: 3.9
       - name: Setup environment
-        run: ./setup.sh
+        run: bash setup.sh
       - name: Run tests
-        run: ./test.sh
+        run: bash test.sh
