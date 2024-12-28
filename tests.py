@@ -19,7 +19,7 @@ def test_data_load():
     import data
     data.load_from_folder(data.groups, JSON_DATA_FOLDER)
 
-def test_data_parse():
+def test_data_schema():
     import jsonschema
     import json
     import os
