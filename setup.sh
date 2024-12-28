@@ -1,4 +1,4 @@
-python -m pip install --upgrade pip
-python -m venv .env
+python3 -m venv .env
 source .env/bin/activate
-pip install pytest
+python3 -m pip install --upgrade pip
+python3 -m pip install pytest
