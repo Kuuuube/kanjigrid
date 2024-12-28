@@ -1,3 +1,5 @@
+JSON_DATA_FOLDER = "./data"
+
 def test_config_update():
     import json
 
@@ -15,4 +17,16 @@ def test_config_update():
 
 def test_data_load():
     import data
-    data.load_from_folder(data.groups, "./data")
+    data.load_from_folder(data.groups, JSON_DATA_FOLDER)
+
+def test_data_parse():
+    import jsonschema
+    import json
+    import os
+
+    data_schema = json.load(open("./tests/data_schema.json", "r", encoding = "UTF8"))
+
+    for file in os.listdir(JSON_DATA_FOLDER):
+        filepath = JSON_DATA_FOLDER + "/" + file
+        data_json = json.load(open(filepath, "r", encoding = "UTF8"))
+        jsonschema.validate(instance = data_json, schema = data_schema)

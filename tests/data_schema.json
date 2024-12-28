@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "additionalProperties": false,
+  "properties": {
+    "data": {
+      "items": {
+        "anyOf": [
+          {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "type": "array"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "lang": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    }
+  },
+  "type": "object",
+  "required": [
+    "source",
+    "data",
+    "lang",
+    "name"
+  ]
+}
