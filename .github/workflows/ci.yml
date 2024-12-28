@@ -19,4 +19,4 @@ jobs:
       - name: Setup environment
         run: bash setup.sh
       - name: Run tests
-        run: bash test.sh
+        run: python -m pytest tests.py -vv
