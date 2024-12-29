@@ -74,7 +74,7 @@ def generate(mw, config, units, export = False):
         groups = data.groups[config.groupby - 1]
         kanji = [u.value for u in unitsList]
         for i in range(1, len(groups.data)):
-            result_html += "<h2 style=\"color:#888;\">%s Kanji</h2>\n" % groups.data[i][0]
+            result_html += "<h2 style=\"color:#888;\">%s</h2>\n" % groups.data[i][0]
             table = "<div class=\"grid-container\">\n"
             count_found = 0
             count_known = 0
