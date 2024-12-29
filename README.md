@@ -142,6 +142,10 @@ Changelog compared to the old kanji grid add-on.
 
 - Added option to find kanji on clipboard while in grid.
 
+- Languages of groupings are now shown in the `Group by` dropdown.
+
+- The `Group by` dropdown is now sorted by both language and name.
+
 ### Config and Options
 
 - Config validation and safer loading to help prevent crashes.
