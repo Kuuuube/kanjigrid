@@ -1,10 +1,10 @@
 {
-    "name": "Standard Kanji Lists",
+    "name": "Official Kanji",
     "source": "https://kanji.jitenon.jp/cat/joyo https://www.bunka.go.jp/kokugo_nihongo/sisaku/joho/joho/kijun/naikaku/kanji/ https://kanji.jitenon.jp/cat/kyoiku https://kanji.jitenon.jp/cat/jimmei https://www.aozora.gr.jp/kanji_table/",
     "lang": "ja",
     "data": [
         [
-            "Not in Standard Kanji Lists",
+            "Not in Official Kanji",
             ""
         ],
         [

@@ -186,7 +186,7 @@ Changelog compared to the old kanji grid add-on.
 
 - Added Duolingo Kanji grouping.
 
-- Added Standard Kanji Lists grouping.
+- Added Official Kanji grouping.
 
 - Updated Kanji Kentei Level grouping to match latest data from Jitenon.
 
