@@ -44,4 +44,4 @@ def init_groups():
     os.makedirs(user_data_folder, exist_ok=True)
     load_from_folder(groups, user_data_folder)
 
-    groups.sort(key = lambda group: group.name)
+    groups.sort(key = lambda group: group.lang + group.name)
