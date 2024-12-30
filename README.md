@@ -192,6 +192,8 @@ Changelog compared to the old kanji grid add-on.
 
 - Added Official Kanji grouping.
 
+- Added Standard Form of National Characters grouping.
+
 - Updated Kanji Kentei Level grouping to match latest data from Jitenon.
 
 - Renamed `Probably Chinese` Kanji Kentei Level sort category to `Non-Kanji Kentei`.
