@@ -47,3 +47,19 @@ def test_data_group_duplicates():
             kanji_list_deduped = sorted(list(set(kanji_list)))
 
             assert((filepath, kanji_list) == (filepath, kanji_list_deduped))
+
+def test_data_update():
+    import json
+    import jsonschema
+    import data
+
+    data_schema = json.load(open("./tests/data_schema.json", "r", encoding = "UTF8"))
+
+    data_v0 = json.load(open("./tests/data_v0.json", "r", encoding = "UTF8"))
+    data_current = json.load(open("./tests/data_current.json", "r", encoding = "UTF8"))
+    data_migrated = data.migrate_grouping(data_v0)
+
+    jsonschema.validate(instance = data_migrated, schema = data_schema)
+    jsonschema.validate(instance = data_current, schema = data_schema)
+
+    assert(data_migrated == data_current)
