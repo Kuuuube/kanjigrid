@@ -21,7 +21,7 @@ def test_config_update():
 
 def test_data_load():
     import data
-    data.load_from_folder(data.groups, JSON_DATA_FOLDER)
+    data.load_from_folder(data.groupings, JSON_DATA_FOLDER)
 
 def test_data_schema():
     import jsonschema

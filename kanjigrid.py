@@ -151,7 +151,7 @@ class KanjiGrid:
         groupby = QComboBox()
         groupby.addItems([
             "None",
-            *(("[" + x.lang + "] " + x.name) for x in data.groups),
+            *(("[" + x.lang + "] " + x.name) for x in data.groupings),
         ])
         groupby.setCurrentIndex(config.groupby)
         general_tab_vertical_layout.addWidget(QLabel("Group by:"))
@@ -170,7 +170,7 @@ class KanjiGrid:
         def update_pagelang_dropdown():
             index = groupby.currentIndex() - 1
             if index > 0:
-                pagelang.setCurrentText(data.groups[index].lang)
+                pagelang.setCurrentText(data.groupings[index].lang)
         groupby.currentTextChanged.connect(update_pagelang_dropdown)
         pagelang.setCurrentText(config.lang)
         general_tab_vertical_layout.addWidget(QLabel("Language:"))

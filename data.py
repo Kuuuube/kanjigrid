@@ -4,7 +4,8 @@ import json
 
 GROUPING_JSON_VERSION = 1
 
-KanjiGroups = collections.namedtuple("KanjiGroups", ["name", "source", "lang", "data"])
+KanjiGrouping = collections.namedtuple("KanjiGroups", ["version", "name", "lang", "source", "leftover_group", "groups"])
+KanjiGroup = collections.namedtuple("KanjiGroup", ["name", "characters"])
 
 ignore = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" + \
           "ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ" + \
@@ -20,10 +21,10 @@ ignore = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" + \
           "＠「；：」、。・‘｛＋＊｝＜＞？＼＿！”＃＄％＆’（）｜＝．〜～ー＾ ゙゙゚" + \
           "☆★＊○●◎〇◯“…『』#♪ﾞ〉〈→》《π×"
 
-groups = []
+groupings = []
 
 
-def load_from_folder(groups, path):
+def load_from_folder(groupings, path):
     for file in os.listdir(path):
         filepath = path + "/" + file
         try:
@@ -32,24 +33,27 @@ def load_from_folder(groups, path):
             if "version" not in grouping_json or GROUPING_JSON_VERSION > grouping_json["version"]:
                 grouping_json = migrate_grouping(grouping_json)
 
-            groups.append(KanjiGroups(grouping_json["name"], grouping_json["source"], grouping_json["lang"], grouping_json["data"]))
+            groups = []
+            for group in grouping_json["groups"]:
+                groups.append(KanjiGroup(group["name"], group["characters"]))
+            groupings.append(KanjiGrouping(grouping_json["version"], grouping_json["name"], grouping_json["lang"], grouping_json["source"], grouping_json["leftover_group"], groups))
         except Exception:
             # rethrow with msg in case a custom file in user_files is outdated
             raise Exception(f"Failed to load Kanji Grid data file \"{filepath}\". It might be corrupted or outdated.")
 
 def init_groups():
-    global groups
-    groups = []
+    global groupings
+    groupings = []
     cwd = os.path.dirname(__file__)
     data_folder = cwd + "/data"
-    load_from_folder(groups, data_folder)
+    load_from_folder(groupings, data_folder)
 
     # user_files persists across addon updates
     user_data_folder = cwd + "/user_files/data"
     os.makedirs(user_data_folder, exist_ok=True)
-    load_from_folder(groups, user_data_folder)
+    load_from_folder(groupings, user_data_folder)
 
-    groups.sort(key = lambda group: group.lang + group.name)
+    groupings.sort(key = lambda group: group.lang + group.name)
 
 def migrate_grouping(grouping_json):
     if "version" not in grouping_json:
