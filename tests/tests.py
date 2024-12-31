@@ -42,8 +42,8 @@ def test_data_group_duplicates():
     for file in os.listdir(JSON_DATA_FOLDER):
         filepath = JSON_DATA_FOLDER + "/" + file
         data_json = json.load(open(filepath, "r", encoding = "UTF8"))
-        for grouping_data in data_json["data"]:
-            kanji_list = sorted(list(grouping_data[1]))
+        for grouping_data in data_json["groups"]:
+            kanji_list = sorted(list(grouping_data["characters"]))
             kanji_list_deduped = sorted(list(set(kanji_list)))
 
             assert((filepath, kanji_list) == (filepath, kanji_list_deduped))
