@@ -1,3 +1,7 @@
+import sys
+# add main folder to path to allow accessing module there
+sys.path.append(sys.path[0] + "/../.")
+
 JSON_DATA_FOLDER = "./data"
 
 def test_config_update():

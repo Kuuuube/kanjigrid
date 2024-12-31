@@ -1,2 +1,2 @@
 source .env/bin/activate
-python -m pytest tests.py -vv
+python -m pytest tests/tests.py -vv
