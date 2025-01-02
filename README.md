@@ -194,7 +194,9 @@ Changelog compared to the old kanji grid add-on.
 
 - Added Standard Form of National Characters grouping.
 
-- Added Lexical Items for Fundamental Learning grouping.
+- Added HK Primary Learning grouping.
+
+- Added HKSCS2016 grouping.
 
 - Updated Kanji Kentei Level grouping to match latest data from Jitenon.
 
