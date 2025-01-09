@@ -61,11 +61,10 @@ def hsvrgbstr(h, s=0.8, v=0.9):
 
 def get_background_color(avg_interval, config_interval, count, missing = False):
     if count != 0:
-        return hsvrgbstr(scoreAdjust(avg_interval / config_interval)/2)
-    elif missing:
+        return hsvrgbstr(scoreAdjust(avg_interval / config_interval) / 2)
+    if missing:
         return "#EEE"
-    else:
-        return "#FFF"
+    return "#FFF"
 
 def get_font_css(config):
     if config.lang == "ja":
