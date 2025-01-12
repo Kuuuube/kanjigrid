@@ -28,7 +28,7 @@ def load_from_folder(groupings, path):
     for file in os.listdir(path):
         filepath = path + "/" + file
         try:
-            grouping_json = json.loads(open(filepath, "r", encoding = "utf-8").read())
+            grouping_json = json.loads(open(filepath, "r", encoding = "utf-8", errors = "replace").read())
 
             if "version" not in grouping_json or GROUPING_JSON_VERSION > grouping_json["version"]:
                 grouping_json = migrate_grouping(grouping_json)
