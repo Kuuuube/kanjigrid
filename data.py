@@ -38,8 +38,7 @@ def load_from_folder(groupings, path):
                 groups.append(KanjiGroup(group["name"], group["characters"]))
             groupings.append(KanjiGrouping(grouping_json["version"], grouping_json["name"], grouping_json["lang"], grouping_json["source"], grouping_json["leftover_group"], groups))
         except Exception:
-            # rethrow with msg in case a custom file in user_files is outdated
-            raise Exception(f"Failed to load Kanji Grid data file \"{filepath}\". It might be corrupted or outdated.")
+            print(f"Failed to load Kanji Grid data file \"{filepath}\". It might be corrupted or outdated.")
 
 def init_groups():
     global groupings
