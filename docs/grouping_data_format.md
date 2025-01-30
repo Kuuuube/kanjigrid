@@ -1,6 +1,6 @@
 # Grouping Data Format
 
-Groupings use JSON format. [View the schema here](../tests/data_schema.json).
+Groupings use JSON format. See the [Kanji Grid JSON schema](../tests/data_schema.json).
 
 ## Grouping Fields
 
