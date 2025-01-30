@@ -8,7 +8,7 @@ Groupings use JSON format. See the [Kanji Grid JSON schema](../tests/data_schema
 
 Integer (Do not set this as a string) used by Kanji Grid to determine the data format version. If `version` is lower than the latest version, Kanji Grid will migrate it to the latest version on load.
 
-When creating a new grouping, always use the latest value specified in the schema. It is defined under `version` as `const` in the schema.
+When creating a new grouping, always use the latest value specified in the [schema](../tests/data_schema.json). It is defined under `version` as `const` in the [schema](../tests/data_schema.json).
 
 ### `name`
 
