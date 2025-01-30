@@ -1,6 +1,6 @@
 # Grouping Data Format
 
-Groupings use JSON format. The schema is provided here: ([schema](../tests/data_schema.json)).
+Groupings use JSON format. [View the schema here](../tests/data_schema.json).
 
 ## Grouping Fields
 

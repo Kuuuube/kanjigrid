@@ -95,7 +95,7 @@ Documentation for the Kanji Grid config.
 
 ## Custom Groupings
 
-Extra options can be added to the `Group by` dropdown by adding the data files to Kanji Grid Kuuube. An explanation of the grouping data format can be found [here](https://github.com/Kuuuube/kanjigrid/blob/master/docs/grouping_data_format.md).
+Extra options can be added to the `Group by` dropdown by adding the data files to Kanji Grid Kuuube. See [Grouping Data Format](https://github.com/Kuuuube/kanjigrid/blob/master/docs/grouping_data_format.md) for an explanation of the grouping data format.
 
 User-defined groupings should be added in `/user_files/data/`. Do not place files in the main `/data/` folder as these files will be deleted when the addon is updated.
 
