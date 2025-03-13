@@ -56,9 +56,9 @@ def generate(mw, config, units, export = False):
         result_html += f"<p style=\"color: #888;text-align: center\">for {date_time_str}</p>"
     result_html += "<p style=\"text-align: center\">Key</p>"
     result_html += "<p style=\"text-align: center\">Weak&nbsp;"
-    # keycolors = (hsvrgbstr(n/6.0) for n in range(6+1))
-    for c in [n/6.0 for n in range(6+1)]:
-        result_html += "<span class=\"key\" style=\"background-color: %s;\">&nbsp;</span>" % util.hsvrgbstr(c/2)
+
+    for c in range(0, 101):
+        result_html += "<span class=\"key\" style=\"background-color: %s; width: 0.208em;\">&nbsp;</span>" % util.hsvrgbstr(c/100/2)
     result_html += "&nbsp;Strong</p></div>\n"
     result_html += "<hr style=\"border-style: dashed;border-color: #666;width: 100%;\">\n"
     result_html += "<div style=\"text-align: center;\">\n"
