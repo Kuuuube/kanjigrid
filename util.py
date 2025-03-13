@@ -60,7 +60,11 @@ def hsvrgbstr(h, s=0.8, v=0.9):
     return "#%0.2X%0.2X%0.2X" % (_256(r), _256(g), _256(b))
 
 def hex_to_rgb(hex_string):
-    return int(hex_string[1:3], 16), int(hex_string[3:5], 16), int(hex_string[5:7], 16)
+    try:
+        hex_string = hex_string.replace("#", "")
+        return int(hex_string[0:2], 16), int(hex_string[2:4], 16), int(hex_string[4:6], 16)
+    except Exception:
+        return 0, 0, 0
 
 def rgb_to_hex(r, g, b):
     return f"#{r:02X}{g:02X}{b:02X}"
