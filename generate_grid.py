@@ -43,6 +43,7 @@ def generate(mw, config, units, export = False):
     result_html += "<style type=\"text/css\">" + HEADER_CSS_SNIPPET
     result_html += "a, a:visited {color: " + config.kanjitextcolor + ";text-decoration: none;}"
     result_html += ".kanji-tile {color: " + config.kanjitextcolor + "}"
+    result_html += "body {color: " + config.textcolor + "}"
     result_html += ".kanji"
     result_html += "</style>"
     if config.onclickaction == "copy":
@@ -52,20 +53,20 @@ def generate(mw, config, units, export = False):
         result_html += "<script>" + SEARCH_JS_SNIPPET + "</script>"
     result_html += "</head>\n"
     result_html += "<body>\n"
-    result_html += "<div style=\"font-size: 3em;color: " + config.textcolor + ";\">Kanji Grid - " + deckname + "</div>\n"
+    result_html += "<div style=\"font-size: 3em;\">Kanji Grid - " + deckname + "</div>\n"
     if config.timetravel_enabled:
         date_time = datetime.fromtimestamp(config.timetravel_time / 1000)
         date_time_str = date_time.strftime("%d/%m/%Y %H:%M:%S")
-        result_html += "<p style=\"color: " + config.textcolor + ";text-align: center\">for " + date_time_str + "</p>"
+        result_html += "<p style=\"text-align: center\">for " + date_time_str + "</p>"
     result_html += "<p style=\"text-align: center\">Key</p>"
-    result_html += "<p style=\"text-align: center; color: " + config.textcolor + "\">Weak&nbsp;"
+    result_html += "<p style=\"text-align: center;\">Weak&nbsp;"
 
     key_css_gradient = "linear-gradient(90deg"
     gradient_key_step_count = 100
     for i in range(0, gradient_key_step_count + 1):
         key_css_gradient += "," + util.get_gradient_color_hex(i / gradient_key_step_count, config.gradientcolors)
     key_css_gradient += ")"
-    result_html += "<span class=\"key\" style=\"background: " + key_css_gradient + "; width: 21em; color: " + config.textcolor + "\">&nbsp;</span>"
+    result_html += "<span class=\"key\" style=\"background: " + key_css_gradient + "; width: 21em;\">&nbsp;</span>"
     result_html += "&nbsp;Strong</p></div>\n"
     result_html += "<hr style=\"border-style: dashed;border-color: #666;width: 100%;\">\n"
     result_html += "<div style=\"text-align: center;\">\n"
@@ -81,7 +82,7 @@ def generate(mw, config, units, export = False):
         grouping = data.groupings[config.groupby - 1]
         kanji = [u.value for u in unitsList]
         for i in range(0, len(grouping.groups)):
-            result_html += "<h2 style=\"color:" + config.textcolor + ";\">%s</h2>\n" % grouping.groups[i].name
+            result_html += "<h2>" + grouping.groups[i].name + "</h2>\n"
             table = "<div class=\"grid-container\">\n"
             count_found = 0
             count_known = 0
@@ -113,11 +114,11 @@ def generate(mw, config, units, export = False):
                     for element in unseen_kanji:
                         table += element
                     table += "</div></details>\n"
-            result_html += "<h4 style=\"color:" + config.textcolor + ";\">" + str(count_found) + " of " + str(total_count) + " Found - " + "{:.2f}".format(round(count_found / (total_count if total_count > 0 else 1) * 100, 2)) + "%, " + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
+            result_html += "<h4>" + str(count_found) + " of " + str(total_count) + " Found - " + "{:.2f}".format(round(count_found / (total_count if total_count > 0 else 1) * 100, 2)) + "%, " + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
             result_html += table
 
         chars = reduce(lambda x, y: x+y, dict(grouping.groups).values())
-        result_html += "<h2 style=\"color:" + config.textcolor + ";\">" + grouping.leftover_group + "</h2>" #label for "not in group" groups
+        result_html += "<h2>" + grouping.leftover_group + "</h2>" #label for "not in group" groups
         table = "<div class=\"grid-container\">\n"
         total_count = 0
         count_known = 0
@@ -129,7 +130,7 @@ def generate(mw, config, units, export = False):
                     count_known += 1
                 table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)
         table += "</div>\n"
-        result_html += "<h4 style=\"color:" + config.textcolor + ";\">" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
+        result_html += "<h4>" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
         result_html += table
         result_html += "<style type=\"text/css\">.datasource{font-style:italic;font-size:0.75em;margin-top:1em;overflow-wrap:break-word;}.datasource a{color:#1034A6;}</style><span class=\"datasource\">Data source: " + ' '.join("<a href=\"{}\">{}</a>".format(w, urllib.parse.unquote(w)) if re.match("https?://", w) else w for w in grouping.source.split(' ')) + "</span>"
     else:
@@ -145,9 +146,9 @@ def generate(mw, config, units, export = False):
                 table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)
         table += "</div>\n"
         if total_count != 0:
-            result_html += "<h4 style=\"color:" + config.textcolor + ";\">" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
+            result_html += "<h4>" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
         else:
-            result_html += "<h4 style=\"color:" + config.textcolor + ";\">" + str(count_known) + " of " + str(total_count) + " Known - 0%</h4>\n"
+            result_html += "<h4>" + str(count_known) + " of " + str(total_count) + " Known - 0%</h4>\n"
         result_html += table
     result_html += "</div></body></html>\n"
     return result_html
