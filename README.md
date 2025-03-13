@@ -178,7 +178,9 @@ Changelog compared to the old kanji grid add-on.
 
 - Added support for `user_files` folder for users to add custom groupings without getting wiped on updates.
 
-- Added support for configuring the gradient used when generating kanji tile backgrounds.
+- Added support for configuring all kanji tile background colors used in kanji grid generation.
+
+- Added support for configuring text colors used in kanji grid generation.
 
 ### Groupings
 
