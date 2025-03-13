@@ -58,9 +58,6 @@ config_schema = {
     "vifontcss": {
         "default": "font-family: \"Han-Nom Gothic\", \"Han Nom Gothic\", sans-serif;",
     },
-    "gradientcolors": {
-        "default": ["#e62e2e", "#e6442e", "#e65a2e", "#e6702e", "#e6872e", "#e69d2e", "#e6b32e", "#e6c92e", "#e6df2e", "#d8e62e", "#c2e62e", "#abe62e", "#95e62e", "#7fe62e", "#69e62e", "#53e62e", "#3de62e", "#2ee635", "#2ee64c", "#2ee662", "#2ee678", "#2ee68e", "#2ee6a4", "#2ee6ba", "#2ee6d0", "#2ee6e6"],
-    },
     "jasearch": {
         "default": "https://jisho.org/search/%s %23kanji",
     },
@@ -81,6 +78,9 @@ config_schema = {
     },
     "searchfilter": {
         "default": ""
+    },
+    "gradientcolors": {
+        "default": ["#e62e2e", "#e6442e", "#e65a2e", "#e6702e", "#e6872e", "#e69d2e", "#e6b32e", "#e6c92e", "#e6df2e", "#d8e62e", "#c2e62e", "#abe62e", "#95e62e", "#7fe62e", "#69e62e", "#53e62e", "#3de62e", "#2ee635", "#2ee64c", "#2ee662", "#2ee678", "#2ee68e", "#2ee6a4", "#2ee6ba", "#2ee6d0", "#2ee6e6"],
     },
 }
 
