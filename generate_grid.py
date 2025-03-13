@@ -97,7 +97,7 @@ def generate(mw, config, units, export = False):
                 if unit.count != 0 or config.unseen:
                     count_found += 1
                     bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, config.kanjitileunseencolor, missing = False)
-                    if unit.count != 0 or bgcolor not in [config.gradientcolors[0], "#FFF"]:
+                    if unit.count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
                         count_known += 1
                     table += kanjitile(unit.value, bgcolor, count_found, unit.avg_interval)
             table += "</div>\n"
@@ -126,7 +126,7 @@ def generate(mw, config, units, export = False):
             if unit.count != 0 or config.unseen:
                 total_count += 1
                 bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, config.kanjitileunseencolor, missing = False)
-                if unit.count != 0 or bgcolor not in [config.gradientcolors[0], "#FFF"]:
+                if unit.count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
                     count_known += 1
                 table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)
         table += "</div>\n"
@@ -141,7 +141,7 @@ def generate(mw, config, units, export = False):
             if unit.count != 0 or config.unseen:
                 total_count += 1
                 bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, config.kanjitileunseencolor)
-                if unit.count != 0 or bgcolor not in [config.gradientcolors[0], "#FFF"]:
+                if unit.count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
                     count_known += 1
                 table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)
         table += "</div>\n"
