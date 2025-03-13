@@ -91,7 +91,7 @@ Documentation for the Kanji Grid config.
 
 - `searchfilter` The default setting for `Additional Search Filters`. This is appended to the existing filtering and must use the same format as [Anki's Browser Searching](https://docs.ankiweb.net/searching.html).
 
-- `gradientcolors` Array of rgb hex color strings to use for the gradient from weak to strong.
+- `gradientcolors` Array of rgb hex color strings to use for the kanji tile background color gradient from weak to strong.
 
 - `kanjitileunseencolor` Background color of kanji tiles when all cards containing the kanji have no reviews.
 
