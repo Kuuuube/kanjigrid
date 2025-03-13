@@ -57,8 +57,12 @@ def generate(mw, config, units, export = False):
     result_html += "<p style=\"text-align: center\">Key</p>"
     result_html += "<p style=\"text-align: center\">Weak&nbsp;"
 
-    for c in range(0, 101):
-        result_html += "<span class=\"key\" style=\"background-color: %s; width: 0.208em;\">&nbsp;</span>" % util.hsvrgbstr(c/100/2)
+    key_css_gradient = "linear-gradient(90deg"
+    gradient_key_step_count = 100
+    for c in range(0, gradient_key_step_count + 1):
+        key_css_gradient += "," + util.hsvrgbstr(c / gradient_key_step_count / 2)
+    key_css_gradient += ")"
+    result_html += "<span class=\"key\" style=\"background: %s; width: 21em;\">&nbsp;</span>" % key_css_gradient
     result_html += "&nbsp;Strong</p></div>\n"
     result_html += "<hr style=\"border-style: dashed;border-color: #666;width: 100%;\">\n"
     result_html += "<div style=\"text-align: center;\">\n"
