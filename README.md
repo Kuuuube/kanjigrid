@@ -93,6 +93,14 @@ Documentation for the Kanji Grid config.
 
 - `gradientcolors` Array of rgb hex color strings to use for the gradient from weak to strong.
 
+- `kanjitileunseencolor` Background color of kanji tiles when all cards containing the kanji have no reviews.
+
+- `kanjitilemissingcolor` Background color of kanji tiles when in the `Missing kanji` section of a grouping.
+
+- `textcolor` Text color of most things in Kanji Grid such as labels.
+
+- `kanjitextcolor` Text color of kanji in kanji tiles.
+
 </details>
 
 ## Custom Groupings
