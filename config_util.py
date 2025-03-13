@@ -5,9 +5,6 @@ config_schema = {
     "pattern": {
         "default": "",
     },
-    "literal": {
-        "default": False,
-    },
     "interval": {
         "default": 180,
     },
