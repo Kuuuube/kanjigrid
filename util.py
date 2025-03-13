@@ -88,12 +88,10 @@ def get_gradient_color_hex(score, gradient_colors):
     b = round(b1 + (b2 - b1) * percent)
     return rgb_to_hex(r, g, b)
 
-def get_background_color(avg_interval, config_interval, count, gradient_colors, missing=False):
+def get_background_color(avg_interval, config_interval, count, gradient_colors, kanjitileunseencolor, missing=False):
     if count != 0:
         return get_gradient_color_hex(scoreAdjust(avg_interval / config_interval), gradient_colors)
-    if missing:
-        return "#EEE"
-    return "#FFF"
+    return kanjitileunseencolor
 
 def get_font_css(config):
     if config.lang == "ja":

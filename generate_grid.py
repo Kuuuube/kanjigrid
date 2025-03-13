@@ -96,7 +96,7 @@ def generate(mw, config, units, export = False):
             for unit in sorted_units:
                 if unit.count != 0 or config.unseen:
                     count_found += 1
-                    bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, missing = False)
+                    bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, config.kanjitileunseencolor, missing = False)
                     if unit.count != 0 or bgcolor not in [config.gradientcolors[0], "#FFF"]:
                         count_known += 1
                     table += kanjitile(unit.value, bgcolor, count_found, unit.avg_interval)
@@ -107,7 +107,7 @@ def generate(mw, config, units, export = False):
                 count = 0
                 for char in [c for c in grouping.groups[i].characters if c not in kanji]:
                     count += 1
-                    bgcolor = "#EEE"
+                    bgcolor = config.kanjitilemissingcolor
                     unseen_kanji.append(kanjitile(char, bgcolor))
                 if count != 0:
                     table += "<details><summary>Missing kanji</summary><div class=\"grid-container\">\n"
@@ -125,7 +125,7 @@ def generate(mw, config, units, export = False):
         for unit in [u for u in unitsList if u.value not in chars]:
             if unit.count != 0 or config.unseen:
                 total_count += 1
-                bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, missing = False)
+                bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, config.kanjitileunseencolor, missing = False)
                 if unit.count != 0 or bgcolor not in [config.gradientcolors[0], "#FFF"]:
                     count_known += 1
                 table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)
@@ -140,7 +140,7 @@ def generate(mw, config, units, export = False):
         for unit in unitsList:
             if unit.count != 0 or config.unseen:
                 total_count += 1
-                bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors)
+                bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, config.kanjitileunseencolor)
                 if unit.count != 0 or bgcolor not in [config.gradientcolors[0], "#FFF"]:
                     count_known += 1
                 table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)
