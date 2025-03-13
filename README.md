@@ -91,6 +91,8 @@ Documentation for the Kanji Grid config.
 
 - `searchfilter` The default setting for `Additional Search Filters`. This is appended to the existing filtering and must use the same format as [Anki's Browser Searching](https://docs.ankiweb.net/searching.html).
 
+- `gradientcolors` Array of rgb hex color strings to use for the gradient from weak to strong.
+
 </details>
 
 ## Custom Groupings
