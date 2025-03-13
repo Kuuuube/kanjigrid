@@ -11,7 +11,6 @@ from . import util, data
 def generate(mw, config, units, export = False):
     def kanjitile(char, bgcolor, count = 0, avg_interval = 0):
         tile = ""
-        color = "#000"
 
         context_menu_events = f" onmouseenter=\"bridgeCommand('h:{char}');\" onmouseleave=\"bridgeCommand('l:{char}');\"" if not export else ""
 
@@ -24,13 +23,13 @@ def generate(mw, config, units, export = False):
             tile += "\t<div class=\"grid-item\" style=\"background:%s;\"%s>" % (bgcolor, context_menu_events)
 
         if config.onclickaction == "copy":
-            tile += "<a style=\"color:" + color + ";cursor: pointer;\">" + char + "</a>"
+            tile += "<a style=\"cursor: pointer;\" class=\"kanji-tile\">" + char + "</a>"
         elif config.onclickaction == "browse" and not export:
-            tile += "<a href=\"" + util.get_browse_command(char) + "\" style=\"color:" + color + ";\">" + char + "</a>"
+            tile += "<a href=\"" + util.get_browse_command(char) + "\" \" class=\"kanji-tile\">" + char + "</a>"
         elif config.onclickaction == "search":
-            tile += "<a href=\"" + util.get_search(config, char) + "\" style=\"color:" + color + ";\">" + char + "</a>"
+            tile += "<a href=\"" + util.get_search(config, char) + "\" class=\"kanji-tile\">" + char + "</a>"
         else:
-            tile += "<span style=\"color:" + color + "\">" + char + "</span>"
+            tile += "<span class=\"kanji-tile\">" + char + "</span>"
 
         tile += "</div>\n"
 
@@ -41,7 +40,11 @@ def generate(mw, config, units, export = False):
         deckname = mw.col.decks.name(config.did).rsplit('::', 1)[-1]
 
     result_html  = "<!doctype html><html lang=\"" + config.lang + "\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>"
-    result_html += "<style type=\"text/css\">body{text-align:center;}.grid-container{display:grid;grid-gap:2px;grid-template-columns:repeat(auto-fit,23px);justify-content:center;" + util.get_font_css(config) + "}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
+    result_html += "<style type=\"text/css\">" + HEADER_CSS_SNIPPET
+    result_html += "a, a:visited {color: " + config.kanjitextcolor + ";text-decoration: none;}"
+    result_html += ".kanji-tile {color: " + config.kanjitextcolor + "}"
+    result_html += ".kanji"
+    result_html += "</style>"
     if config.onclickaction == "copy":
         result_html += COPY_JS_SNIPPET
     if not export:
@@ -55,14 +58,14 @@ def generate(mw, config, units, export = False):
         date_time_str = date_time.strftime("%d/%m/%Y %H:%M:%S")
         result_html += "<p style=\"color: " + config.textcolor + ";text-align: center\">for " + date_time_str + "</p>"
     result_html += "<p style=\"text-align: center\">Key</p>"
-    result_html += "<p style=\"text-align: center\">Weak&nbsp;"
+    result_html += "<p style=\"text-align: center; color: " + config.textcolor + "\">Weak&nbsp;"
 
     key_css_gradient = "linear-gradient(90deg"
     gradient_key_step_count = 100
     for i in range(0, gradient_key_step_count + 1):
         key_css_gradient += "," + util.get_gradient_color_hex(i / gradient_key_step_count, config.gradientcolors)
     key_css_gradient += ")"
-    result_html += "<span class=\"key\" style=\"background: " + key_css_gradient + "; width: 21em;\">&nbsp;</span>"
+    result_html += "<span class=\"key\" style=\"background: " + key_css_gradient + "; width: 21em; color: " + config.textcolor + "\">&nbsp;</span>"
     result_html += "&nbsp;Strong</p></div>\n"
     result_html += "<hr style=\"border-style: dashed;border-color: #666;width: 100%;\">\n"
     result_html += "<div style=\"text-align: center;\">\n"
@@ -227,6 +230,25 @@ def kanjigrid(mw, config):
             for ch in unitKey:
                 util.addUnitData(units, ch, i, card, config.kanjionly)
     return units
+
+HEADER_CSS_SNIPPET = """
+body {
+  text-align: center;
+}
+
+.grid-container {
+  display: grid;
+  grid-gap: 2px;
+  grid-template-columns: repeat(auto-fit, 23px);
+  justify-content: center;
+  " + util.get_font_css(config) + "
+}
+
+.key {
+  display: inline-block;
+  width: 3em
+}
+""".strip()
 
 SEARCH_CSS_SNIPPET = """
 .grid-item.highlight {
