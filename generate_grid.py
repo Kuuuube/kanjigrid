@@ -40,20 +40,20 @@ def generate(mw, config, units, export = False):
     if config.did != "*":
         deckname = mw.col.decks.name(config.did).rsplit('::', 1)[-1]
 
-    result_html  = "<!doctype html><html lang=\"%s\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>" % config.lang
+    result_html  = "<!doctype html><html lang=\"" + config.lang + "\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>"
     result_html += "<style type=\"text/css\">body{text-align:center;}.grid-container{display:grid;grid-gap:2px;grid-template-columns:repeat(auto-fit,23px);justify-content:center;" + util.get_font_css(config) + "}.key{display:inline-block;width:3em}a,a:visited{color:#000;text-decoration:none;}</style>"
     if config.onclickaction == "copy":
         result_html += COPY_JS_SNIPPET
     if not export:
-        result_html += f"<style type=\"text/css\">{SEARCH_CSS_SNIPPET}</style>"        
-        result_html += f"<script>{SEARCH_JS_SNIPPET}</script>"
+        result_html += "<style type=\"text/css\">" + SEARCH_CSS_SNIPPET + "</style>"
+        result_html += "<script>" + SEARCH_JS_SNIPPET + "</script>"
     result_html += "</head>\n"
     result_html += "<body>\n"
-    result_html += "<div style=\"font-size: 3em;color: #888;\">Kanji Grid - %s</div>\n" % deckname
+    result_html += "<div style=\"font-size: 3em;color: " + config.textcolor + ";\">Kanji Grid - " + deckname + "</div>\n"
     if config.timetravel_enabled:
         date_time = datetime.fromtimestamp(config.timetravel_time / 1000)
         date_time_str = date_time.strftime("%d/%m/%Y %H:%M:%S")
-        result_html += f"<p style=\"color: #888;text-align: center\">for {date_time_str}</p>"
+        result_html += "<p style=\"color: " + config.textcolor + ";text-align: center\">for " + date_time_str + "</p>"
     result_html += "<p style=\"text-align: center\">Key</p>"
     result_html += "<p style=\"text-align: center\">Weak&nbsp;"
 
@@ -62,7 +62,7 @@ def generate(mw, config, units, export = False):
     for i in range(0, gradient_key_step_count + 1):
         key_css_gradient += "," + util.get_gradient_color_hex(i / gradient_key_step_count, config.gradientcolors)
     key_css_gradient += ")"
-    result_html += "<span class=\"key\" style=\"background: %s; width: 21em;\">&nbsp;</span>" % key_css_gradient
+    result_html += "<span class=\"key\" style=\"background: " + key_css_gradient + "; width: 21em;\">&nbsp;</span>"
     result_html += "&nbsp;Strong</p></div>\n"
     result_html += "<hr style=\"border-style: dashed;border-color: #666;width: 100%;\">\n"
     result_html += "<div style=\"text-align: center;\">\n"
@@ -78,7 +78,7 @@ def generate(mw, config, units, export = False):
         grouping = data.groupings[config.groupby - 1]
         kanji = [u.value for u in unitsList]
         for i in range(0, len(grouping.groups)):
-            result_html += "<h2 style=\"color:#888;\">%s</h2>\n" % grouping.groups[i].name
+            result_html += "<h2 style=\"color:" + config.textcolor + ";\">%s</h2>\n" % grouping.groups[i].name
             table = "<div class=\"grid-container\">\n"
             count_found = 0
             count_known = 0
@@ -110,11 +110,11 @@ def generate(mw, config, units, export = False):
                     for element in unseen_kanji:
                         table += element
                     table += "</div></details>\n"
-            result_html += "<h4 style=\"color:#888;\">" + str(count_found) + " of " + str(total_count) + " Found - " + "{:.2f}".format(round(count_found / (total_count if total_count > 0 else 1) * 100, 2)) + "%, " + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
+            result_html += "<h4 style=\"color:" + config.textcolor + ";\">" + str(count_found) + " of " + str(total_count) + " Found - " + "{:.2f}".format(round(count_found / (total_count if total_count > 0 else 1) * 100, 2)) + "%, " + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
             result_html += table
 
         chars = reduce(lambda x, y: x+y, dict(grouping.groups).values())
-        result_html += "<h2 style=\"color:#888;\">" + grouping.leftover_group + "</h2>" #label for "not in group" groups
+        result_html += "<h2 style=\"color:" + config.textcolor + ";\">" + grouping.leftover_group + "</h2>" #label for "not in group" groups
         table = "<div class=\"grid-container\">\n"
         total_count = 0
         count_known = 0
@@ -126,7 +126,7 @@ def generate(mw, config, units, export = False):
                     count_known += 1
                 table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)
         table += "</div>\n"
-        result_html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
+        result_html += "<h4 style=\"color:" + config.textcolor + ";\">" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
         result_html += table
         result_html += "<style type=\"text/css\">.datasource{font-style:italic;font-size:0.75em;margin-top:1em;overflow-wrap:break-word;}.datasource a{color:#1034A6;}</style><span class=\"datasource\">Data source: " + ' '.join("<a href=\"{}\">{}</a>".format(w, urllib.parse.unquote(w)) if re.match("https?://", w) else w for w in grouping.source.split(' ')) + "</span>"
     else:
@@ -142,9 +142,9 @@ def generate(mw, config, units, export = False):
                 table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)
         table += "</div>\n"
         if total_count != 0:
-            result_html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
+            result_html += "<h4 style=\"color:" + config.textcolor + ";\">" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
         else:
-            result_html += "<h4 style=\"color:#888;\">" + str(count_known) + " of " + str(total_count) + " Known - 0%</h4>\n"
+            result_html += "<h4 style=\"color:" + config.textcolor + ";\">" + str(count_known) + " of " + str(total_count) + " Known - 0%</h4>\n"
         result_html += table
     result_html += "</div></body></html>\n"
     return result_html
