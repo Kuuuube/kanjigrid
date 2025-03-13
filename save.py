@@ -10,7 +10,7 @@ from aqt.qt import (QStandardPaths, QFileDialog, QTimer, QPageLayout, QPageSize,
 from . import generate_grid
 
 def get_filename(name):
-    current_date = datetime.datetime.now().strftime("%Y_%m_%d")
+    current_date = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     return re.sub(r"(\s|<|>|:|\"|/|\\|\||\?|\*)", "_", name) + "_" + current_date
 
 def epoch_ms_to_date(epoch):
