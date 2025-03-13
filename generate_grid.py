@@ -59,8 +59,8 @@ def generate(mw, config, units, export = False):
 
     key_css_gradient = "linear-gradient(90deg"
     gradient_key_step_count = 100
-    for c in range(0, gradient_key_step_count + 1):
-        key_css_gradient += "," + util.hsvrgbstr(c / gradient_key_step_count / 2)
+    for i in range(0, gradient_key_step_count + 1):
+        key_css_gradient += "," + util.get_gradient_color_hex(i / gradient_key_step_count, config.gradientcolors)
     key_css_gradient += ")"
     result_html += "<span class=\"key\" style=\"background: %s; width: 21em;\">&nbsp;</span>" % key_css_gradient
     result_html += "&nbsp;Strong</p></div>\n"
@@ -92,7 +92,7 @@ def generate(mw, config, units, export = False):
             for unit in sorted_units:
                 if unit.count != 0 or config.unseen:
                     count_found += 1
-                    bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
+                    bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, missing = False)
                     if unit.count != 0 or bgcolor not in ["#E62E2E", "#FFF"]:
                         count_known += 1
                     table += kanjitile(unit.value, bgcolor, count_found, unit.avg_interval)
@@ -121,7 +121,7 @@ def generate(mw, config, units, export = False):
         for unit in [u for u in unitsList if u.value not in chars]:
             if unit.count != 0 or config.unseen:
                 total_count += 1
-                bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, missing = False)
+                bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, missing = False)
                 if unit.count != 0 or bgcolor not in ["#E62E2E", "#FFF"]:
                     count_known += 1
                 table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)
@@ -136,7 +136,7 @@ def generate(mw, config, units, export = False):
         for unit in unitsList:
             if unit.count != 0 or config.unseen:
                 total_count += 1
-                bgcolor = util.get_background_color(unit.avg_interval,config.interval, unit.count)
+                bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors)
                 if unit.count != 0 or bgcolor not in ["#E62E2E", "#FFF"]:
                     count_known += 1
                 table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)

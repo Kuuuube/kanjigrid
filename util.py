@@ -59,9 +59,34 @@ def hsvrgbstr(h, s=0.8, v=0.9):
     r, g, b = hsv_to_rgb(h, s, v)
     return "#%0.2X%0.2X%0.2X" % (_256(r), _256(g), _256(b))
 
-def get_background_color(avg_interval, config_interval, count, missing = False):
+def hex_to_rgb(hex_string):
+    return int(hex_string[1:3], 16), int(hex_string[3:5], 16), int(hex_string[5:7], 16)
+
+def rgb_to_hex(r, g, b):
+    return f"#{r:02X}{g:02X}{b:02X}"
+
+def get_gradient_color_hex(score, gradient_colors):
+    max_color_index = len(gradient_colors) - 1
+
+    starting_color_index = int(score * max_color_index)
+    ending_color_index = min(starting_color_index + 1, max_color_index)
+
+    starting_color = gradient_colors[starting_color_index]
+    ending_color = gradient_colors[ending_color_index]
+
+    percent = (score * max_color_index) - starting_color_index
+
+    # Linear interpolation
+    r1, g1, b1 = hex_to_rgb(starting_color)
+    r2, g2, b2 = hex_to_rgb(ending_color)
+    r = round(r1 + (r2 - r1) * percent)
+    g = round(g1 + (g2 - g1) * percent)
+    b = round(b1 + (b2 - b1) * percent)
+    return rgb_to_hex(r, g, b)
+
+def get_background_color(avg_interval, config_interval, count, gradient_colors, missing=False):
     if count != 0:
-        return hsvrgbstr(scoreAdjust(avg_interval / config_interval) / 2)
+        return get_gradient_color_hex(scoreAdjust(avg_interval / config_interval), gradient_colors)
     if missing:
         return "#EEE"
     return "#FFF"
