@@ -1,6 +1,6 @@
 import sys
-# add main folder to path to allow accessing module there
-sys.path.append(sys.path[0] + "/../.")
+# add src folder to path to allow accessing module there
+sys.path.append(sys.path[0] + "/../src/.")
 
 JSON_DATA_FOLDER = "./data"
 
@@ -10,7 +10,7 @@ def test_config_update():
     import config_util
 
     config_v0 = json.load(open("./tests/config_v0.json", "r"))
-    config_current = json.load(open("./config.json", "r"))
+    config_current = json.load(open("./src/config.json", "r"))
 
     config_migrated = config_util.migrate_config(config_v0)
     config_validated = config_util.validate_config(config_migrated)
