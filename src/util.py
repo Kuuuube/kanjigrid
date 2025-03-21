@@ -47,9 +47,9 @@ def addDataFromCard(unit, idx, card):
     unseen_cards_count = unit.unseen_cards_count
 
     if card.type > 0:
-        newTotal = (unit.avg_interval * unit.seen_cards_count) + card.ivl
+        new_total = (unit.avg_interval * unit.seen_cards_count) + card.ivl
         seen_cards_count = unit.seen_cards_count + 1
-        new_avg_interval = newTotal / seen_cards_count
+        new_avg_interval = new_total / seen_cards_count
     else:
         unseen_cards_count = unit.unseen_cards_count + 1
 
