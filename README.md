@@ -218,6 +218,10 @@ Changelog compared to the old kanji grid add-on.
 
 - Removed `Missing Kanji` in groupings when there are no missing kanji.
 
+## Sorting
+
+- Added `Unseen cards count`.
+
 ### Exporting
 
 - Added option to save Kanji Grid as JSON.
