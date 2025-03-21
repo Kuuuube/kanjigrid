@@ -33,7 +33,7 @@ def scoreAdjust(score):
     return 1 - 1 / (score * score)
 
 def addUnitData(units, unitKey, i, card, kanjionly):
-    validKey = data.ignore.find(unitKey) == -1 or (not kanjionly or isKanji(unitKey))
+    validKey = data.ignore.find(unitKey) == -1 and (not kanjionly or isKanji(unitKey))
     if validKey:
         if unitKey not in units:
             unit = unit_tuple(0, unitKey, 0.0, 0, 0)
