@@ -9,7 +9,7 @@ from anki.utils import ids2str
 from . import util, data
 
 def generate(mw, config, units, export = False):
-    def kanjitile(char, bgcolor, count = 0, avg_interval = 0):
+    def kanjitile(char, bgcolor, count = 0, to_learn_count = 0, avg_interval = 0): #FIXME : Count looks more like an index when checked live
         tile = ""
 
         context_menu_events = f" onmouseenter=\"bridgeCommand('h:{char}');\" onmouseleave=\"bridgeCommand('l:{char}');\"" if not export else ""
@@ -18,6 +18,7 @@ def generate(mw, config, units, export = False):
             tooltip = "Character: %s" % util.safe_unicodedata_name(char)
             if avg_interval:
                 tooltip += " | Avg Interval: " + str("{:.2f}".format(avg_interval)) + " | Score: " + str("{:.2f}".format(util.scoreAdjust(avg_interval / config.interval)))
+            tooltip += " | To Learn: " + str(to_learn_count) + " | Total: " + str(count)
             tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\"%s>" % (bgcolor, tooltip, context_menu_events)
         else:
             tile += "\t<div class=\"grid-item\" style=\"background:%s;\"%s>" % (bgcolor, context_menu_events)
@@ -76,6 +77,7 @@ def generate(mw, config, units, export = False):
         util.SortOrder.UNICODE:   sorted(units.values(), key=lambda unit: (util.safe_unicodedata_name(unit.value), unit.count)),
         util.SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (util.scoreAdjust(unit.avg_interval / config.interval), unit.count), reverse=True),
         util.SortOrder.FREQUENCY: sorted(units.values(), key=lambda unit: (unit.count, util.scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
+        util.SortOrder.TO_LEARN_COUNT:  sorted(units.values(), key=lambda unit: (unit.to_learn_count), reverse=True),
     }[util.SortOrder(config.sortby)]
 
     if config.groupby > 0:
@@ -99,7 +101,7 @@ def generate(mw, config, units, export = False):
                     bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, config.kanjitileunseencolor, missing = False)
                     if unit.count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
                         count_known += 1
-                    table += kanjitile(unit.value, bgcolor, count_found, unit.avg_interval)
+                    table += kanjitile(unit.value, bgcolor, unit.count, unit.to_learn_count, unit.avg_interval)
             table += "</div>\n"
             total_count = len(grouping.groups[i].characters)
             if config.unseen:
@@ -128,7 +130,7 @@ def generate(mw, config, units, export = False):
                 bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, config.kanjitileunseencolor, missing = False)
                 if unit.count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
                     count_known += 1
-                table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)
+                table += kanjitile(unit.value, bgcolor, unit.count, unit.to_learn_count, unit.avg_interval)
         table += "</div>\n"
         result_html += "<h4>" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
         result_html += table
@@ -143,7 +145,7 @@ def generate(mw, config, units, export = False):
                 bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, config.kanjitileunseencolor)
                 if unit.count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
                     count_known += 1
-                table += kanjitile(unit.value, bgcolor, total_count, unit.avg_interval)
+                table += kanjitile(unit.value, bgcolor, unit.count, unit.to_learn_count, unit.avg_interval)
         table += "</div>\n"
         if total_count != 0:
             result_html += "<h4>" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
@@ -174,7 +176,7 @@ def get_revlog(mw, cids, timetravel_time):
 
 def timetravel(card, revlog, timetravel_time):
     if card.id not in revlog:
-        # card was not reviewd during the timeframe...
+        # card was not reviewed during the timeframe...
         if card.id > timetravel_time:
             # ...and wasn't in deck either, so it shouldn't be counted
             return False

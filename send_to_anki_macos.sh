@@ -1,0 +1,1 @@
+cp -r src/*.py src/config.json data LICENSE README.md ~/Library/Application\ Support/Anki2/addons21/1610304449/
