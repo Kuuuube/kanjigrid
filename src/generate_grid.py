@@ -9,7 +9,7 @@ from anki.utils import ids2str
 from . import util, data
 
 def generate(mw, config, units, export = False):
-    def kanjitile(char, bgcolor, seen_cards_count = 0, unseen_cards_count = 0, avg_interval = 0): #FIXME : Count looks more like an index when checked live
+    def kanjitile(char, bgcolor, seen_cards_count = 0, unseen_cards_count = 0, avg_interval = 0):
         tile = ""
 
         context_menu_events = f" onmouseenter=\"bridgeCommand('h:{char}');\" onmouseleave=\"bridgeCommand('l:{char}');\"" if not export else ""
