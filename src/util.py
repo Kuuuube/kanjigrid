@@ -6,14 +6,14 @@ from colorsys import hsv_to_rgb
 
 from . import data
 
-unit_tuple = collections.namedtuple("unit", "idx value avg_interval count to_learn_count")
+unit_tuple = collections.namedtuple("unit", "idx value avg_interval seen_cards_count unseen_cards_count")
 
 class SortOrder(enum.Enum):
     NONE = 0
     UNICODE = 1
     SCORE = 2
     FREQUENCY = 3
-    TO_LEARN_COUNT = 4
+    UNSEEN_CARDS_COUNT = 4
 
     def pretty_value(self):
         return (
@@ -21,7 +21,7 @@ class SortOrder(enum.Enum):
             "unicode order",
             "score",
             "frequency",
-            "cards still to learn"
+            "unseen cards count"
         )[self.value]
 
 cjk_re = re.compile("CJK (UNIFIED|COMPATIBILITY) IDEOGRAPH")
@@ -43,20 +43,20 @@ def addUnitData(units, unitKey, i, card, kanjionly):
 def addDataFromCard(unit, idx, card):
     new_idx = unit.idx
     new_avg_interval = unit.avg_interval
-    new_count = unit.count
-    to_learn_count = unit.to_learn_count
+    seen_cards_count = unit.seen_cards_count
+    unseen_cards_count = unit.unseen_cards_count
 
     if card.type > 0:
-        newTotal = (unit.avg_interval * unit.count) + card.ivl
-        new_count = unit.count + 1
-        new_avg_interval = newTotal / new_count
+        newTotal = (unit.avg_interval * unit.seen_cards_count) + card.ivl
+        seen_cards_count = unit.seen_cards_count + 1
+        new_avg_interval = newTotal / seen_cards_count
     else:
-        to_learn_count = unit.to_learn_count + 1
+        unseen_cards_count = unit.unseen_cards_count + 1
 
     if new_idx < unit.idx or unit.idx == 0:
         new_idx = idx
 
-    return unit_tuple(new_idx, unit.value, new_avg_interval, new_count, to_learn_count)
+    return unit_tuple(new_idx, unit.value, new_avg_interval, seen_cards_count, unseen_cards_count)
 
 def hsvrgbstr(h, s=0.8, v=0.9):
     def _256(x):

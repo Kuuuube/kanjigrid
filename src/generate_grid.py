@@ -9,7 +9,7 @@ from anki.utils import ids2str
 from . import util, data
 
 def generate(mw, config, units, export = False):
-    def kanjitile(char, bgcolor, count = 0, to_learn_count = 0, avg_interval = 0): #FIXME : Count looks more like an index when checked live
+    def kanjitile(char, bgcolor, seen_cards_count = 0, unseen_cards_count = 0, avg_interval = 0): #FIXME : Count looks more like an index when checked live
         tile = ""
 
         context_menu_events = f" onmouseenter=\"bridgeCommand('h:{char}');\" onmouseleave=\"bridgeCommand('l:{char}');\"" if not export else ""
@@ -18,7 +18,7 @@ def generate(mw, config, units, export = False):
             tooltip = "Character: %s" % util.safe_unicodedata_name(char)
             if avg_interval:
                 tooltip += " | Avg Interval: " + str("{:.2f}".format(avg_interval)) + " | Score: " + str("{:.2f}".format(util.scoreAdjust(avg_interval / config.interval)))
-            tooltip += " | To Learn: " + str(to_learn_count) + " | Total: " + str(count)
+            tooltip += " | Unseen: " + str(unseen_cards_count) + " | Seen: " + str(seen_cards_count)
             tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\"%s>" % (bgcolor, tooltip, context_menu_events)
         else:
             tile += "\t<div class=\"grid-item\" style=\"background:%s;\"%s>" % (bgcolor, context_menu_events)
@@ -73,11 +73,11 @@ def generate(mw, config, units, export = False):
     result_html += "<div style=\"text-align: center;\">\n"
 
     unitsList = {
-        util.SortOrder.NONE:      sorted(units.values(), key=lambda unit: (unit.idx, unit.count)),
-        util.SortOrder.UNICODE:   sorted(units.values(), key=lambda unit: (util.safe_unicodedata_name(unit.value), unit.count)),
-        util.SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (util.scoreAdjust(unit.avg_interval / config.interval), unit.count), reverse=True),
-        util.SortOrder.FREQUENCY: sorted(units.values(), key=lambda unit: (unit.count, util.scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
-        util.SortOrder.TO_LEARN_COUNT:  sorted(units.values(), key=lambda unit: (unit.to_learn_count), reverse=True),
+        util.SortOrder.NONE:      sorted(units.values(), key=lambda unit: (unit.idx, unit.seen_cards_count)),
+        util.SortOrder.UNICODE:   sorted(units.values(), key=lambda unit: (util.safe_unicodedata_name(unit.value), unit.seen_cards_count)),
+        util.SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (util.scoreAdjust(unit.avg_interval / config.interval), unit.seen_cards_count), reverse=True),
+        util.SortOrder.FREQUENCY: sorted(units.values(), key=lambda unit: (unit.seen_cards_count, util.scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
+        util.SortOrder.UNSEEN_CARDS_COUNT:  sorted(units.values(), key=lambda unit: (unit.unseen_cards_count), reverse=True),
     }[util.SortOrder(config.sortby)]
 
     if config.groupby > 0:
@@ -96,12 +96,12 @@ def generate(mw, config, units, export = False):
                 sorted_units = [units[c] for c in kanji if c in grouping.groups[i].characters]
 
             for unit in sorted_units:
-                if unit.count != 0 or config.unseen:
+                if unit.seen_cards_count != 0 or config.unseen:
                     count_found += 1
-                    bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, config.kanjitileunseencolor, missing = False)
-                    if unit.count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
+                    bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.seen_cards_count, config.gradientcolors, config.kanjitileunseencolor, missing = False)
+                    if unit.seen_cards_count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
                         count_known += 1
-                    table += kanjitile(unit.value, bgcolor, unit.count, unit.to_learn_count, unit.avg_interval)
+                    table += kanjitile(unit.value, bgcolor, unit.seen_cards_count, unit.unseen_cards_count, unit.avg_interval)
             table += "</div>\n"
             total_count = len(grouping.groups[i].characters)
             if config.unseen:
@@ -125,12 +125,12 @@ def generate(mw, config, units, export = False):
         total_count = 0
         count_known = 0
         for unit in [u for u in unitsList if u.value not in chars]:
-            if unit.count != 0 or config.unseen:
+            if unit.seen_cards_count != 0 or config.unseen:
                 total_count += 1
-                bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, config.kanjitileunseencolor, missing = False)
-                if unit.count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
+                bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.seen_cards_count, config.gradientcolors, config.kanjitileunseencolor, missing = False)
+                if unit.seen_cards_count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
                     count_known += 1
-                table += kanjitile(unit.value, bgcolor, unit.count, unit.to_learn_count, unit.avg_interval)
+                table += kanjitile(unit.value, bgcolor, unit.seen_cards_count, unit.unseen_cards_count, unit.avg_interval)
         table += "</div>\n"
         result_html += "<h4>" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
         result_html += table
@@ -140,12 +140,12 @@ def generate(mw, config, units, export = False):
         total_count = 0
         count_known = 0
         for unit in unitsList:
-            if unit.count != 0 or config.unseen:
+            if unit.seen_cards_count != 0 or config.unseen:
                 total_count += 1
-                bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.count, config.gradientcolors, config.kanjitileunseencolor)
-                if unit.count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
+                bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.seen_cards_count, config.gradientcolors, config.kanjitileunseencolor)
+                if unit.seen_cards_count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
                     count_known += 1
-                table += kanjitile(unit.value, bgcolor, unit.count, unit.to_learn_count, unit.avg_interval)
+                table += kanjitile(unit.value, bgcolor, unit.seen_cards_count, unit.unseen_cards_count, unit.avg_interval)
         table += "</div>\n"
         if total_count != 0:
             result_html += "<h4>" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
