@@ -8,5 +8,5 @@ if [ -d "$LINUX_DIRECTORY" ]; then
 elif [ -d "$MACOS_DIRECTORY" ]; then
   cp -r $PATHS_TO_COPY "$MACOS_DIRECTORY"
 else
-  echo "Failed to send to Anki"
+  echo "Failed to send to Anki, addon directory not found"
 fi
