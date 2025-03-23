@@ -159,7 +159,7 @@ class KanjiGrid:
 
         sortby = QComboBox()
         sortby.addItems([
-            *(x.pretty_value().capitalize() for x in util.SortOrder)
+            *(x.pretty_value().title() for x in util.SortOrder)
         ])
         sortby.setCurrentIndex(config.sortby)
         general_tab_vertical_layout.addWidget(QLabel("Sort by:"))
