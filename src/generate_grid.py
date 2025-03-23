@@ -76,7 +76,7 @@ def generate(mw, config, units, export = False):
         util.SortOrder.NONE:      sorted(units.values(), key=lambda unit: (unit.idx, unit.seen_cards_count)),
         util.SortOrder.UNICODE:   sorted(units.values(), key=lambda unit: (util.safe_unicodedata_name(unit.value), unit.seen_cards_count)),
         util.SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (util.scoreAdjust(unit.avg_interval / config.interval), unit.seen_cards_count), reverse=True),
-        util.SortOrder.FREQUENCY: sorted(units.values(), key=lambda unit: (unit.seen_cards_count, util.scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
+        util.SortOrder.SEEN_CARDS_COUNT: sorted(units.values(), key=lambda unit: (unit.seen_cards_count, util.scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
         util.SortOrder.UNSEEN_CARDS_COUNT:  sorted(units.values(), key=lambda unit: (unit.unseen_cards_count), reverse=True),
     }[util.SortOrder(config.sortby)]
 

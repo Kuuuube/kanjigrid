@@ -12,7 +12,7 @@ class SortOrder(enum.Enum):
     NONE = 0
     UNICODE = 1
     SCORE = 2
-    FREQUENCY = 3
+    SEEN_CARDS_COUNT = 3
     UNSEEN_CARDS_COUNT = 4
 
     def pretty_value(self):
@@ -20,7 +20,7 @@ class SortOrder(enum.Enum):
             "none",
             "unicode order",
             "score",
-            "frequency",
+            "seen cards count",
             "unseen cards count"
         )[self.value]
 
