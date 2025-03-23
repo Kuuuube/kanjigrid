@@ -222,6 +222,8 @@ Changelog compared to the old kanji grid add-on.
 
 - Added `Unseen cards count`.
 
+- Renamed `Frequency` to `Seen Cards Count`.
+
 ### Exporting
 
 - Added option to save Kanji Grid as JSON.
