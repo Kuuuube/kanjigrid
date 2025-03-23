@@ -220,7 +220,7 @@ Changelog compared to the old kanji grid add-on.
 
 ## Sorting
 
-- Added `Unseen cards count`.
+- Added `Unseen Cards Count`.
 
 - Renamed `Frequency` to `Seen Cards Count`.
 
