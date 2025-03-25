@@ -13,7 +13,7 @@ config_schema = {
     },
     "sortby": {
         "default": 2,
-        "enum": range(0, 4)
+        "enum": range(0, 5)
     },
     "lang": {
         "default": "ja",
