@@ -5,4 +5,4 @@ mkdir ./dist
 
 # Create release zip
 cp -r src/*.py src/config.json data LICENSE README.md manifest.json ./dist
-(cd dist && zip ../kanjigrid_kuuuube_0.0.0.zip *)
+(cd dist && zip -r ../kanjigrid_kuuuube_0.0.0.zip *)
