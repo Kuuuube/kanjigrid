@@ -4,8 +4,6 @@ import collections
 import enum
 from colorsys import hsv_to_rgb
 
-from . import data
-
 unit_tuple = collections.namedtuple("unit", "idx value avg_interval seen_cards_count unseen_cards_count")
 
 class SortOrder(enum.Enum):
@@ -24,6 +22,20 @@ class SortOrder(enum.Enum):
             "unseen cards count"
         )[self.value]
 
+ignored_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" + \
+          "ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ" + \
+          "ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ" + \
+          "1234567890１２３４５６７８９０" + \
+          "あいうゔえおぁぃぅぇぉかきくけこがぎぐげごさしすせそざじずぜぞ" + \
+          "たちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽ" + \
+          "まみむめもやゃゆゅよょらりるれろわをんっ" + \
+          "アイウヴエオァィゥェォカキクケコガギグゲゴサシスセソザジズゼゾ" + \
+          "タチツテトダヂヅデドナニヌネノハヒフヘホバビブベボパピプペポ" + \
+          "マミムメモヤャユュヨョラリルレロワヲンッ" + \
+          "!\"$%&'()|=~-^@[;:],./`{+*}<>?\\_" + \
+          "＠「；：」、。・‘｛＋＊｝＜＞？＼＿！”＃＄％＆’（）｜＝．〜～ー＾ ゙゙゚" + \
+          "☆★＊○●◎〇◯“…『』#♪ﾞ〉〈→》《π×"
+
 cjk_re = re.compile("CJK (UNIFIED|COMPATIBILITY) IDEOGRAPH")
 def isKanji(unichar):
     return bool(cjk_re.match(safe_unicodedata_name(unichar)))
@@ -33,7 +45,7 @@ def scoreAdjust(score):
     return 1 - 1 / (score * score)
 
 def addUnitData(units, unitKey, i, card, kanjionly):
-    validKey = data.ignore.find(unitKey) == -1 and (not kanjionly or isKanji(unitKey))
+    validKey = ignored_characters.find(unitKey) == -1 and (not kanjionly or isKanji(unitKey))
     if validKey:
         if unitKey not in units:
             unit = unit_tuple(0, unitKey, 0.0, 0, 0)

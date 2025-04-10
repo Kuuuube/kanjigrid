@@ -7,20 +7,6 @@ GROUPING_JSON_VERSION = 1
 KanjiGrouping = collections.namedtuple("KanjiGroups", ["version", "name", "lang", "source", "leftover_group", "groups"])
 KanjiGroup = collections.namedtuple("KanjiGroup", ["name", "characters"])
 
-ignore = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" + \
-          "ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ" + \
-          "ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ" + \
-          "1234567890１２３４５６７８９０" + \
-          "あいうゔえおぁぃぅぇぉかきくけこがぎぐげごさしすせそざじずぜぞ" + \
-          "たちつてとだぢづでどなにぬねのはひふへほばびぶべぼぱぴぷぺぽ" + \
-          "まみむめもやゃゆゅよょらりるれろわをんっ" + \
-          "アイウヴエオァィゥェォカキクケコガギグゲゴサシスセソザジズゼゾ" + \
-          "タチツテトダヂヅデドナニヌネノハヒフヘホバビブベボパピプペポ" + \
-          "マミムメモヤャユュヨョラリルレロワヲンッ" + \
-          "!\"$%&'()|=~-^@[;:],./`{+*}<>?\\_" + \
-          "＠「；：」、。・‘｛＋＊｝＜＞？＼＿！”＃＄％＆’（）｜＝．〜～ー＾ ゙゙゚" + \
-          "☆★＊○●◎〇◯“…『』#♪ﾞ〉〈→》《π×"
-
 groupings = []
 
 
