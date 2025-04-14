@@ -8,19 +8,24 @@ from anki.utils import ids2str
 
 from . import util, data
 
-def get_overall_totals_html(unitsList, config):
+def get_grouping_overall_total(unitsList, grouping, config):
     total_count = 0
     count_known = 0
+    grouping_unique_characters = set("".join(group.characters for group in grouping.groups))
+    grouping_unique_characters_count = len(grouping_unique_characters)
     for unit in unitsList:
+        if unit.value not in grouping_unique_characters:
+            continue
+
         if unit.seen_cards_count != 0 or config.unseen:
             total_count += 1
             bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.seen_cards_count, config.gradientcolors, config.kanjitileunseencolor)
             if unit.seen_cards_count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
                 count_known += 1
 
-    if total_count != 0:
-        return "<h4>" + str(count_known) + " of " + str(total_count) + " Total Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
-    return "<h4>" + str(count_known) + " of " + str(total_count) + " Total Known - 0%</h4>\n"
+    overall_total = "<h4>" + str(count_known) + " of " + str(total_count) + " Known Overall - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%<br>\n"
+    within_grouping_total = str(count_known) + " of " + str(grouping_unique_characters_count) + " Known in Grouping - " + "{:.2f}".format(round(count_known / (grouping_unique_characters_count if grouping_unique_characters_count > 0 else 1) * 100, 2)) + "%</h4>\n"
+    return overall_total + within_grouping_total
 
 def generate(mw, config, units, export = False):
     def kanjitile(char, bgcolor, seen_cards_count = 0, unseen_cards_count = 0, avg_interval = 0):
@@ -98,7 +103,7 @@ def generate(mw, config, units, export = False):
         grouping = data.groupings[config.groupby - 1]
         kanji = [u.value for u in unitsList]
 
-        result_html += get_overall_totals_html(unitsList, config)
+        result_html += get_grouping_overall_total(unitsList, grouping, config)
 
         for i in range(0, len(grouping.groups)):
             result_html += "<h2>" + grouping.groups[i].name + "</h2>\n"
