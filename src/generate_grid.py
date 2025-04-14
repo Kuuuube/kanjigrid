@@ -175,10 +175,11 @@ def generate(mw, config, units, export = False):
                     count_known += 1
                 table += kanjitile(unit.value, bgcolor, unit.seen_cards_count, unit.unseen_cards_count, unit.avg_interval)
         table += "</div>\n"
-        if total_count != 0:
-            result_html += "<h4>" + str(count_known) + " of " + str(total_count) + " Known - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%</h4>\n"
-        else:
-            result_html += "<h4>" + str(count_known) + " of " + str(total_count) + " Known - 0%</h4>\n"
+
+        known_percent = "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%"
+        if count_known == 0:
+            known_percent = "0%"
+        result_html += "<h4>" + str(count_known) + " of " + str(total_count) + " Known - " + known_percent + "</h4>\n"
         result_html += table
     result_html += "</div></body></html>\n"
     return result_html
