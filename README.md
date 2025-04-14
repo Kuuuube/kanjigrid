@@ -156,6 +156,8 @@ Changelog compared to the old kanji grid add-on.
 
 - The `Group by` dropdown is now sorted by both language and name.
 
+- Added kanji totals to the top of the grid when a grouping is selected.
+
 ### Config and Options
 
 - Config validation and safer loading to help prevent crashes.
