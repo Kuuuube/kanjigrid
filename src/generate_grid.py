@@ -23,8 +23,14 @@ def get_grouping_overall_total(unitsList, grouping, config):
             if unit.seen_cards_count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
                 count_known += 1
 
-    overall_total = "<h4>" + str(count_known) + " of " + str(total_count) + " Known Overall - " + "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%<br>\n"
-    within_grouping_total = str(count_known) + " of " + str(grouping_unique_characters_count) + " Known in Grouping - " + "{:.2f}".format(round(count_known / (grouping_unique_characters_count if grouping_unique_characters_count > 0 else 1) * 100, 2)) + "%</h4>\n"
+    percent_known_overall = "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%"
+    percent_known_grouping = "{:.2f}".format(round(count_known / (grouping_unique_characters_count if grouping_unique_characters_count > 0 else 1) * 100, 2)) + "%"
+    if total_count == 0:
+        percent_known_overall = "0%"
+        percent_known_grouping = "0%"
+
+    overall_total = "<h4>" + str(count_known) + " of " + str(total_count) + " Known Overall - " + percent_known_overall + "<br>\n"
+    within_grouping_total = str(count_known) + " of " + str(grouping_unique_characters_count) + " Known in Grouping - " + percent_known_grouping + "</h4>\n"
     return overall_total + within_grouping_total
 
 def generate(mw, config, units, export = False):
