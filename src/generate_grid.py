@@ -25,7 +25,7 @@ def get_grouping_overall_total(unitsList, grouping, config):
 
     percent_known_overall = "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%"
     percent_known_grouping = "{:.2f}".format(round(count_known / (grouping_unique_characters_count if grouping_unique_characters_count > 0 else 1) * 100, 2)) + "%"
-    if total_count == 0:
+    if count_known == 0:
         percent_known_overall = "0%"
         percent_known_grouping = "0%"
 
