@@ -13,13 +13,13 @@ class SortOrder(enum.Enum):
     SEEN_CARDS_COUNT = 3
     UNSEEN_CARDS_COUNT = 4
 
-    def pretty_value(self):
+    def pretty_value(self) -> str:
         return (
             "none",
             "unicode order",
             "score",
             "seen cards count",
-            "unseen cards count"
+            "unseen cards count",
         )[self.value]
 
 ignored_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" + \
@@ -37,10 +37,10 @@ ignored_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" + \
           "☆★＊○●◎〇◯“…『』#♪ﾞ〉〈→》《π×"
 
 cjk_re = re.compile("CJK (UNIFIED|COMPATIBILITY) IDEOGRAPH")
-def isKanji(unichar):
+def isKanji(unichar: str) -> bool:
     return bool(cjk_re.match(safe_unicodedata_name(unichar)))
 
-def scoreAdjust(score):
+def scoreAdjust(score: float) -> float:
     score += 1
     return 1 - 1 / (score * score)
 
@@ -70,20 +70,14 @@ def addDataFromCard(unit, idx, card):
 
     return unit_tuple(new_idx, unit.value, new_avg_interval, seen_cards_count, unseen_cards_count)
 
-def hsvrgbstr(h, s=0.8, v=0.9):
-    def _256(x):
-        return round(x * 256)
-    r, g, b = hsv_to_rgb(h, s, v)
-    return "#%0.2X%0.2X%0.2X" % (_256(r), _256(g), _256(b))
-
-def hex_to_rgb(hex_string):
+def hex_to_rgb(hex_string: str) -> (int, int, int):
     try:
         hex_string = hex_string.replace("#", "")
         return int(hex_string[0:2], 16), int(hex_string[2:4], 16), int(hex_string[4:6], 16)
-    except Exception:
+    except Exception:  # noqa: BLE001
         return 0, 0, 0
 
-def rgb_to_hex(r, g, b):
+def rgb_to_hex(r: int, g: int, b: int) -> str:
     return f"#{r:02X}{g:02X}{b:02X}"
 
 def get_gradient_color_hex(score, gradient_colors):
@@ -110,7 +104,7 @@ def get_background_color(avg_interval, config_interval, count, gradient_colors, 
         return get_gradient_color_hex(scoreAdjust(avg_interval / config_interval), gradient_colors)
     return kanjitileunseencolor
 
-def get_font_css(config):
+def get_font_css(config) -> str:
     if config.lang == "ja":
         return config.jafontcss
     if config.lang ==  "zh":
@@ -123,8 +117,9 @@ def get_font_css(config):
         return config.kofontcss
     if config.lang ==  "vi":
         return config.vifontcss
+    return ""
 
-def get_search(config, char):
+def get_search(config, char: str):
     search_url = ""
     if config.lang == "ja":
         search_url = config.jasearch
@@ -140,16 +135,16 @@ def get_search(config, char):
         search_url = config.visearch
     return search_url.replace("%s", char)
 
-def get_browse_command(char):
+def get_browse_command(char: str) -> str:
     return "javascript:bridgeCommand('" + char + "');"
 
-def fields_to_query(fields):
+def fields_to_query(fields) -> str:
     query_strings = []
     for field in fields:
         query_strings.append("\"" + str(field) + ":*\"")
     return " OR ".join(query_strings)
 
-def make_query(deck_ids, fields):
+def make_query(deck_ids, fields) -> str:
     query_strings = []
     fields_string = fields_to_query(fields)
     for deck_id in deck_ids:
@@ -157,10 +152,10 @@ def make_query(deck_ids, fields):
 
     return " OR ".join(query_strings)
 
-def safe_unicodedata_name(char, default = ""):
+def safe_unicodedata_name(char: str, default: str = "") -> str:
     try:
         return unicodedata.name(char)
-    except Exception:
+    except Exception:  # noqa: BLE001
         return default
 
 def get_deck_name(mw, config):
