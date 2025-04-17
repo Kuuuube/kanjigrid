@@ -14,20 +14,20 @@ from . import logger, util
 class KanjiGridWebViewKind(Enum):
     DEFAULT = "kanjigrid webview"
 
-def init_webview():
+def init_webview() -> None:
     webview = AnkiWebView()
     try:
         webview.set_kind(KanjiGridWebViewKind.DEFAULT)
-    except Exception:
+    except Exception:  # noqa: BLE001
         logger.error_log("Failed to set webview kind", traceback.format_exc())
     return webview
 
-def open_search_link(wv, config, char):
+def open_search_link(wv: AnkiWebView, config, char: str) -> None:
     link = util.get_search(config, char)
     # aqt.utils.openLink is an alternative
     wv.eval(f"window.open('{link}', '_blank');")
 
-def open_note_browser(deckname, fields_list, additional_search_filters, search_string):
+def open_note_browser(deckname: str, fields_list: list, additional_search_filters: str, search_string: str) -> None:
     fields_string = ""
     for i, field in enumerate(fields_list):
         if i != 0:
@@ -39,34 +39,34 @@ def open_note_browser(deckname, fields_list, additional_search_filters, search_s
     browser.form.searchEdit.lineEdit().setText("deck:\"" + deckname + "\" " + fields_string + " " + additional_search_filters)
     browser.onSearchActivated()
 
-def on_copy_cmd(char):
+def on_copy_cmd(char: str) -> None:
     QApplication.clipboard().setText(char)
 
-def on_browse_cmd(char, config, deckname):
+def on_browse_cmd(char: str, config, deckname: str) -> None:
     open_note_browser(deckname, config.fieldslist, config.searchfilter, char)
 
-def on_search_cmd(char, wv, config):
+def on_search_cmd(char: str, wv: AnkiWebView, config) -> None:
     open_search_link(wv, config, char)
 
-def on_find_cmd(wv: AnkiWebView):
+def on_find_cmd(wv: AnkiWebView) -> None:
     char = QApplication.clipboard().text().strip()
 
     # limit searches to kanji to prevent js injection
     if not util.isKanji(char):
         # truncate in case there's random garbage in the clipboard
-        LEN_LIMIT = 20
-        tooltip_char = char if len(char) <= LEN_LIMIT else char[:LEN_LIMIT] + "..."
+        len_limit = 20
+        tooltip_char = char if len(char) <= len_limit else char[:len_limit] + "..."
         tooltip(f"\"{tooltip_char}\" is not valid kanji.")
         return
-    
-    def findTextCallback(found):
+
+    def findTextCallback(found: bool) -> None:
         if not found:
           tooltip(f"\"{char}\" not found in grid.")
-    
+
     # qt's findText impl is bugged and inconvenient, so we use our own
     wv.evalWithCallback(f"findChar('{char}');", findTextCallback)
 
-def add_webview_context_menu_items(wv, expected_wv, menu, config, deckname, char):
+def add_webview_context_menu_items(wv: AnkiWebView, expected_wv: AnkiWebView, menu, config, deckname: str, char: str) -> None:
     # hook is active while kanjigrid is open, and right clicking on the main window (deck list) will also trigger this, so check wv
     if wv is not expected_wv:
       return
