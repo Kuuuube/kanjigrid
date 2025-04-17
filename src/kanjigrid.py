@@ -1,7 +1,7 @@
 import shlex
 import types
 
-from aqt import gui_hooks, mw
+from aqt import gui_hooks, main, mw
 from aqt.qt import (
     QAction,
     QCheckBox,
@@ -23,18 +23,19 @@ from aqt.qt import (
     QWidget,
     qconnect,
 )
+from aqt.webview import AnkiWebView
 
 from . import config_util, data, generate_grid, save, util, webview_util
 
 
 class KanjiGrid:
-    def __init__(self, mw):
+    def __init__(self, mw: main.AnkiQt) -> None:
         if mw:
             self.menuAction = QAction("Generate Kanji Grid", mw, triggered=self.setup)
             mw.form.menuTools.addSeparator()
             mw.form.menuTools.addAction(self.menuAction)
 
-    def link_handler(self, link, config, deckname):
+    def link_handler(self, link: str, config: types.SimpleNamespace, deckname: str) -> None:
         link_prefix = link[:2]
         link_suffix = link[2:]
         if link_prefix == "h:":
@@ -46,14 +47,14 @@ class KanjiGrid:
         else:
             webview_util.on_browse_cmd(link, config, deckname)
 
-    def displaygrid(self, config, deckname, units):
+    def displaygrid(self, config: types.SimpleNamespace, deckname: str, units: dict) -> None:
         generated_html = generate_grid.generate(mw, config, units)
         self.win = QDialog(mw, Qt.WindowType.Window)
         current_win = self.win
         self.wv = webview_util.init_webview()
         current_wv = self.wv
 
-        def on_window_close(current_wv):
+        def on_window_close(current_wv: AnkiWebView) -> None:
             current_wv.cleanup()
             gui_hooks.webview_will_show_context_menu.remove(webview_util.add_webview_context_menu_items)
         qconnect(current_win.finished, lambda _: on_window_close(current_wv))
@@ -85,14 +86,14 @@ class KanjiGrid:
         current_win.setLayout(vl)
         current_win.resize(1000, 800)
 
-    def makegrid(self, config):
+    def makegrid(self, config: types.SimpleNamespace) -> None:
         units = generate_grid.kanjigrid(mw, config)
         if units is not None:
             self.displaygrid(config, util.get_deck_name(mw, config), units)
 
-    def setup(self):
+    def setup(self) -> None:
         config = types.SimpleNamespace(**config_util.get_config(mw))
-        config.did = mw.col.conf['curDeck']
+        config.did = mw.col.conf["curDeck"]
 
         data.init_groups()
 
@@ -105,12 +106,12 @@ class KanjiGrid:
         deckcb.addItems(sorted(mw.col.decks.all_names()))
         deckcb.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         deck_horizontal_layout.addWidget(QLabel("Deck: "))
-        deckcb.setCurrentText(mw.col.decks.get(config.did)['name'])
-        def change_did(deckname):
+        deckcb.setCurrentText(mw.col.decks.get(config.did)["name"])
+        def change_did(deckname: str) -> None:
             if deckname == "*":
                 config.did = "*"
                 return
-            config.did = mw.col.decks.by_name(deckname)['id']
+            config.did = mw.col.decks.by_name(deckname)["id"]
         deckcb.currentTextChanged.connect(change_did)
         deck_horizontal_layout.addWidget(deckcb)
         vertical_layout.addLayout(deck_horizontal_layout)
@@ -129,9 +130,9 @@ class KanjiGrid:
         general_tab_vertical_layout.addWidget(QLabel("Field: "))
         field = QComboBox()
         field.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        def update_fields_dropdown(deckname):
+        def update_fields_dropdown(deckname: str) -> None:
             if deckname != "*":
-                deckname = mw.col.decks.get(config.did)['name']
+                deckname = mw.col.decks.get(config.did)["name"]
             new_text = set()
             field_names = []
             for item in mw.col.models.all_names_and_ids():
@@ -140,15 +141,15 @@ class KanjiGrid:
                 model_name = model_id_name[1].replace("\\", "").replace("*", "\\*").replace("_", "\\_").replace("\"", "\\\"")
                 if len(mw.col.find_cards("\"note:" + model_name + "\" " + "\"deck:" + deckname + "\"")) > 0:
                     model_id = model_id_name[0]
-                    model_fields = mw.col.models.get(model_id)['flds']
+                    model_fields = mw.col.models.get(model_id)["flds"]
                     for field_dict in model_fields:
-                        field_dict_name = field_dict['name']
+                        field_dict_name = field_dict["name"]
                         if len(field_dict_name.split()) > 1:
                             field_dict_name = "\"" + field_dict_name + "\""
                         field_names.append(field_dict_name)
 
                     if len(model_fields) > 0:
-                        first_field_name = model_fields[0]['name']
+                        first_field_name = model_fields[0]["name"]
                         if len(first_field_name.split()) > 1:
                             first_field_name = "\"" + first_field_name + "\""
                         new_text.add(first_field_name)
@@ -175,7 +176,7 @@ class KanjiGrid:
 
         sortby = QComboBox()
         sortby.addItems([
-            *(x.pretty_value().title() for x in util.SortOrder)
+            *(x.pretty_value().title() for x in util.SortOrder),
         ])
         sortby.setCurrentIndex(config.sortby)
         general_tab_vertical_layout.addWidget(QLabel("Sort by:"))
@@ -183,7 +184,7 @@ class KanjiGrid:
 
         pagelang = QComboBox()
         pagelang.addItems(["ja", "zh","zh-Hans", "zh-Hant", "ko", "vi"])
-        def update_pagelang_dropdown():
+        def update_pagelang_dropdown() -> None:
             index = groupby.currentIndex() - 1
             if index > 0:
                 pagelang.setCurrentText(data.groupings[index].lang)
@@ -240,7 +241,7 @@ class KanjiGrid:
         data_tab_vertical_layout = QVBoxLayout()
         data_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        def set_config_attributes(config):
+        def set_config_attributes(config: types.SimpleNamespace) -> types.SimpleNamespace:
             config.fieldslist = shlex.split(field.currentText().lower())
             config.searchfilter = search_filter.text()
             config.interval = strong_interval.value()
@@ -256,14 +257,14 @@ class KanjiGrid:
         save_grid_buttons_horizontal_layout = QHBoxLayout()
         data_tab_vertical_layout.addLayout(save_grid_buttons_horizontal_layout)
 
-        def save_html_grid(config):
+        def save_html_grid(config: types.SimpleNamespace) -> None:
             new_config = set_config_attributes(config)
             save.savehtml(mw, mw, new_config, util.get_deck_name(mw, new_config))
 
         save_html_button = QPushButton("Save HTML", clicked = lambda _: save_html_grid(config))
         save_grid_buttons_horizontal_layout.addWidget(save_html_button)
 
-        def save_json_grid(config):
+        def save_json_grid(config: types.SimpleNamespace) -> None:
             new_config = set_config_attributes(config)
             units = generate_grid.kanjigrid(mw, new_config)
             save.savejson(mw, mw, new_config, util.get_deck_name(mw, new_config), units)
@@ -271,7 +272,7 @@ class KanjiGrid:
         save_json_button = QPushButton("Save JSON", clicked = lambda _: save_json_grid(config))
         save_grid_buttons_horizontal_layout.addWidget(save_json_button)
 
-        def save_txt_grid(config):
+        def save_txt_grid(config: types.SimpleNamespace) -> None:
             new_config = set_config_attributes(config)
             units = generate_grid.kanjigrid(mw, new_config)
             save.savetxt(mw, mw, new_config, util.get_deck_name(mw, new_config), units)
@@ -303,7 +304,7 @@ class KanjiGrid:
         timelapse_steps_horizontal_layout.addWidget(timelapse_step_length)
         data_tab_vertical_layout.addLayout(timelapse_steps_horizontal_layout)
 
-        def generate_timelapse(config):
+        def generate_timelapse(config: types.SimpleNamespace) -> None:
             step_size = int(float(timelapse_step_length.text()) * 86400000)
             save.savetimelapsejson(mw, mw, set_config_attributes(config), util.get_deck_name(mw, config), timelapse_start_time.dateTime().toMSecsSinceEpoch(), timelapse_end_time.dateTime().toMSecsSinceEpoch(), step_size)
 
@@ -317,13 +318,13 @@ class KanjiGrid:
         data_tab_vertical_layout.addWidget(QLabel("Manage settings:"))
         data_tab_vertical_layout.addLayout(save_reset_buttons_horizontal_layout)
 
-        def save_settings(config):
+        def save_settings(config: types.SimpleNamespace) -> None:
             config_util.set_config(mw, set_config_attributes(config))
 
         save_settings_button = QPushButton("Save Settings", clicked = lambda _: save_settings(config))
         save_reset_buttons_horizontal_layout.addWidget(save_settings_button)
 
-        def reset_settings(setup_win):
+        def reset_settings(setup_win: QDialog) -> None:
             reply = QMessageBox.question(setup_win, "Reset Settings", "Confirm reset settings")
             if reply == QMessageBox.StandardButton.Yes:
                 config_util.reset_config(mw)
