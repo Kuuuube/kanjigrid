@@ -2,8 +2,10 @@ import os
 import collections
 import json
 import traceback
+import sys
 
-from . import logger
+if "pytest" not in sys.modules:
+    from . import logger
 
 GROUPING_JSON_VERSION = 1
 
