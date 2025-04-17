@@ -11,5 +11,5 @@ if __name__ != "__main__" and "pytest" not in sys.modules:
     if mw:
         mw.kanjigrid = kanjigrid.KanjiGrid(mw)
 else:
-    print("This is an addon for the Anki spaced repetition learning system and cannot be run directly.")
-    print("Please download Anki from <https://apps.ankiweb.net/>")
+    print("This is an addon for the Anki spaced repetition learning system and cannot be run directly.")  # noqa: T201
+    print("Please download Anki from <https://apps.ankiweb.net/>")  # noqa: T201
