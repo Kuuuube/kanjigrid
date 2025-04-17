@@ -1,6 +1,9 @@
 import os
 import collections
 import json
+import traceback
+
+from . import logger
 
 GROUPING_JSON_VERSION = 1
 
@@ -24,7 +27,7 @@ def load_from_folder(groupings, path):
                 groups.append(KanjiGroup(group["name"], group["characters"]))
             groupings.append(KanjiGrouping(grouping_json["version"], grouping_json["name"], grouping_json["lang"], grouping_json["source"], grouping_json["leftover_group"], groups))
         except Exception:
-            print(f"Failed to load Kanji Grid data file \"{filepath}\". It might be corrupted or outdated.")
+            logger.error_log(f"Failed to load Kanji Grid data file \"{filepath}\". It might be corrupted or outdated.", traceback.format_exc())
 
 def init_groups():
     global groupings
