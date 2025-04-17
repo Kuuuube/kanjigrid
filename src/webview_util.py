@@ -1,9 +1,25 @@
+import traceback
+
 from aqt import mw, dialogs
 from aqt.qt import qconnect, QApplication
 from aqt.utils import tooltip
 from aqt.webview import AnkiWebView
+from enum import Enum
 
-from . import util
+from . import util, logger
+
+# mimic `AnkiWebViewKind`
+# https://github.com/ankitects/anki/blob/1a68c9f5d5bcc197b641fe7405e5d9a4823928f3/qt/aqt/webview.py#L34-L59
+class KanjiGridWebViewKind(Enum):
+    DEFAULT = "kanjigrid webview"
+
+def init_webview():
+    webview = AnkiWebView()
+    try:
+        webview.set_kind(KanjiGridWebViewKind.DEFAULT)
+    except Exception:
+        logger.error_log("Failed to set webview kind", traceback.format_exc())
+    return webview
 
 def open_search_link(wv, config, char):
     link = util.get_search(config, char)

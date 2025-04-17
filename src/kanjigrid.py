@@ -2,7 +2,6 @@ import types
 import shlex
 
 from aqt import mw, gui_hooks
-from aqt.webview import AnkiWebView
 from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
                     QVBoxLayout, QTabWidget, QLabel, QCheckBox, QSpinBox,
                     QComboBox, QPushButton, QLineEdit, Qt, qconnect,
@@ -34,7 +33,7 @@ class KanjiGrid:
         generated_html = generate_grid.generate(mw, config, units)
         self.win = QDialog(mw, Qt.WindowType.Window)
         current_win = self.win
-        self.wv = AnkiWebView()
+        self.wv = webview_util.init_webview()
         current_wv = self.wv
 
         def on_window_close(current_wv):
