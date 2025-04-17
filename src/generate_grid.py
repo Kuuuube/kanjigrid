@@ -1,12 +1,13 @@
-import urllib.parse
-import re
 import operator
-
-from functools import reduce
+import re
+import urllib.parse
 from datetime import datetime
+from functools import reduce
+
 from anki.utils import ids2str
 
-from . import util, data
+from . import data, util
+
 
 def get_grouping_overall_total(unitsList, grouping, config):
     total_count = 0

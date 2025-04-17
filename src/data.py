@@ -1,8 +1,8 @@
-import os
 import collections
 import json
-import traceback
+import os
 import sys
+import traceback
 
 if "pytest" not in sys.modules:
     from . import logger

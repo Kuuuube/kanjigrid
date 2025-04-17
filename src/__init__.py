@@ -5,6 +5,7 @@ import sys
 
 if __name__ != "__main__" and "pytest" not in sys.modules:
     from aqt import mw
+
     from . import kanjigrid
     # Save a reference to the toolkit onto the mw, preventing garbage collection of PyQt objects
     if mw:

@@ -1,14 +1,31 @@
-import types
 import shlex
+import types
 
-from aqt import mw, gui_hooks
-from aqt.qt import (QAction, QSizePolicy, QDialog, QHBoxLayout,
-                    QVBoxLayout, QTabWidget, QLabel, QCheckBox, QSpinBox,
-                    QComboBox, QPushButton, QLineEdit, Qt, qconnect,
-                    QScrollArea, QWidget, QMessageBox, QDateTimeEdit,
-                    QDateTime)
+from aqt import gui_hooks, mw
+from aqt.qt import (
+    QAction,
+    QCheckBox,
+    QComboBox,
+    QDateTime,
+    QDateTimeEdit,
+    QDialog,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QMessageBox,
+    QPushButton,
+    QScrollArea,
+    QSizePolicy,
+    QSpinBox,
+    Qt,
+    QTabWidget,
+    QVBoxLayout,
+    QWidget,
+    qconnect,
+)
 
-from . import config_util, data, util, save, generate_grid, webview_util
+from . import config_util, data, generate_grid, save, util, webview_util
+
 
 class KanjiGrid:
     def __init__(self, mw):

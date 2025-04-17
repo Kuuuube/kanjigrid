@@ -1,12 +1,13 @@
 import traceback
-
-from aqt import mw, dialogs
-from aqt.qt import qconnect, QApplication
-from aqt.utils import tooltip
-from aqt.webview import AnkiWebView
 from enum import Enum
 
-from . import util, logger
+from aqt import dialogs, mw
+from aqt.qt import QApplication, qconnect
+from aqt.utils import tooltip
+from aqt.webview import AnkiWebView
+
+from . import logger, util
+
 
 # mimic `AnkiWebViewKind`
 # https://github.com/ankitects/anki/blob/1a68c9f5d5bcc197b641fe7405e5d9a4823928f3/qt/aqt/webview.py#L34-L59

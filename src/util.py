@@ -1,7 +1,7 @@
-import re
-import unicodedata
 import collections
 import enum
+import re
+import unicodedata
 from colorsys import hsv_to_rgb
 
 unit_tuple = collections.namedtuple("unit", "idx value avg_interval seen_cards_count unseen_cards_count")

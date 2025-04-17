@@ -1,13 +1,21 @@
-import os
-import json
 import datetime
+import json
+import os
 import re
-from aqt.utils import showInfo, showCritical
+
 from aqt.operations import QueryOp
-from aqt.qt import (QStandardPaths, QFileDialog, QTimer, QPageLayout, QPageSize,
-                    QMarginsF)
+from aqt.qt import (
+    QFileDialog,
+    QMarginsF,
+    QPageLayout,
+    QPageSize,
+    QStandardPaths,
+    QTimer,
+)
+from aqt.utils import showCritical, showInfo
 
 from . import generate_grid
+
 
 def get_filename(name):
     current_date = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
