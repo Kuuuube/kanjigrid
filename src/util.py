@@ -1,10 +1,9 @@
+import collections
 import enum
 import re
-import typing
 import unicodedata
-from colorsys import hsv_to_rgb
 
-unit_tuple = typing.namedtuple("unit", "idx value avg_interval seen_cards_count unseen_cards_count")
+unit_tuple = collections.namedtuple("unit", "idx value avg_interval seen_cards_count unseen_cards_count")
 
 class SortOrder(enum.Enum):
     NONE = 0

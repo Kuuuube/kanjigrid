@@ -1,4 +1,4 @@
-import typing
+import collections
 import json
 import os
 import sys
@@ -9,8 +9,8 @@ if "pytest" not in sys.modules:
 
 GROUPING_JSON_VERSION = 1
 
-KanjiGrouping = typing.namedtuple("KanjiGroups", ["version", "name", "lang", "source", "leftover_group", "groups"])
-KanjiGroup = typing.namedtuple("KanjiGroup", ["name", "characters"])
+KanjiGrouping = collections.namedtuple("KanjiGroups", ["version", "name", "lang", "source", "leftover_group", "groups"])
+KanjiGroup = collections.namedtuple("KanjiGroup", ["name", "characters"])
 
 groupings = []
 
