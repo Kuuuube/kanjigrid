@@ -57,7 +57,7 @@ Documentation for the Kanji Grid config.
 
 - `defaultdeck` The default deck in the `Deck` dropdown. Defaults to the currently selected deck if no value is found.
 
-- `pattern` The default text in the `Field` dropdown box. Controls which field(s) to look for kanji in. Defaults to the first field of the selected deck if no value is found.
+- `defaultfield` The default text in the `Field` dropdown box. Controls which field(s) to look for kanji in. Defaults to the first field of the selected deck if no value is found.
 
 - `interval` The default text in the `Card interval considered strong` box. Sets the interval for cards to be given the Strong color on the grid.
 
@@ -128,7 +128,7 @@ Changelog compared to the old kanji grid add-on.
 
 - Field selector now uses a dropdown/text box combo instead of a text box.
 
-    The default field value can be overwritten by setting `pattern` in `config.json`.
+    The default field value can be overwritten by setting `defaultfield` in `config.json`.
 
 - All decks can be searched at once by selecting `*` in the deck dropdown.
 

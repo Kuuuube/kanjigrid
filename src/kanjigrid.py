@@ -166,8 +166,8 @@ class KanjiGrid:
                         new_text.add(first_field_name)
             field.clear()
             field.addItems(field_names)
-            if config.pattern != "":
-                field.setCurrentText(config.pattern)
+            if config.defaultfield != "":
+                field.setCurrentText(config.defaultfield)
             else:
                 field.setCurrentText(" ".join(new_text))
         field.setEditable(True)

@@ -1,11 +1,11 @@
 config_schema = {
     "version": {
-        "default": 1,
+        "default": 2,
     },
     "defaultdeck": {
         "default": "",
     },
-    "pattern": {
+    "defaultfield": {
         "default": "",
     },
     "interval": {
@@ -133,7 +133,7 @@ def validate_config(config):
     return config
 
 def migrate_config(config):
-    config_updates = [config_update_1]
+    config_updates = [config_update_1, config_update_2]
     if len(config_updates) > config["version"]:
         for config_update in config_updates[config["version"]:]:
             config = config_update(config)
@@ -151,4 +151,9 @@ def config_update_1(config):
 
         del config["browseonclick"]
         del config["copyonclick"]
+    return config
+
+def config_update_2(config):
+    config["defaultfield"] = config["pattern"]
+    del config["pattern"]
     return config
