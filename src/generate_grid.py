@@ -11,27 +11,29 @@ from . import data, util
 
 def get_grouping_overall_total(unitsList, grouping, config):
     total_count = 0
-    count_known = 0
+    overall_count_known = 0
+    grouping_count_known = 0
     grouping_unique_characters = set("".join(group.characters for group in grouping.groups))
     grouping_unique_characters_count = len(grouping_unique_characters)
     for unit in unitsList:
-        if unit.value not in grouping_unique_characters:
-            continue
+        in_grouping = unit.value in grouping_unique_characters
 
         if unit.seen_cards_count != 0 or config.unseen:
             total_count += 1
             bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.seen_cards_count, config.gradientcolors, config.kanjitileunseencolor)
             if unit.seen_cards_count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
-                count_known += 1
+                overall_count_known += 1
+                if in_grouping:
+                    grouping_count_known += 1
 
-    percent_known_overall = "{:.2f}".format(round(count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%"
-    percent_known_grouping = "{:.2f}".format(round(count_known / (grouping_unique_characters_count if grouping_unique_characters_count > 0 else 1) * 100, 2)) + "%"
-    if count_known == 0:
+    percent_known_overall = "{:.2f}".format(round(overall_count_known / (total_count if total_count > 0 else 1) * 100, 2)) + "%"
+    percent_known_grouping = "{:.2f}".format(round(grouping_count_known / (grouping_unique_characters_count if grouping_unique_characters_count > 0 else 1) * 100, 2)) + "%"
+    if overall_count_known == 0:
         percent_known_overall = "0%"
         percent_known_grouping = "0%"
 
-    overall_total = "<h4>" + str(count_known) + " of " + str(total_count) + " Known Overall - " + percent_known_overall + "<br>\n"
-    within_grouping_total = str(count_known) + " of " + str(grouping_unique_characters_count) + " Known in Grouping - " + percent_known_grouping + "</h4>\n"
+    overall_total = "<h4>" + str(overall_count_known) + " of " + str(total_count) + " Known Overall - " + percent_known_overall + "<br>\n"
+    within_grouping_total = str(grouping_count_known) + " of " + str(grouping_unique_characters_count) + " Known in Grouping - " + percent_known_grouping + "</h4>\n"
     return overall_total + within_grouping_total
 
 def generate(mw, config, units, export = False):
