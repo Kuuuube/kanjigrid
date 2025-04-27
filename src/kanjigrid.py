@@ -94,6 +94,16 @@ class KanjiGrid:
     def setup(self) -> None:
         config = types.SimpleNamespace(**config_util.get_config(mw))
         config.did = mw.col.conf["curDeck"]
+        def change_did(deckname: str) -> None:
+            if deckname == "*":
+                config.did = "*"
+                return
+            selected_deck_info = mw.col.decks.by_name(deckname)
+            if selected_deck_info:
+                config.did = selected_deck_info["id"]
+            else:
+                config.did = "*"
+                deckcb.setCurrentText("*")
 
         data.init_groups()
 
@@ -106,13 +116,14 @@ class KanjiGrid:
         deckcb.addItems(sorted(mw.col.decks.all_names()))
         deckcb.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         deck_horizontal_layout.addWidget(QLabel("Deck: "))
-        deckcb.setCurrentText(mw.col.decks.get(config.did)["name"])
-        def change_did(deckname: str) -> None:
-            if deckname == "*":
-                config.did = "*"
-                return
-            config.did = mw.col.decks.by_name(deckname)["id"]
+
+        default_deck_name = config.defaultdeck
+        if default_deck_name == "":
+            default_deck_name = mw.col.decks.get(config.did)["name"]
+        deckcb.setCurrentText(default_deck_name)
+        change_did(default_deck_name)
         deckcb.currentTextChanged.connect(change_did)
+
         deck_horizontal_layout.addWidget(deckcb)
         vertical_layout.addLayout(deck_horizontal_layout)
 

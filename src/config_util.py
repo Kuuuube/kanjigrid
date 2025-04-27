@@ -5,6 +5,9 @@ config_schema = {
     "pattern": {
         "default": "",
     },
+    "defaultdeck": {
+        "default": "",
+    },
     "interval": {
         "default": 180,
     },

@@ -1,6 +1,7 @@
 {
     "version": 1,
     "pattern": "",
+    "defaultdeck": "",
     "interval": 180,
     "groupby": 0,
     "sortby": 2,
