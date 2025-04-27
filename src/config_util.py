@@ -2,10 +2,10 @@ config_schema = {
     "version": {
         "default": 1,
     },
-    "pattern": {
+    "defaultdeck": {
         "default": "",
     },
-    "defaultdeck": {
+    "pattern": {
         "default": "",
     },
     "interval": {
