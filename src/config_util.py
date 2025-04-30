@@ -8,6 +8,9 @@ config_schema = {
     "defaultfield": {
         "default": "",
     },
+    "savedefaultfield": {
+        "default": False,
+    },
     "interval": {
         "default": 180,
     },

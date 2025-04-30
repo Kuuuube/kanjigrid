@@ -254,6 +254,8 @@ class KanjiGrid:
 
         def set_config_attributes(config: types.SimpleNamespace) -> types.SimpleNamespace:
             config.fieldslist = shlex.split(field.currentText().lower())
+            config.savedefaultfield = save_defaultfield.isChecked()
+            config.defaultfield = " ".join(config.fieldslist) if config.savedefaultfield else ""
             config.searchfilter = search_filter.text()
             config.interval = strong_interval.value()
             config.groupby = groupby.currentIndex()
@@ -327,6 +329,11 @@ class KanjiGrid:
 
         save_reset_buttons_horizontal_layout = QHBoxLayout()
         data_tab_vertical_layout.addWidget(QLabel("Manage settings:"))
+
+        save_defaultfield = QCheckBox("Save fields")
+        save_defaultfield.setChecked(config.savedefaultfield)
+        data_tab_vertical_layout.addWidget(save_defaultfield)
+
         data_tab_vertical_layout.addLayout(save_reset_buttons_horizontal_layout)
 
         def save_settings(config: types.SimpleNamespace) -> None:
