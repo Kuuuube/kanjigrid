@@ -258,10 +258,12 @@ class KanjiGrid:
                 config.defaultdeck = deckcb.currentText()
             if save_defaultfield.isChecked():
                 config.defaultfield = field.currentText()
+            if save_groupby.isChecked():
+                config.groupby = groupby.currentIndex()
+            if save_sortby.isChecked():
+                config.sortby = sortby.currentIndex()
             config.searchfilter = search_filter.text()
             config.interval = strong_interval.value()
-            config.groupby = groupby.currentIndex()
-            config.sortby = sortby.currentIndex()
             config.lang = pagelang.currentText()
             config.unseen = shnew.isChecked()
             config.timetravel_enabled = time_travel_default_time.toMSecsSinceEpoch() != time_travel_datetime.dateTime().toMSecsSinceEpoch()
@@ -341,6 +343,14 @@ class KanjiGrid:
         save_defaultfield = QCheckBox("Save fields")
         save_defaultfield.setChecked(False)
         save_options_horizontal_layout.addWidget(save_defaultfield)
+
+        save_groupby = QCheckBox("Save group by")
+        save_groupby.setChecked(False)
+        save_options_horizontal_layout.addWidget(save_groupby)
+
+        save_sortby = QCheckBox("Save sort by")
+        save_sortby.setChecked(False)
+        save_options_horizontal_layout.addWidget(save_sortby)
 
         save_reset_buttons_horizontal_layout = QHBoxLayout()
         data_tab_vertical_layout.addLayout(save_reset_buttons_horizontal_layout)
