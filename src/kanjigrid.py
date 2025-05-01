@@ -255,7 +255,7 @@ class KanjiGrid:
         def set_config_attributes(config: types.SimpleNamespace) -> types.SimpleNamespace:
             config.fieldslist = shlex.split(field.currentText().lower())
             if save_defaultfield.isChecked():
-                config.defaultfield = " ".join(config.fieldslist)
+                config.defaultfield = field.currentText()
             config.searchfilter = search_filter.text()
             config.interval = strong_interval.value()
             config.groupby = groupby.currentIndex()
