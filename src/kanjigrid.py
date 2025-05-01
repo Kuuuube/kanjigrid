@@ -342,14 +342,6 @@ class KanjiGrid:
         save_defaultfield.setChecked(False)
         save_options_horizontal_layout.addWidget(save_defaultfield)
 
-        save_groupby = QCheckBox("Save group by")
-        save_groupby.setChecked(False)
-        save_options_horizontal_layout.addWidget(save_groupby)
-
-        save_sortby = QCheckBox("Save sort by")
-        save_sortby.setChecked(False)
-        save_options_horizontal_layout.addWidget(save_sortby)
-
         save_reset_buttons_horizontal_layout = QHBoxLayout()
         data_tab_vertical_layout.addLayout(save_reset_buttons_horizontal_layout)
 
