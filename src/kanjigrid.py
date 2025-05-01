@@ -138,7 +138,7 @@ class KanjiGrid:
         general_tab_vertical_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         field_horizontal_layout = QHBoxLayout()
-        general_tab_vertical_layout.addWidget(QLabel("Field: "))
+        general_tab_vertical_layout.addWidget(QLabel("Fields: "))
         field = QComboBox()
         field.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         def update_fields_dropdown(deckname: str) -> None:
