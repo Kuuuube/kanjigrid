@@ -160,6 +160,8 @@ Changelog compared to the old kanji grid add-on.
 
 - Added kanji totals to the top of the grid when a grouping is selected.
 
+- Added option to selectively save deck and fields.
+
 ### Config and Options
 
 - Config validation and safer loading to help prevent crashes.
