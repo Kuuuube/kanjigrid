@@ -1,6 +1,7 @@
 import collections
 import enum
 import re
+import types
 import unicodedata
 
 unit_tuple = collections.namedtuple("unit", "idx value avg_interval seen_cards_count unseen_cards_count")
@@ -43,13 +44,13 @@ def scoreAdjust(score: float) -> float:
     score += 1
     return 1 - 1 / (score * score)
 
-def addUnitData(units, unitKey, i, card, kanjionly):
-    validKey = ignored_characters.find(unitKey) == -1 and (not kanjionly or isKanji(unitKey))
-    if validKey:
-        if unitKey not in units:
-            unit = unit_tuple(0, unitKey, 0.0, 0, 0)
-            units[unitKey] = unit
-        units[unitKey] = addDataFromCard(units[unitKey], i, card)
+def addUnitData(units, unit_key, i, card, kanjionly) -> None:
+    valid_key = ignored_characters.find(unit_key) == -1 and (not kanjionly or isKanji(unit_key))
+    if valid_key:
+        if unit_key not in units:
+            unit = unit_tuple(0, unit_key, 0.0, 0, 0)
+            units[unit_key] = unit
+        units[unit_key] = addDataFromCard(units[unit_key], i, card)
 
 def addDataFromCard(unit, idx, card):
     new_idx = unit.idx
@@ -79,7 +80,7 @@ def hex_to_rgb(hex_string: str) -> (int, int, int):
 def rgb_to_hex(r: int, g: int, b: int) -> str:
     return f"#{r:02X}{g:02X}{b:02X}"
 
-def get_gradient_color_hex(score, gradient_colors):
+def get_gradient_color_hex(score, gradient_colors) -> str:
     max_color_index = len(gradient_colors) - 1
 
     starting_color_index = int(score * max_color_index)
@@ -98,12 +99,12 @@ def get_gradient_color_hex(score, gradient_colors):
     b = round(b1 + (b2 - b1) * percent)
     return rgb_to_hex(r, g, b)
 
-def get_background_color(avg_interval, config_interval, count, gradient_colors, kanjitileunseencolor, missing=False):
+def get_background_color(avg_interval, config_interval, count, gradient_colors, kanjitileunseencolor) -> str:
     if count != 0:
         return get_gradient_color_hex(scoreAdjust(avg_interval / config_interval), gradient_colors)
     return kanjitileunseencolor
 
-def get_font_css(config) -> str:
+def get_font_css(config: types.SimpleNamespace) -> str:
     if config.lang == "ja":
         return config.jafontcss
     if config.lang ==  "zh":
@@ -118,7 +119,7 @@ def get_font_css(config) -> str:
         return config.vifontcss
     return ""
 
-def get_search(config, char: str):
+def get_search(config: types.SimpleNamespace, char: str):
     search_url = ""
     if config.lang == "ja":
         search_url = config.jasearch
@@ -137,13 +138,13 @@ def get_search(config, char: str):
 def get_browse_command(char: str) -> str:
     return "javascript:bridgeCommand('" + char + "');"
 
-def fields_to_query(fields) -> str:
+def fields_to_query(fields: list) -> str:
     query_strings = []
     for field in fields:
         query_strings.append("\"" + str(field) + ":*\"")
     return " OR ".join(query_strings)
 
-def make_query(deck_ids, fields) -> str:
+def make_query(deck_ids: list, fields: list) -> str:
     query_strings = []
     fields_string = fields_to_query(fields)
     for deck_id in deck_ids:
@@ -157,7 +158,7 @@ def safe_unicodedata_name(char: str, default: str = "") -> str:
     except Exception:  # noqa: BLE001
         return default
 
-def get_deck_name(mw, config):
+def get_deck_name(mw, config: types.SimpleNamespace) -> str:
     deckname = config.did
     if config.did != "*":
         deckname = mw.col.decks.name(config.did)

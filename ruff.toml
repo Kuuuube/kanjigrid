@@ -19,6 +19,8 @@ ignore = [
     "Q003", #Checks for strings that include escaped quotes, and suggests changing the quote style to avoid the need to escape them.
     "D102", #Checks for undocumented public method definitions.
     "PYI024", #Checks for uses of `collections.namedtuple` in stub files.
+    "PLR0913", #Checks for function definitions that include too many arguments.
+    "PLR0911", #Checks for functions or methods with too many return statements.
 ]
 target-version = "py39" #Set minimum version to 3.9 due to Anki still shipping 3.9 in windows packages as of 24.11 (Nov 26, 2024)
 
@@ -28,4 +30,7 @@ target-version = "py39" #Set minimum version to 3.9 due to Anki still shipping 3
     "T201",
     "BLE001",
     "S110",
+]
+"util.py" = [
+    "RUF001",
 ]

@@ -1,4 +1,5 @@
 import traceback
+import types
 from enum import Enum
 
 from aqt import dialogs, mw
@@ -22,7 +23,7 @@ def init_webview() -> None:
         logger.error_log("Failed to set webview kind", traceback.format_exc())
     return webview
 
-def open_search_link(wv: AnkiWebView, config, char: str) -> None:
+def open_search_link(wv: AnkiWebView, config: types.SimpleNamespace, char: str) -> None:
     link = util.get_search(config, char)
     # aqt.utils.openLink is an alternative
     wv.eval(f"window.open('{link}', '_blank');")
@@ -42,10 +43,10 @@ def open_note_browser(deckname: str, fields_list: list, additional_search_filter
 def on_copy_cmd(char: str) -> None:
     QApplication.clipboard().setText(char)
 
-def on_browse_cmd(char: str, config, deckname: str) -> None:
+def on_browse_cmd(char: str, config: types.SimpleNamespace, deckname: str) -> None:
     open_note_browser(deckname, config.fieldslist, config.searchfilter, char)
 
-def on_search_cmd(char: str, wv: AnkiWebView, config) -> None:
+def on_search_cmd(char: str, wv: AnkiWebView, config: types.SimpleNamespace) -> None:
     open_search_link(wv, config, char)
 
 def on_find_cmd(wv: AnkiWebView) -> None:
@@ -59,14 +60,14 @@ def on_find_cmd(wv: AnkiWebView) -> None:
         tooltip(f"\"{tooltip_char}\" is not valid kanji.")
         return
 
-    def findTextCallback(found: bool) -> None:
+    def find_text_callback(found: bool) -> None:
         if not found:
           tooltip(f"\"{char}\" not found in grid.")
 
     # qt's findText impl is bugged and inconvenient, so we use our own
-    wv.evalWithCallback(f"findChar('{char}');", findTextCallback)
+    wv.evalWithCallback(f"findChar('{char}');", find_text_callback)
 
-def add_webview_context_menu_items(wv: AnkiWebView, expected_wv: AnkiWebView, menu, config, deckname: str, char: str) -> None:
+def add_webview_context_menu_items(wv: AnkiWebView, expected_wv: AnkiWebView, menu, config: types.SimpleNamespace, deckname: str, char: str) -> None:
     # hook is active while kanjigrid is open, and right clicking on the main window (deck list) will also trigger this, so check wv
     if wv is not expected_wv:
       return

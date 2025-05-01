@@ -1,5 +1,6 @@
 import operator
 import re
+import types
 import urllib.parse
 from datetime import datetime
 from functools import reduce
@@ -9,7 +10,7 @@ from anki.utils import ids2str
 from . import data, util
 
 
-def get_grouping_overall_total(unitsList, grouping, config):
+def get_grouping_overall_total(unitsList, grouping, config: types.SimpleNamespace) -> str:
     total_count = 0
     overall_count_known = 0
     grouping_count_known = 0
@@ -36,8 +37,8 @@ def get_grouping_overall_total(unitsList, grouping, config):
     within_grouping_total = str(grouping_count_known) + " of " + str(grouping_unique_characters_count) + " Known in Grouping - " + percent_known_grouping + "</h4>\n"
     return overall_total + within_grouping_total
 
-def generate(mw, config, units, export = False):
-    def kanjitile(char, bgcolor, seen_cards_count = 0, unseen_cards_count = 0, avg_interval = 0):
+def generate(mw, config: types.SimpleNamespace, units, export: bool = False) -> str:
+    def kanjitile(char: str, bgcolor, seen_cards_count: int = 0, unseen_cards_count: int = 0, avg_interval: int = 0):
         tile = ""
 
         context_menu_events = f" onmouseenter=\"bridgeCommand('h:{char}');\" onmouseleave=\"bridgeCommand('l:{char}');\"" if not export else ""
@@ -66,7 +67,7 @@ def generate(mw, config, units, export = False):
 
     deckname = "*"
     if config.did != "*":
-        deckname = mw.col.decks.name(config.did).rsplit('::', 1)[-1]
+        deckname = mw.col.decks.name(config.did).rsplit("::", 1)[-1]
 
     result_html  = "<!doctype html><html lang=\"" + config.lang + "\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>"
     result_html += "<style type=\"text/css\">" + HEADER_CSS_SNIPPET
@@ -129,7 +130,7 @@ def generate(mw, config, units, export = False):
             for unit in sorted_units:
                 if unit.seen_cards_count != 0 or config.unseen:
                     count_found += 1
-                    bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.seen_cards_count, config.gradientcolors, config.kanjitileunseencolor, missing = False)
+                    bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.seen_cards_count, config.gradientcolors, config.kanjitileunseencolor)
                     if unit.seen_cards_count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
                         count_known += 1
                     table += kanjitile(unit.value, bgcolor, unit.seen_cards_count, unit.unseen_cards_count, unit.avg_interval)
@@ -158,7 +159,7 @@ def generate(mw, config, units, export = False):
         for unit in [u for u in unitsList if u.value not in chars]:
             if unit.seen_cards_count != 0 or config.unseen:
                 total_count += 1
-                bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.seen_cards_count, config.gradientcolors, config.kanjitileunseencolor, missing = False)
+                bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.seen_cards_count, config.gradientcolors, config.kanjitileunseencolor)
                 if unit.seen_cards_count != 0 or bgcolor not in [config.gradientcolors[0], config.kanjitileunseencolor]:
                     count_known += 1
                 table += kanjitile(unit.value, bgcolor, unit.seen_cards_count, unit.unseen_cards_count, unit.avg_interval)
@@ -223,7 +224,7 @@ def timetravel(card, revlog, timetravel_time):
 
     return True
 
-def kanjigrid(mw, config):
+def kanjigrid(mw, config: types.SimpleNamespace):
     dids = [config.did]
     if config.did == "*":
         dids = mw.col.decks.all_ids()
@@ -242,27 +243,27 @@ def kanjigrid(mw, config):
     timetravel_time = config.timetravel_time
     revlog = get_revlog(mw, cids, timetravel_time) if timetravel_enabled else {}
 
-    units = dict()
-    notes = dict()
+    units = {}
+    notes = {}
     for i in cids:
         card = mw.col.get_card(i)
         # tradeoff between branching and mutating here vs collecting all the cards and then filtermapping 
         if timetravel_enabled and not timetravel(card, revlog, timetravel_time):
             continue # ignore card
-        if card.nid not in notes.keys():
+        if card.nid not in notes:
             keys = card.note().keys()
-            unitKey = set()
+            unit_key = set()
             matches = operator.eq
             for keyword in config.fieldslist:
                 for key in keys:
                     if matches(key.lower(), keyword):
-                        unitKey.update(set(card.note()[key]))
+                        unit_key.update(set(card.note()[key]))
                         break
-            notes[card.nid] = unitKey
+            notes[card.nid] = unit_key
         else:
-            unitKey = notes[card.nid]
-        if unitKey is not None:
-            for ch in unitKey:
+            unit_key = notes[card.nid]
+        if unit_key is not None:
+            for ch in unit_key:
                 util.addUnitData(units, ch, i, card, config.kanjionly)
     return units
 

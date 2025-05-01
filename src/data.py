@@ -15,7 +15,7 @@ KanjiGroup = collections.namedtuple("KanjiGroup", ["name", "characters"])
 groupings = []
 
 
-def load_from_folder(groupings, path):
+def load_from_folder(groupings, path: str) -> None:
     for file in os.listdir(path):
         filepath = path + "/" + file
         try:
@@ -31,7 +31,7 @@ def load_from_folder(groupings, path):
         except Exception:
             logger.error_log(f"Failed to load Kanji Grid data file \"{filepath}\". It might be corrupted or outdated.", traceback.format_exc())
 
-def init_groups():
+def init_groups() -> None:
     global groupings
     groupings = []
     cwd = os.path.dirname(__file__)
@@ -45,7 +45,7 @@ def init_groups():
 
     groupings.sort(key = lambda group: group.lang + group.name)
 
-def migrate_grouping(grouping_json):
+def migrate_grouping(grouping_json: dict) -> dict:
     if "version" not in grouping_json:
         grouping_json["version"] = 0
 
@@ -56,7 +56,7 @@ def migrate_grouping(grouping_json):
         grouping_json["version"] = GROUPING_JSON_VERSION
     return grouping_json
 
-def grouping_update_1(grouping_json):
+def grouping_update_1(grouping_json: dict) -> dict:
     new_grouping_json = {}
     new_grouping_json["version"] = grouping_json["version"]
     new_grouping_json["name"] = grouping_json["name"]
@@ -67,5 +67,4 @@ def grouping_update_1(grouping_json):
     new_grouping_json["groups"] = []
     for group in grouping_json["data"]:
         new_grouping_json["groups"].append({"name": group[0], "characters": group[1]})
-    grouping_json = new_grouping_json
-    return grouping_json
+    return new_grouping_json
