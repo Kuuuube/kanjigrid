@@ -258,12 +258,10 @@ class KanjiGrid:
                 config.defaultdeck = deckcb.currentText()
             if save_defaultfield.isChecked():
                 config.defaultfield = field.currentText()
-            if save_groupby.isChecked():
-                config.groupby = groupby.currentIndex()
-            if save_sortby.isChecked():
-                config.sortby = sortby.currentIndex()
             config.searchfilter = search_filter.text()
             config.interval = strong_interval.value()
+            config.groupby = groupby.currentIndex()
+            config.sortby = sortby.currentIndex()
             config.lang = pagelang.currentText()
             config.unseen = shnew.isChecked()
             config.timetravel_enabled = time_travel_default_time.toMSecsSinceEpoch() != time_travel_datetime.dateTime().toMSecsSinceEpoch()
