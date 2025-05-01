@@ -254,6 +254,8 @@ class KanjiGrid:
 
         def set_config_attributes(config: types.SimpleNamespace) -> types.SimpleNamespace:
             config.fieldslist = shlex.split(field.currentText().lower())
+            if save_defaultdeck.isChecked():
+                config.defaultdeck = deckcb.currentText()
             if save_defaultfield.isChecked():
                 config.defaultfield = field.currentText()
             config.searchfilter = search_filter.text()
@@ -327,13 +329,20 @@ class KanjiGrid:
         timelapse_note.setStyleSheet("color: gray")
         data_tab_vertical_layout.addWidget(timelapse_note)
 
-        save_reset_buttons_horizontal_layout = QHBoxLayout()
         data_tab_vertical_layout.addWidget(QLabel("Manage settings:"))
+
+        save_options_horizontal_layout = QHBoxLayout()
+        data_tab_vertical_layout.addLayout(save_options_horizontal_layout)
+
+        save_defaultdeck = QCheckBox("Save deck")
+        save_defaultdeck.setChecked(False)
+        save_options_horizontal_layout.addWidget(save_defaultdeck)
 
         save_defaultfield = QCheckBox("Save fields")
         save_defaultfield.setChecked(False)
-        data_tab_vertical_layout.addWidget(save_defaultfield)
+        save_options_horizontal_layout.addWidget(save_defaultfield)
 
+        save_reset_buttons_horizontal_layout = QHBoxLayout()
         data_tab_vertical_layout.addLayout(save_reset_buttons_horizontal_layout)
 
         def save_settings(config: types.SimpleNamespace) -> None:
