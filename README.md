@@ -186,6 +186,10 @@ Changelog compared to the old kanji grid add-on.
 
 - Added support for configuring text colors used in kanji grid generation.
 
+- Added `defaultdeck` option.
+
+- Renamed `pattern` to `defaultfield` to be more easily understood.
+
 ### Groupings
 
 - Groupings are now contained in individual json files instead of a single python file.
