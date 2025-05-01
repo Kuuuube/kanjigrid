@@ -2,7 +2,6 @@
     "version": 2,
     "defaultdeck": "",
     "defaultfield": "",
-    "savedefaultfield": false,
     "interval": 180,
     "groupby": 0,
     "sortby": 2,
