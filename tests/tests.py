@@ -61,7 +61,7 @@ def test_data_contains_only_cjk_characters():
         for grouping_data in data_json["groups"]:
             kanji_list = grouping_data["characters"]
             for kanji in kanji_list:
-                assert(util.isKanji(kanji)), (filepath, kanji)
+                assert(util.is_kanji(kanji)), (filepath, kanji)
 
 def test_data_update():
     import json

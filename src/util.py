@@ -37,22 +37,22 @@ ignored_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" + \
           "☆★＊○●◎〇◯“…『』#♪ﾞ〉〈→》《π×"
 
 cjk_re = re.compile("CJK (UNIFIED|COMPATIBILITY) IDEOGRAPH")
-def isKanji(unichar: str) -> bool:
+def is_kanji(unichar: str) -> bool:
     return bool(cjk_re.match(safe_unicodedata_name(unichar)))
 
-def scoreAdjust(score: float) -> float:
+def score_adjust(score: float) -> float:
     score += 1
     return 1 - 1 / (score * score)
 
-def addUnitData(units, unit_key, i, card, kanjionly) -> None:
-    valid_key = ignored_characters.find(unit_key) == -1 and (not kanjionly or isKanji(unit_key))
+def add_unit_data(units, unit_key, i, card, kanjionly) -> None:
+    valid_key = ignored_characters.find(unit_key) == -1 and (not kanjionly or is_kanji(unit_key))
     if valid_key:
         if unit_key not in units:
             unit = unit_tuple(0, unit_key, 0.0, 0, 0)
             units[unit_key] = unit
-        units[unit_key] = addDataFromCard(units[unit_key], i, card)
+        units[unit_key] = add_data_from_card(units[unit_key], i, card)
 
-def addDataFromCard(unit, idx, card):
+def add_data_from_card(unit, idx, card):
     new_idx = unit.idx
     new_avg_interval = unit.avg_interval
     seen_cards_count = unit.seen_cards_count
@@ -101,7 +101,7 @@ def get_gradient_color_hex(score, gradient_colors) -> str:
 
 def get_background_color(avg_interval, config_interval, count, gradient_colors, kanjitileunseencolor) -> str:
     if count != 0:
-        return get_gradient_color_hex(scoreAdjust(avg_interval / config_interval), gradient_colors)
+        return get_gradient_color_hex(score_adjust(avg_interval / config_interval), gradient_colors)
     return kanjitileunseencolor
 
 def get_font_css(config: types.SimpleNamespace) -> str:

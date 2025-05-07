@@ -53,7 +53,7 @@ def on_find_cmd(wv: AnkiWebView) -> None:
     char = QApplication.clipboard().text().strip()
 
     # limit searches to kanji to prevent js injection
-    if not util.isKanji(char):
+    if not util.is_kanji(char):
         # truncate in case there's random garbage in the clipboard
         len_limit = 20
         tooltip_char = char if len(char) <= len_limit else char[:len_limit] + "..."

@@ -46,7 +46,7 @@ def generate(mw, config: types.SimpleNamespace, units, export: bool = False) -> 
         if config.tooltips:
             tooltip = "Character: %s" % util.safe_unicodedata_name(char)
             if avg_interval:
-                tooltip += " | Avg Interval: " + str("{:.2f}".format(avg_interval)) + " | Score: " + str("{:.2f}".format(util.scoreAdjust(avg_interval / config.interval)))
+                tooltip += " | Avg Interval: " + str("{:.2f}".format(avg_interval)) + " | Score: " + str("{:.2f}".format(util.score_adjust(avg_interval / config.interval)))
             tooltip += " | Unseen: " + str(unseen_cards_count) + " | Seen: " + str(seen_cards_count)
             tile += "\t<div class=\"grid-item\" style=\"background:%s;\" title=\"%s\"%s>" % (bgcolor, tooltip, context_menu_events)
         else:
@@ -104,8 +104,8 @@ def generate(mw, config: types.SimpleNamespace, units, export: bool = False) -> 
     unitsList = {
         util.SortOrder.NONE:      sorted(units.values(), key=lambda unit: (unit.idx, unit.seen_cards_count)),
         util.SortOrder.UNICODE:   sorted(units.values(), key=lambda unit: (util.safe_unicodedata_name(unit.value), unit.seen_cards_count)),
-        util.SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (util.scoreAdjust(unit.avg_interval / config.interval), unit.seen_cards_count), reverse=True),
-        util.SortOrder.SEEN_CARDS_COUNT: sorted(units.values(), key=lambda unit: (unit.seen_cards_count, util.scoreAdjust(unit.avg_interval / config.interval)), reverse=True),
+        util.SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (util.score_adjust(unit.avg_interval / config.interval), unit.seen_cards_count), reverse=True),
+        util.SortOrder.SEEN_CARDS_COUNT: sorted(units.values(), key=lambda unit: (unit.seen_cards_count, util.score_adjust(unit.avg_interval / config.interval)), reverse=True),
         util.SortOrder.UNSEEN_CARDS_COUNT:  sorted(units.values(), key=lambda unit: (unit.unseen_cards_count), reverse=True),
     }[util.SortOrder(config.sortby)]
 
@@ -264,7 +264,7 @@ def kanjigrid(mw, config: types.SimpleNamespace):
             unit_key = notes[card.nid]
         if unit_key is not None:
             for ch in unit_key:
-                util.addUnitData(units, ch, i, card, config.kanjionly)
+                util.add_unit_data(units, ch, i, card, config.kanjionly)
     return units
 
 HEADER_CSS_SNIPPET = """
