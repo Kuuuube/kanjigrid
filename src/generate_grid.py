@@ -10,13 +10,13 @@ from anki.utils import ids2str
 from . import data, util
 
 
-def get_grouping_overall_total(unitsList, grouping, config: types.SimpleNamespace) -> str:
+def get_grouping_overall_total(units_list: list, grouping: data.KanjiGrouping, config: types.SimpleNamespace) -> str:
     total_count = 0
     overall_count_known = 0
     grouping_count_known = 0
     grouping_unique_characters = set("".join(group.characters for group in grouping.groups))
     grouping_unique_characters_count = len(grouping_unique_characters)
-    for unit in unitsList:
+    for unit in units_list:
         in_grouping = unit.value in grouping_unique_characters
 
         if unit.seen_cards_count != 0 or config.unseen:
@@ -38,7 +38,7 @@ def get_grouping_overall_total(unitsList, grouping, config: types.SimpleNamespac
     return overall_total + within_grouping_total
 
 def generate(mw, config: types.SimpleNamespace, units, export: bool = False) -> str:
-    def kanjitile(char: str, bgcolor, seen_cards_count: int = 0, unseen_cards_count: int = 0, avg_interval: int = 0):
+    def kanjitile(char: str, bgcolor: str, seen_cards_count: int = 0, unseen_cards_count: int = 0, avg_interval: int = 0) -> str:
         tile = ""
 
         context_menu_events = f" onmouseenter=\"bridgeCommand('h:{char}');\" onmouseleave=\"bridgeCommand('l:{char}');\"" if not export else ""
@@ -101,7 +101,7 @@ def generate(mw, config: types.SimpleNamespace, units, export: bool = False) -> 
     result_html += "<hr style=\"border-style: dashed;border-color: #666;width: 100%;\">\n"
     result_html += "<div style=\"text-align: center;\">\n"
 
-    unitsList = {
+    units_list = {
         util.SortOrder.NONE:      sorted(units.values(), key=lambda unit: (unit.idx, unit.seen_cards_count)),
         util.SortOrder.UNICODE:   sorted(units.values(), key=lambda unit: (util.safe_unicodedata_name(unit.value), unit.seen_cards_count)),
         util.SortOrder.SCORE:     sorted(units.values(), key=lambda unit: (util.score_adjust(unit.avg_interval / config.interval), unit.seen_cards_count), reverse=True),
@@ -111,9 +111,9 @@ def generate(mw, config: types.SimpleNamespace, units, export: bool = False) -> 
 
     if config.groupby > 0:
         grouping = data.groupings[config.groupby - 1]
-        kanji = [u.value for u in unitsList]
+        kanji = [u.value for u in units_list]
 
-        result_html += get_grouping_overall_total(unitsList, grouping, config)
+        result_html += get_grouping_overall_total(units_list, grouping, config)
 
         for i in range(0, len(grouping.groups)):
             result_html += "<h2>" + grouping.groups[i].name + "</h2>\n"
@@ -156,7 +156,7 @@ def generate(mw, config: types.SimpleNamespace, units, export: bool = False) -> 
         table = "<div class=\"grid-container\">\n"
         total_count = 0
         count_known = 0
-        for unit in [u for u in unitsList if u.value not in chars]:
+        for unit in [u for u in units_list if u.value not in chars]:
             if unit.seen_cards_count != 0 or config.unseen:
                 total_count += 1
                 bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.seen_cards_count, config.gradientcolors, config.kanjitileunseencolor)
@@ -171,7 +171,7 @@ def generate(mw, config: types.SimpleNamespace, units, export: bool = False) -> 
         table = "<div class=\"grid-container\">\n"
         total_count = 0
         count_known = 0
-        for unit in unitsList:
+        for unit in units_list:
             if unit.seen_cards_count != 0 or config.unseen:
                 total_count += 1
                 bgcolor = util.get_background_color(unit.avg_interval, config.interval, unit.seen_cards_count, config.gradientcolors, config.kanjitileunseencolor)

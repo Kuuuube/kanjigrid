@@ -21,6 +21,9 @@ ignore = [
     "PYI024", #Checks for uses of `collections.namedtuple` in stub files.
     "PLR0913", #Checks for function definitions that include too many arguments.
     "PLR0911", #Checks for functions or methods with too many return statements.
+    "FBT001", #Checks for the use of boolean positional arguments in function definitions, as determined by the presence of a `bool` type hint.
+    "UP015", #Checks for redundant `open` mode arguments.
+    "PTH208", #Checks for uses of `os.listdir`.
 ]
 target-version = "py39" #Set minimum version to 3.9 due to Anki still shipping 3.9 in windows packages as of 24.11 (Nov 26, 2024)
 

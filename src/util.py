@@ -119,7 +119,7 @@ def get_font_css(config: types.SimpleNamespace) -> str:
         return config.vifontcss
     return ""
 
-def get_search(config: types.SimpleNamespace, char: str):
+def get_search(config: types.SimpleNamespace, char: str) -> str:
     search_url = ""
     if config.lang == "ja":
         search_url = config.jasearch

@@ -15,11 +15,11 @@ KanjiGroup = collections.namedtuple("KanjiGroup", ["name", "characters"])
 groupings = []
 
 
-def load_from_folder(groupings, path: str) -> None:
+def load_from_folder(groupings: KanjiGrouping, path: str) -> None:
     for file in os.listdir(path):
         filepath = path + "/" + file
         try:
-            grouping_json = json.loads(open(filepath, "r", encoding = "utf-8", errors = "replace").read())
+            grouping_json = json.loads(open(filepath, "r", encoding = "utf-8", errors = "replace").read())  # noqa: SIM115
 
             if "version" not in grouping_json or GROUPING_JSON_VERSION > grouping_json["version"]:
                 grouping_json = migrate_grouping(grouping_json)
@@ -28,11 +28,11 @@ def load_from_folder(groupings, path: str) -> None:
             for group in grouping_json["groups"]:
                 groups.append(KanjiGroup(group["name"], group["characters"]))
             groupings.append(KanjiGrouping(grouping_json["version"], grouping_json["name"], grouping_json["lang"], grouping_json["source"], grouping_json["leftover_group"], groups))
-        except Exception:
+        except Exception:  # noqa: BLE001
             logger.error_log(f"Failed to load Kanji Grid data file \"{filepath}\". It might be corrupted or outdated.", traceback.format_exc())
 
 def init_groups() -> None:
-    global groupings
+    global groupings  # noqa: PLW0603
     groupings = []
     cwd = os.path.dirname(__file__)
     data_folder = cwd + "/data"
