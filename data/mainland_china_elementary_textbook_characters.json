@@ -1,9 +1,9 @@
 {
     "version": 1,
-    "name": "Mainland China Elementary Textbooks' Characters",
+    "name": "Mainland China Elementary Textbook Characters",
     "lang": "zh",
     "source": "https://link.springer.com/article/10.3758/s13428-023-02214-1 https://osf.io/ynk8c/?view_only=5186bd68549340bd923e9b6531d2c820",
-    "leftover_group": "Not in Mainland China Elementary Textbooks' Characters",
+    "leftover_group": "Not in Mainland China Elementary Textbook Characters",
     "groups": [
         {
             "name": "Grade 1",
