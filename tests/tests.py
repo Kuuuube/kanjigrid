@@ -49,6 +49,18 @@ def test_data_group_duplicates():
 
             assert((filepath, kanji_list) == (filepath, kanji_list_deduped))
 
+def test_data_format():
+    import json
+    import os
+
+    for file in os.listdir(JSON_DATA_FOLDER):
+        filepath = JSON_DATA_FOLDER + "/" + file
+        data_file_str = open(filepath, "r", encoding = "UTF8").read()
+        data_json = json.loads(data_file_str)
+        formatted_json_string = json.dumps(data_json, indent = 4, ensure_ascii = False)
+
+        assert(formatted_json_string == data_file_str)
+
 def test_data_contains_only_cjk_characters():
     import json
     import os
