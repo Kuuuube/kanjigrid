@@ -37,3 +37,8 @@ target-version = "py39" #Set minimum version to 3.9 due to Anki still shipping 3
 "util.py" = [
     "RUF001",
 ]
+"tests.py" = [
+    "SIM115",
+    "S101",
+    "INP001",
+]

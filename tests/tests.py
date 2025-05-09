@@ -1,10 +1,11 @@
 import sys
+
 # add src folder to path to allow accessing module there
 sys.path.append(sys.path[0] + "/../src/.")
 
 JSON_DATA_FOLDER = "./data"
 
-def test_config_update():
+def test_config_update() -> None:
     import json
 
     import config_util
@@ -20,14 +21,15 @@ def test_config_update():
 
     assert(config_migrated_validated_string == config_current_string)
 
-def test_data_load():
+def test_data_load() -> None:
     import data
     data.load_from_folder(data.groupings, JSON_DATA_FOLDER)
 
-def test_data_schema():
-    import jsonschema
+def test_data_schema() -> None:
     import json
     import os
+
+    import jsonschema
 
     data_schema = json.load(open("./tests/data_schema.json", "r", encoding = "UTF8"))
 
@@ -36,7 +38,7 @@ def test_data_schema():
         data_json = json.load(open(filepath, "r", encoding = "UTF8"))
         jsonschema.validate(instance = data_json, schema = data_schema)
 
-def test_data_group_duplicates():
+def test_data_group_duplicates() -> None:
     import json
     import os
 
@@ -44,12 +46,12 @@ def test_data_group_duplicates():
         filepath = JSON_DATA_FOLDER + "/" + file
         data_json = json.load(open(filepath, "r", encoding = "UTF8"))
         for grouping_data in data_json["groups"]:
-            kanji_list = sorted(list(grouping_data["characters"]))
-            kanji_list_deduped = sorted(list(set(kanji_list)))
+            kanji_list = sorted(grouping_data["characters"])
+            kanji_list_deduped = sorted(set(kanji_list))
 
             assert((filepath, kanji_list) == (filepath, kanji_list_deduped))
 
-def test_data_format():
+def test_data_format() -> None:
     import json
     import os
 
@@ -61,7 +63,7 @@ def test_data_format():
 
         assert(formatted_json_string == data_file_str)
 
-def test_data_contains_only_cjk_characters():
+def test_data_contains_only_cjk_characters() -> None:
     import json
     import os
 
@@ -75,9 +77,11 @@ def test_data_contains_only_cjk_characters():
             for kanji in kanji_list:
                 assert(util.is_kanji(kanji)), (filepath, kanji)
 
-def test_data_update():
+def test_data_update() -> None:
     import json
+
     import jsonschema
+
     import data
 
     data_schema = json.load(open("./tests/data_schema.json", "r", encoding = "UTF8"))
