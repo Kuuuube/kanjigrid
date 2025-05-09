@@ -1,8 +1,9 @@
-import os
 import json
+import os
 import sys
 
-def dedupe_groups_characters(data_directory):
+
+def dedupe_groups_characters(data_directory: str) -> None:
     for file in os.listdir(data_directory):
         filepath = data_directory + "/" + file
         data_json = json.load(open(filepath, "r", encoding = "UTF8"))
