@@ -179,7 +179,7 @@ class KanjiGrid:
         groupby = QComboBox()
         groupby.addItems([
             "None",
-            *(("[" + x.lang + "] " + x.name) for x in data.groupings),
+            *(("[" + x.lang + "] " + util.truncate_text(x.name, 60)) for x in data.groupings),
         ])
         groupby.setCurrentIndex(config.groupby)
         general_tab_vertical_layout.addWidget(QLabel("Group by:"))

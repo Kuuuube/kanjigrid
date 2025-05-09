@@ -163,3 +163,9 @@ def get_deck_name(mw, config: types.SimpleNamespace) -> str:
     if config.did != "*":
         deckname = mw.col.decks.name(config.did)
     return deckname
+
+def truncate_text(text: str, length: int) -> str:
+    new_text = text[:length - 3]
+    if len(new_text) != len(text):
+        return new_text + "..."
+    return text
