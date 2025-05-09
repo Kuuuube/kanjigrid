@@ -24,6 +24,9 @@ ignore = [
     "FBT001", #Checks for the use of boolean positional arguments in function definitions, as determined by the presence of a `bool` type hint.
     "UP015", #Checks for redundant `open` mode arguments.
     "PTH208", #Checks for uses of `os.listdir`.
+    "RUF001", #Checks for ambiguous Unicode characters in strings.
+    "PIE808", #Checks for `range` calls with an unnecessary `start` argument.
+    "C417", #Checks for unnecessary `map()` calls with lambda functions.
 ]
 target-version = "py39" #Set minimum version to 3.9 due to Anki still shipping 3.9 in windows packages as of 24.11 (Nov 26, 2024)
 
@@ -33,9 +36,6 @@ target-version = "py39" #Set minimum version to 3.9 due to Anki still shipping 3
     "T201",
     "BLE001",
     "S110",
-]
-"util.py" = [
-    "RUF001",
 ]
 "./tests/*" = [
     "SIM115",

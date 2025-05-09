@@ -1,3 +1,5 @@
+import types
+
 config_schema = {
     "version": {
         "default": 2,
@@ -96,14 +98,14 @@ config_schema = {
     },
 }
 
-def set_config(mw, namespace_config):
+def set_config(mw, namespace_config: types.SimpleNamespace) -> None:
     config = dict(namespace_config.__dict__)
     for key in list(config.keys()):
-        if key not in config_schema.keys():
+        if key not in config_schema:
             del config[key]
     mw.addonManager.writeConfig(__name__, config)
 
-def get_config(mw):
+def get_config(mw) -> dict:
     config = mw.addonManager.getConfig(__name__)
 
     if "defaults" in config: #migrate legacy configs that nested settings inside "defaults"
@@ -116,14 +118,13 @@ def get_config(mw):
 
     return validate_config(config)
 
-def reset_config(mw):
+def reset_config(mw) -> None:
     default_config = dict(map(lambda item: (item[0], item[1]["default"]), config_schema.items()))
     mw.addonManager.writeConfig(__name__, default_config)
 
-def validate_config(config):
-    for config_schema_key in config_schema.keys():
-        if config_schema_key in config.keys():
-            if type(config_schema[config_schema_key]["default"]) is type(config[config_schema_key]):
+def validate_config(config: dict) -> dict:
+    for config_schema_key in config_schema:
+        if config_schema_key in config and type(config_schema[config_schema_key]["default"]) is type(config[config_schema_key]):
                 if "enum" in config_schema[config_schema_key]:
                     if config[config_schema_key] in config_schema[config_schema_key]["enum"]:
                         continue
@@ -132,7 +133,7 @@ def validate_config(config):
         config[config_schema_key] = config_schema[config_schema_key]["default"]
     return config
 
-def migrate_config(config):
+def migrate_config(config: dict) -> dict:
     config_updates = [config_update_1, config_update_2]
     if len(config_updates) > config["version"]:
         for config_update in config_updates[config["version"]:]:
@@ -140,7 +141,7 @@ def migrate_config(config):
         config["version"] = config_schema["version"]["default"]
     return config
 
-def config_update_1(config):
+def config_update_1(config: dict) -> dict:
     if "browseonclick" in config and "copyonclick" in config:
         if not config["browseonclick"] and not config["copyonclick"]:
             config["onclickaction"] = "search"
@@ -153,7 +154,7 @@ def config_update_1(config):
         del config["copyonclick"]
     return config
 
-def config_update_2(config):
+def config_update_2(config: dict) -> dict:
     config["defaultfield"] = config["pattern"]
     del config["pattern"]
     return config
