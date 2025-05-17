@@ -1,8 +1,8 @@
+import datetime
 import operator
 import re
 import types
 import urllib.parse
-from datetime import datetime
 from functools import reduce
 
 from anki.utils import ids2str
@@ -85,7 +85,7 @@ def generate(mw, config: types.SimpleNamespace, units, export: bool = False) -> 
     result_html += "<body>\n"
     result_html += "<div style=\"font-size: 3em;\">Kanji Grid - " + deckname + "</div>\n"
     if config.timetravel_enabled:
-        date_time = datetime.fromtimestamp(config.timetravel_time / 1000, tz = datetime.timezone.utc)
+        date_time = datetime.datetime.fromtimestamp(config.timetravel_time / 1000, tz = datetime.timezone.utc)
         date_time_str = date_time.strftime("%d/%m/%Y %H:%M:%S")
         result_html += "<p style=\"text-align: center\">for " + date_time_str + "</p>"
     result_html += "<p style=\"text-align: center\">Key</p>"
