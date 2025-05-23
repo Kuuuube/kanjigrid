@@ -226,6 +226,8 @@ Changelog compared to the old kanji grid add-on.
 
 - Added Mainland China Elementary Textbook Characters grouping.
 
+- Added WaniKani Levels grouping.
+
 - Updated Kanji Kentei Level grouping to match latest data from Jitenon.
 
 - Renamed `Probably Chinese` Kanji Kentei Level sort category to `Non-Kanji Kentei`.
