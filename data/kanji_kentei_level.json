@@ -2,7 +2,7 @@
     "version": 1,
     "name": "Kanji Kentei Level",
     "lang": "ja",
-    "source": "https://kanji.jitenon.jp/cat/kyu",
+    "source": "https://www.kanken.or.jp/kanken/outline/data/outline_degree_national_list20200217.pdf https://kanji.jitenon.jp/cat/kyu",
     "leftover_group": "Non-Kanji Kentei",
     "groups": [
         {
