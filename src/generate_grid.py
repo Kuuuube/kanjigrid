@@ -70,7 +70,7 @@ def generate(mw, config: types.SimpleNamespace, units, export: bool = False) -> 
         deckname = mw.col.decks.name(config.did).rsplit("::", 1)[-1]
 
     result_html  = "<!doctype html><html lang=\"" + config.lang + "\"><head><meta charset=\"UTF-8\" /><title>Anki Kanji Grid</title>"
-    result_html += "<style type=\"text/css\">" + HEADER_CSS_SNIPPET
+    result_html += "<style type=\"text/css\">" + HEADER_CSS_SNIPPET(config)
     result_html += "a, a:visited {color: " + config.kanjitextcolor + ";text-decoration: none;}"
     result_html += ".kanji-tile {color: " + config.kanjitextcolor + "}"
     result_html += "body {color: " + config.textcolor + "}"
@@ -267,7 +267,7 @@ def kanjigrid(mw, config: types.SimpleNamespace):
                 util.add_unit_data(units, ch, i, card, config.kanjionly)
     return units
 
-HEADER_CSS_SNIPPET = """
+HEADER_CSS_SNIPPET = lambda config: ("""
 body {
   text-align: center;
 }
@@ -277,14 +277,14 @@ body {
   grid-gap: 2px;
   grid-template-columns: repeat(auto-fit, 23px);
   justify-content: center;
-  " + util.get_font_css(config) + "
+  """ + util.get_font_css(config) + """
 }
 
 .key {
   display: inline-block;
   width: 3em
 }
-""".strip()
+""").strip()
 
 SEARCH_CSS_SNIPPET = """
 .grid-item.highlight {
