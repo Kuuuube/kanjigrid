@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "name": "Stroke Count",
+    "name": "KANJIDIC2 Stroke Count",
     "source": "https://www.edrdg.org/wiki/KANJIDIC_Project.html",
     "lang": "ja",
     "leftover_group": "Not in KANJIDIC2",
@@ -124,10 +124,6 @@
         {
             "name": "30 Strokes",
             "characters": "驫鸞厵癴韊鸝鱺"
-        },
-        {
-            "name": "31 Strokes",
-            "characters": ""
         },
         {
             "name": "32 Strokes",
