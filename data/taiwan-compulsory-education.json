@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "name": "Taiwan compulsory education characters grouping",
+  "name": "Taiwan Compulsory Education Characters",
   "lang": "zh-Hant",
   "source": "https://web.archive.org/web/20111215143140/http://residence.educities.edu.tw/wei3128/currinstruc/wordclause/generwordgrd9.htm",
-  "leftover_group": "Not taught in compulsory education",
+  "leftover_group": "Not taught during compulsory education",
   "groups": [
     {
       "name": "Year 1",
