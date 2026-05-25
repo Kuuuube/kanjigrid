@@ -234,6 +234,8 @@ Changelog compared to the old kanji grid add-on.
 
 - Added Taiwan Compulsory Education Characters grouping.
 
+- Added HSK 2.0 and HSK 3.1 groupings.
+
 - Updated Kanji Kentei Level grouping to match latest data from 日本漢字能力検定協会 and Jitenon.
 
 - Renamed `Probably Chinese` Kanji Kentei Level sort category to `Non-Kanji Kentei`.
