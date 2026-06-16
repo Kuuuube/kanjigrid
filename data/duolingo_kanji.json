@@ -2,7 +2,7 @@
     "version": 1,
     "name": "Duolingo Kanji",
     "lang": "ja",
-    "source": "https://duolingo.com/characters and https://duolingo.com/practice-hub/words",
+    "source": "https://duolingo.com/characters https://duolingo.com/practice-hub/words",
     "leftover_group": "Non-Duolingo Kanji",
     "groups": [
         {
